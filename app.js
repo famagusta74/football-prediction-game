@@ -17,6 +17,18 @@ const sampleMatches = [
         stage: "First Stage - Group A",
         venue: "Mexico City Stadium (Mexico City)"
     },
+    // TEST MATCH - Set to past date for testing
+    {
+        id: 99,
+        homeTeam: "Test Team A",
+        awayTeam: "Test Team B",
+        kickoff: "2024-01-01T12:00:00", // Past date for testing
+        status: "finished",
+        league: "TEST MATCH",
+        stage: "Test Match",
+        venue: "Test Stadium",
+        finalScore: { home: 2, away: 1 } // Actual result for testing payouts
+    },
     {
         id: 2,
         homeTeam: "Canada",
@@ -321,6 +333,23 @@ function loadMatches() {
             minute: '2-digit'
         });
         
+        // Calculate result if match is finished
+        let resultInfo = '';
+        if (match.status === 'finished' && match.finalScore && userPrediction) {
+            const payout = calculatePayout(userPrediction, match.finalScore);
+            const resultColor = payout > 0 ? '#28a745' : '#dc3545';
+            resultInfo = `
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid ${resultColor};">
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <strong style="font-size: 16px;">Final Score: ${match.finalScore.home} - ${match.finalScore.away}</strong>
+                    </div>
+                    <div style="text-align: center; color: ${resultColor}; font-weight: bold; font-size: 18px;">
+                        ${payout > 0 ? `🎉 Won ${payout} coins!` : '❌ Lost ${userPrediction.betAmount} coins'}
+                    </div>
+                </div>
+            `;
+        }
+        
         matchCard.innerHTML = `
             <div class="match-header">
                 <span class="match-time">${formattedDate} - ${match.venue}</span>
@@ -328,7 +357,7 @@ function loadMatches() {
             </div>
             <div class="match-teams">
                 <span class="team">${match.homeTeam}</span>
-                <span class="vs">VS</span>
+                <span class="vs">${match.status === 'finished' && match.finalScore ? `${match.finalScore.home} - ${match.finalScore.away}` : 'VS'}</span>
                 <span class="team">${match.awayTeam}</span>
             </div>
             <div style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
@@ -342,6 +371,7 @@ function loadMatches() {
                     <span class="prediction-bet">${userPrediction.betAmount} 🪙</span>
                 </div>
             ` : ''}
+            ${resultInfo}
         `;
         
         matchesList.appendChild(matchCard);
@@ -732,6 +762,92 @@ function updateLeaderboard() {
 function getUserNickname(userId) {
     const user = users.find(u => u.id === userId);
     return user ? user.nickname : 'Unknown';
+}
+
+// Calculate payout for a prediction
+function calculatePayout(prediction, finalScore) {
+    const predictedHome = prediction.homeScore;
+    const predictedAway = prediction.awayScore;
+    const actualHome = finalScore.home;
+    const actualAway = finalScore.away;
+    const betAmount = prediction.betAmount;
+    
+    // Check if exact score
+    if (predictedHome === actualHome && predictedAway === actualAway) {
+        return betAmount * 5; // 5x payout for exact score
+    }
+    
+    // Check if correct result (winner or draw)
+    const predictedResult = predictedHome > predictedAway ? 'home' :
+                           predictedHome < predictedAway ? 'away' : 'draw';
+    const actualResult = actualHome > actualAway ? 'home' :
+                        actualHome < actualAway ? 'away' : 'draw';
+    
+    if (predictedResult === actualResult) {
+        return betAmount * 2; // 2x payout for correct result
+    }
+    
+    // Incorrect prediction
+    return 0;
+}
+
+// Process finished matches and award payouts (TEST FUNCTION)
+function processFinishedMatches() {
+    let processedCount = 0;
+    let totalPayout = 0;
+    
+    sampleMatches.forEach(match => {
+        if (match.status === 'finished' && match.finalScore) {
+            // Find all predictions for this match
+            const matchPredictions = predictions.filter(p => p.matchId === match.id);
+            
+            matchPredictions.forEach(prediction => {
+                // Skip if already processed
+                if (prediction.processed) return;
+                
+                const payout = calculatePayout(prediction, match.finalScore);
+                const user = users.find(u => u.id === prediction.userId);
+                
+                if (user) {
+                    // Award payout
+                    user.coins += payout;
+                    
+                    // Update stats
+                    if (payout > 0) {
+                        user.correctPredictions = (user.correctPredictions || 0) + 1;
+                        if (payout === prediction.betAmount * 5) {
+                            user.exactScores = (user.exactScores || 0) + 1;
+                        }
+                    }
+                    
+                    // Mark prediction as processed
+                    prediction.processed = true;
+                    prediction.payout = payout;
+                    
+                    processedCount++;
+                    totalPayout += payout;
+                }
+            });
+        }
+    });
+    
+    // Save all changes
+    saveUsers();
+    savePredictions();
+    
+    // Update current user if they got payouts
+    const updatedCurrentUser = users.find(u => u.id === currentUser.id);
+    if (updatedCurrentUser) {
+        currentUser = updatedCurrentUser;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        document.getElementById('userCoins').textContent = currentUser.coins;
+    }
+    
+    // Reload matches and leaderboard
+    loadMatches();
+    updateLeaderboard();
+    
+    alert(`Processed ${processedCount} predictions!\nTotal payouts: ${totalPayout} coins\n\nYour balance: ${currentUser.coins} coins`);
 }
 
 function updateUserInStorage() {
