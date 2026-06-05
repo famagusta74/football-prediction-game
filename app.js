@@ -52,7 +52,7 @@ const sampleMatches = [
     {
         id: 4,
         homeTeam: "England",
-        awayTeam: "Brazil",
+        awayTeam: "Japan",
         kickoff: "2026-06-14T20:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
@@ -62,41 +62,41 @@ const sampleMatches = [
     {
         id: 5,
         homeTeam: "Germany",
-        awayTeam: "Argentina",
+        awayTeam: "Australia",
         kickoff: "2026-06-15T18:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group E",
+        stage: "First Stage - Group D",
         venue: "AT&T Stadium (Dallas)"
     },
     {
         id: 6,
         homeTeam: "France",
-        awayTeam: "Spain",
+        awayTeam: "Morocco",
         kickoff: "2026-06-16T21:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group F",
+        stage: "First Stage - Group E",
         venue: "SoFi Stadium (Los Angeles)"
     },
     {
         id: 7,
-        homeTeam: "Portugal",
-        awayTeam: "Netherlands",
+        homeTeam: "Spain",
+        awayTeam: "South Korea",
         kickoff: "2026-06-17T19:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group G",
+        stage: "First Stage - Group F",
         venue: "Arrowhead Stadium (Kansas City)"
     },
     {
         id: 8,
-        homeTeam: "Belgium",
-        awayTeam: "Italy",
+        homeTeam: "Brazil",
+        awayTeam: "Argentina",
         kickoff: "2026-06-18T22:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group H",
+        stage: "First Stage - Group G",
         venue: "Mercedes-Benz Stadium (Atlanta)"
     }
 ];
