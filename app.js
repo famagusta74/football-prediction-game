@@ -92,10 +92,59 @@ const sampleMatches = [
 // Initialize app
 function init() {
     const savedUser = localStorage.getItem('currentUser');
+    
+    // Check if there's a pool invite in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const poolCode = urlParams.get('pool');
+    
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
         showDashboard();
+        
+        // If there's a pool code in URL, try to join it
+        if (poolCode) {
+            autoJoinPool(poolCode);
+        }
+    } else if (poolCode) {
+        // Store pool code to join after login/registration
+        localStorage.setItem('pendingPoolCode', poolCode);
+        alert('Please login or create an account to join this pool!');
     }
+}
+
+// Auto-join pool from invite link
+function autoJoinPool(poolCode) {
+    const pool = pools.find(p => p.code === poolCode.toUpperCase());
+    
+    if (!pool) {
+        alert(`Pool with code ${poolCode} not found. The pool may have been deleted.`);
+        return;
+    }
+    
+    if (pool.members.includes(currentUser.id)) {
+        alert(`You are already a member of "${pool.name}"!`);
+        // Navigate to pools tab
+        showTab('pools');
+        return;
+    }
+    
+    if (pool.members.length >= 40) {
+        alert(`Pool "${pool.name}" is full (max 40 members).`);
+        return;
+    }
+    
+    // Join the pool
+    pool.members.push(currentUser.id);
+    savePools();
+    loadPools();
+    
+    // Navigate to pools tab
+    showTab('pools');
+    
+    alert(`Successfully joined pool: "${pool.name}"!\n\nMembers: ${pool.members.length}/40`);
+    
+    // Clear the URL parameter
+    window.history.replaceState({}, document.title, window.location.pathname);
 }
 
 // Authentication Functions
@@ -141,6 +190,13 @@ function login() {
         }
         
         showDashboard();
+        
+        // Check for pending pool invitation
+        const pendingPoolCode = localStorage.getItem('pendingPoolCode');
+        if (pendingPoolCode) {
+            localStorage.removeItem('pendingPoolCode');
+            autoJoinPool(pendingPoolCode);
+        }
     } else {
         alert('Invalid nickname or PIN');
     }
@@ -344,15 +400,45 @@ function submitPrediction() {
         return;
     }
     
+    // Check if user already has a prediction for this match
+    const existingPrediction = predictions.find(p =>
+        p.userId === currentUser.id && p.matchId === currentMatchId
+    );
+    
+    if (existingPrediction) {
+        // Ask user if they want to modify or place a new bet
+        const userChoice = confirm(
+            `You already have a prediction for this match:\n` +
+            `Score: ${existingPrediction.homeScore} - ${existingPrediction.awayScore}\n` +
+            `Bet: ${existingPrediction.betAmount} coins\n\n` +
+            `Click OK to MODIFY your existing prediction (no additional coins deducted)\n` +
+            `Click CANCEL to place a NEW bet (${betAmount} coins will be deducted)`
+        );
+        
+        if (userChoice) {
+            // Modify existing prediction - no additional coins needed
+            existingPrediction.homeScore = homeScore;
+            existingPrediction.awayScore = awayScore;
+            existingPrediction.betAmount = betAmount;
+            existingPrediction.modifiedAt = new Date().toISOString();
+            
+            savePredictions();
+            
+            document.getElementById('userCoins').textContent = currentUser.coins;
+            closePredictionModal();
+            loadMatches();
+            
+            alert('Prediction modified successfully!');
+            return;
+        }
+        // If user chose CANCEL, continue to place new bet below
+    }
+    
+    // Check if user has enough coins for new bet
     if (currentUser.coins < betAmount) {
         alert('Insufficient coins!');
         return;
     }
-    
-    // Remove existing prediction if any
-    predictions = predictions.filter(p => 
-        !(p.userId === currentUser.id && p.matchId === currentMatchId)
-    );
     
     // Add new prediction
     predictions.push({
@@ -365,7 +451,7 @@ function submitPrediction() {
         createdAt: new Date().toISOString()
     });
     
-    // Deduct coins
+    // Deduct coins for new bet
     currentUser.coins -= betAmount;
     currentUser.totalPredictions = (currentUser.totalPredictions || 0) + 1;
     updateUserInStorage();
@@ -376,7 +462,7 @@ function submitPrediction() {
     closePredictionModal();
     loadMatches();
     
-    alert('Prediction submitted successfully!');
+    alert('New prediction submitted successfully!');
 }
 
 // Pools Functions
@@ -398,6 +484,10 @@ function loadPools() {
         // Add to pools list
         const poolCard = document.createElement('div');
         poolCard.className = 'pool-card';
+        
+        // Generate invite link
+        const inviteLink = `${window.location.origin}${window.location.pathname}?pool=${pool.code}`;
+        
         poolCard.innerHTML = `
             <div class="pool-header">
                 <span class="pool-name">${pool.name}</span>
@@ -408,6 +498,20 @@ function loadPools() {
                 <span>👥 ${pool.members.length} members</span>
                 <span>👑 Admin: ${getUserNickname(pool.adminId)}</span>
             </div>
+            ${pool.adminId === currentUser.id ? `
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                    <p style="font-size: 14px; color: #666; margin-bottom: 8px;">📤 Invite Link:</p>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" value="${inviteLink}" readonly
+                               style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; background: #f8f9fa;"
+                               onclick="this.select()">
+                        <button onclick="copyInviteLink('${inviteLink}', '${pool.code}')"
+                                style="padding: 8px 15px; background: #1e3c72; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            ` : ''}
         `;
         poolsList.appendChild(poolCard);
         
@@ -454,7 +558,38 @@ function createPool() {
     closeCreatePool();
     loadPools();
     
-    alert(`Pool created! Share this code with friends: ${poolCode}`);
+    // Generate invite link
+    const inviteLink = `${window.location.origin}${window.location.pathname}?pool=${poolCode}`;
+    
+    // Show success message with invite link
+    const message = `Pool created successfully!\n\n` +
+                   `Pool Code: ${poolCode}\n\n` +
+                   `Invite Link:\n${inviteLink}\n\n` +
+                   `Share this link with friends to invite them!`;
+    
+    alert(message);
+    
+    // Optionally copy to clipboard
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(inviteLink).then(() => {
+            console.log('Invite link copied to clipboard');
+        }).catch(err => {
+            console.log('Could not copy link:', err);
+        });
+    }
+}
+
+// Function to copy invite link to clipboard
+function copyInviteLink(link, code) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(link).then(() => {
+            alert(`Invite link copied to clipboard!\n\nPool Code: ${code}\nLink: ${link}`);
+        }).catch(err => {
+            alert(`Could not copy link automatically. Please copy manually:\n\n${link}`);
+        });
+    } else {
+        alert(`Copy this invite link:\n\n${link}`);
+    }
 }
 
 function showJoinPool() {
