@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Prediction Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="container">
+            <div class="logo">⚽</div>
+            <h1>Football Prediction Game</h1>
+            <p class="subtitle">Predict. Compete. Win.</p>
+            
+            <div class="auth-form">
+                <input type="text" id="nickname" placeholder="Enter Nickname" maxlength="20">
+                <input type="password" id="pin" placeholder="4-Digit PIN" maxlength="4" pattern="[0-9]*">
+                <button onclick="login()" class="btn-primary">Login</button>
+                <button onclick="showRegister()" class="btn-secondary">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div id="registerScreen" class="screen">
+        <div class="container">
+            <h2>Create Account</h2>
+            <div class="auth-form">
+                <input type="text" id="regNickname" placeholder="Choose Nickname" maxlength="20">
+                <input type="email" id="regEmail" placeholder="Email Address">
+                <input type="password" id="regPin" placeholder="Create 4-Digit PIN" maxlength="4" pattern="[0-9]*">
+                <input type="password" id="regPinConfirm" placeholder="Confirm PIN" maxlength="4" pattern="[0-9]*">
+                <button onclick="register()" class="btn-primary">Register</button>
+                <button onclick="showLogin()" class="btn-secondary">Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardScreen" class="screen">
+        <div class="header">
+            <div class="user-info">
+                <span id="userNickname">Player</span>
+                <div class="coins">
+                    <span class="coin-icon">🪙</span>
+                    <span id="userCoins">1000</span>
+                </div>
+            </div>
+            <button onclick="logout()" class="btn-logout">Logout</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('predictions')">Predictions</button>
+            <button class="tab" onclick="showTab('pools')">My Pools</button>
+            <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
+        </div>
+
+        <!-- Predictions Tab -->
+        <div id="predictionsTab" class="tab-content active">
+            <div class="container">
+                <h2>Upcoming Matches</h2>
+                <div id="matchesList" class="matches-list"></div>
+            </div>
+        </div>
+
+        <!-- Pools Tab -->
+        <div id="poolsTab" class="tab-content">
+            <div class="container">
+                <h2>My Pools</h2>
+                <button onclick="showCreatePool()" class="btn-primary">Create New Pool</button>
+                <button onclick="showJoinPool()" class="btn-secondary">Join Pool</button>
+                <div id="poolsList" class="pools-list"></div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Tab -->
+        <div id="leaderboardTab" class="tab-content">
+            <div class="container">
+                <h2>Leaderboard</h2>
+                <select id="poolSelect" onchange="updateLeaderboard()">
+                    <option value="global">Global</option>
+                </select>
+                <div id="leaderboardList" class="leaderboard-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Modal -->
+    <div id="predictionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePredictionModal()">&times;</span>
+            <h3 id="modalMatchTitle">Match Prediction</h3>
+            <div class="prediction-form">
+                <div class="score-inputs">
+                    <div class="team-score">
+                        <label id="homeTeamLabel">Home</label>
+                        <input type="number" id="homeScore" min="0" max="20" value="0">
+                    </div>
+                    <span class="vs">VS</span>
+                    <div class="team-score">
+                        <label id="awayTeamLabel">Away</label>
+                        <input type="number" id="awayScore" min="0" max="20" value="0">
+                    </div>
+                </div>
+                <div class="bet-amount">
+                    <label>Bet Amount:</label>
+                    <input type="number" id="betAmount" min="10" max="500" value="50" step="10">
+                    <span class="coin-icon">🪙</span>
+                </div>
+                <div class="payout-info">
+                    <p>Exact Score: <strong id="exactPayout">250</strong> 🪙</p>
+                    <p>Correct Result: <strong id="resultPayout">100</strong> 🪙</p>
+                </div>
+                <button onclick="submitPrediction()" class="btn-primary">Submit Prediction</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Pool Modal -->
+    <div id="createPoolModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreatePool()">&times;</span>
+            <h3>Create New Pool</h3>
+            <div class="pool-form">
+                <input type="text" id="poolName" placeholder="Pool Name" maxlength="30">
+                <textarea id="poolDescription" placeholder="Description (optional)" maxlength="200"></textarea>
+                <button onclick="createPool()" class="btn-primary">Create Pool</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Pool Modal -->
+    <div id="joinPoolModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeJoinPool()">&times;</span>
+            <h3>Join Pool</h3>
+            <div class="pool-form">
+                <input type="text" id="poolCode" placeholder="Enter Pool Code" maxlength="8">
+                <button onclick="joinPool()" class="btn-primary">Join Pool</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
