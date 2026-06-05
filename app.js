@@ -272,6 +272,15 @@ function showDashboard() {
     
     loadMatches();
     loadPools();
+    
+    // Set default leaderboard to first pool if user has pools, otherwise hide global option
+    const userPools = pools.filter(p => p.members.includes(currentUser.id));
+    if (userPools.length > 0) {
+        // User has pools - select first pool by default
+        const poolSelect = document.getElementById('poolSelect');
+        poolSelect.value = userPools[0].id;
+    }
+    
     updateLeaderboard();
 }
 
@@ -471,12 +480,13 @@ function loadPools() {
     const poolSelect = document.getElementById('poolSelect');
     
     poolsList.innerHTML = '';
-    poolSelect.innerHTML = '<option value="global">Global</option>';
+    poolSelect.innerHTML = ''; // Remove global option - users only see their pools
     
     const userPools = pools.filter(p => p.members.includes(currentUser.id));
     
     if (userPools.length === 0) {
         poolsList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">You are not in any pools yet. Create or join one!</p>';
+        poolSelect.innerHTML = '<option value="">No pools yet</option>';
         return;
     }
     
@@ -645,17 +655,41 @@ function generatePoolCode() {
 
 // Leaderboard Functions
 function updateLeaderboard() {
-    const poolId = document.getElementById('poolSelect').value;
+    const poolSelect = document.getElementById('poolSelect');
+    const poolId = poolSelect.value;
     const leaderboardList = document.getElementById('leaderboardList');
+    
+    // Check if user has any pools
+    const userPools = pools.filter(p => p.members.includes(currentUser.id));
     
     let usersToRank = [];
     
-    if (poolId === 'global') {
-        usersToRank = [...users];
+    if (userPools.length === 0) {
+        // User has no pools - show message
+        leaderboardList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <p style="font-size: 18px; margin-bottom: 20px;">📊 No Rankings Available</p>
+                <p>Join or create a pool to see rankings!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // User has pools - show only pool rankings
+    if (poolId === 'global' || !poolId) {
+        // Default to first pool if global is selected or no selection
+        poolSelect.value = userPools[0].id;
+        const pool = userPools[0];
+        usersToRank = users.filter(u => pool.members.includes(u.id));
     } else {
         const pool = pools.find(p => p.id === parseInt(poolId));
-        if (pool) {
+        if (pool && pool.members.includes(currentUser.id)) {
             usersToRank = users.filter(u => pool.members.includes(u.id));
+        } else {
+            // User not in this pool - default to first pool
+            poolSelect.value = userPools[0].id;
+            const firstPool = userPools[0];
+            usersToRank = users.filter(u => firstPool.members.includes(u.id));
         }
     }
     
