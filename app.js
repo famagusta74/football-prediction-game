@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.2"; // Firebase integration with auto-migration
+const APP_VERSION = "v1.2.1"; // Bug fix: register function async issue
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -447,7 +447,7 @@ async function login() {
     }
 }
 
-function register() {
+async function register() {
     const nickname = document.getElementById('regNickname').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const pin = document.getElementById('regPin').value;
