@@ -330,7 +330,7 @@ function showRegister() {
     document.getElementById('loginScreen').classList.remove('active');
 }
 
-function login() {
+async function login() {
     const nickname = document.getElementById('nickname').value.trim();
     const pin = document.getElementById('pin').value;
 
@@ -342,6 +342,13 @@ function login() {
     if (pin.length !== 4 || !/^\d+$/.test(pin)) {
         alert('PIN must be exactly 4 digits');
         return;
+    }
+
+    // Reload users from Firebase/localStorage
+    if (useFirebase) {
+        users = await FirebaseDB.getUsers();
+    } else {
+        users = JSON.parse(localStorage.getItem('users')) || [];
     }
 
     const user = users.find(u => u.nickname.toLowerCase() === nickname.toLowerCase() && u.pin === pin);
@@ -358,7 +365,7 @@ function login() {
         if (hoursSinceLastLogin >= 24) {
             user.coins = Math.min(user.coins + 500, 2000); // Daily bonus, max 2000
             user.lastLogin = now.toISOString();
-            saveUsers();
+            await saveUsers();
         }
         
         showDashboard();
