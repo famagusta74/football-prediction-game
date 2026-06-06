@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.2.1"; // Bug fix: register function async issue
+const APP_VERSION = "v1.2.2"; // Debug: login issue after migration
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -413,11 +413,17 @@ async function login() {
     // Reload users from Firebase/localStorage
     if (useFirebase) {
         users = await FirebaseDB.getUsers();
+        console.log(`Loaded ${users.length} users from Firebase`);
     } else {
         users = JSON.parse(localStorage.getItem('users')) || [];
+        console.log(`Loaded ${users.length} users from localStorage`);
     }
+    
+    console.log('Login attempt:', { nickname, pin, totalUsers: users.length });
+    console.log('Available users:', users.map(u => ({ nickname: u.nickname, hasPin: !!u.pin })));
 
     const user = users.find(u => u.nickname.toLowerCase() === nickname.toLowerCase() && u.pin === pin);
+    console.log('Found user:', user ? 'YES' : 'NO');
     
     if (user) {
         currentUser = user;
