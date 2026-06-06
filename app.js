@@ -1,11 +1,12 @@
 // App Version
-const APP_VERSION = "v1.3"; // Firebase integration complete with cross-device sync
+const APP_VERSION = "v1.4"; // Added admin Matches tab for result management
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
 let users = [];
 let pools = [];
 let predictions = [];
+let matches = []; // Will be loaded from Firebase or use sampleMatches as default
 let currentMatchId = null;
 let useFirebase = false;
 
@@ -32,6 +33,12 @@ async function initializeApp() {
         
         // Load data from Firebase
         await loadDataFromFirebase();
+        
+        // Initialize matches from Firebase or use defaults
+        if (matches.length === 0) {
+            matches = [...sampleMatches];
+            await FirebaseDB.saveAllMatches(matches);
+        }
     } else {
         console.log('Firebase not available, using localStorage');
         // Fallback to localStorage
@@ -106,12 +113,19 @@ async function loadDataFromFirebase() {
         users = await FirebaseDB.getUsers();
         pools = await FirebaseDB.getPools();
         predictions = await FirebaseDB.getPredictions();
+        matches = await FirebaseDB.getMatches();
+        
+        // If no matches in Firebase, use sample matches
+        if (matches.length === 0) {
+            matches = [...sampleMatches];
+        }
     } catch (error) {
         console.error('Error loading data from Firebase:', error);
         // Fallback to localStorage
         users = JSON.parse(localStorage.getItem('users')) || [];
         pools = JSON.parse(localStorage.getItem('pools')) || [];
         predictions = JSON.parse(localStorage.getItem('predictions')) || [];
+        matches = JSON.parse(localStorage.getItem('matches')) || [...sampleMatches];
     }
 }
 
@@ -543,10 +557,14 @@ function showDashboard() {
     document.getElementById('userNickname').textContent = currentUser.nickname;
     document.getElementById('userCoins').textContent = currentUser.coins;
     
-    // Show/hide admin tab based on user role
-    const adminTab = document.querySelector('.tab[onclick="showTab(\'users\')"]');
-    if (adminTab) {
-        adminTab.style.display = isAdmin() ? 'block' : 'none';
+    // Show/hide admin tabs based on user role
+    const usersTab = document.querySelector('.tab[onclick="showTab(\'users\')"]');
+    const matchesTab = document.querySelector('.tab[onclick="showTab(\'matches\')"]');
+    if (usersTab) {
+        usersTab.style.display = isAdmin() ? 'block' : 'none';
+    }
+    if (matchesTab) {
+        matchesTab.style.display = isAdmin() ? 'block' : 'none';
     }
     
     // Show admin notification badge if there are unread notifications
@@ -584,6 +602,8 @@ function showTab(tabName) {
         updateLeaderboard();
     } else if (tabName === 'users' && isAdmin()) {
         loadUsersTab();
+    } else if (tabName === 'matches' && isAdmin()) {
+        loadAdminMatches();
     } else if (tabName === 'pools') {
         loadPools();
     }
@@ -594,7 +614,7 @@ function loadMatches() {
     const matchesList = document.getElementById('matchesList');
     matchesList.innerHTML = '';
     
-    sampleMatches.forEach(match => {
+    matches.forEach(match => {
         const userPrediction = predictions.find(p => 
             p.userId === currentUser.id && p.matchId === match.id
         );
@@ -1072,7 +1092,7 @@ function processFinishedMatches() {
     let processedCount = 0;
     let totalPayout = 0;
     
-    sampleMatches.forEach(match => {
+    matches.forEach(match => {
         if (match.status === 'finished' && match.finalScore) {
             // Find all predictions for this match
             const matchPredictions = predictions.filter(p => p.matchId === match.id);
@@ -1243,7 +1263,7 @@ function loadAdminMatches() {
     const matchesList = document.getElementById('adminMatchesList');
     matchesList.innerHTML = '';
     
-    sampleMatches.forEach(match => {
+    matches.forEach(match => {
         const matchItem = document.createElement('div');
         matchItem.className = 'admin-match-item';
         
@@ -1276,10 +1296,10 @@ function loadAdminMatches() {
 }
 
 // Admin: Enter match result
-function enterMatchResult(matchId) {
+async function enterMatchResult(matchId) {
     if (!isAdmin()) return;
     
-    const match = sampleMatches.find(m => m.id === matchId);
+    const match = matches.find(m => m.id === matchId);
     if (!match) return;
     
     const homeScore = prompt(`Enter result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nHome team (${match.homeTeam}) score:`, '0');
@@ -1300,8 +1320,8 @@ function enterMatchResult(matchId) {
     match.status = 'finished';
     match.finalScore = { home, away };
     
-    // Save to localStorage (matches are in sampleMatches array, need to persist)
-    localStorage.setItem('matches', JSON.stringify(sampleMatches));
+    // Save to Firebase/localStorage
+    await saveMatches();
     
     loadAdminMatches();
     loadMatches(); // Refresh main matches view
@@ -1310,10 +1330,10 @@ function enterMatchResult(matchId) {
 }
 
 // Admin: Edit match result
-function editMatchResult(matchId) {
+async function editMatchResult(matchId) {
     if (!isAdmin()) return;
     
-    const match = sampleMatches.find(m => m.id === matchId);
+    const match = matches.find(m => m.id === matchId);
     if (!match || !match.finalScore) return;
     
     const homeScore = prompt(`Edit result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nCurrent: ${match.finalScore.home} - ${match.finalScore.away}\n\nHome team (${match.homeTeam}) score:`, match.finalScore.home);
@@ -1342,7 +1362,7 @@ function editMatchResult(matchId) {
     savePredictions();
     
     // Save matches
-    localStorage.setItem('matches', JSON.stringify(sampleMatches));
+    await saveMatches();
     
     loadAdminMatches();
     loadMatches();
@@ -1389,6 +1409,14 @@ async function savePredictions() {
         }
     } else {
         localStorage.setItem('predictions', JSON.stringify(predictions));
+    }
+}
+
+async function saveMatches() {
+    if (useFirebase) {
+        await FirebaseDB.saveAllMatches(matches);
+    } else {
+        localStorage.setItem('matches', JSON.stringify(matches));
     }
 }
 

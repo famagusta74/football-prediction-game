@@ -129,6 +129,45 @@ const FirebaseDB = {
         }
     },
     
+    // Matches
+    async saveMatch(match) {
+        if (!isFirebaseInitialized) return false;
+        try {
+            await database.ref('matches/' + match.id).set(match);
+            return true;
+        } catch (error) {
+            console.error('Error saving match:', error);
+            return false;
+        }
+    },
+    
+    async getMatches() {
+        if (!isFirebaseInitialized) return [];
+        try {
+            const snapshot = await database.ref('matches').once('value');
+            const matchesObj = snapshot.val() || {};
+            return Object.values(matchesObj);
+        } catch (error) {
+            console.error('Error getting matches:', error);
+            return [];
+        }
+    },
+    
+    async saveAllMatches(matches) {
+        if (!isFirebaseInitialized) return false;
+        try {
+            const matchesObj = {};
+            matches.forEach(match => {
+                matchesObj[match.id] = match;
+            });
+            await database.ref('matches').set(matchesObj);
+            return true;
+        } catch (error) {
+            console.error('Error saving all matches:', error);
+            return false;
+        }
+    },
+    
     // Admin Notifications
     async saveNotification(notification) {
         if (!isFirebaseInitialized) return false;
