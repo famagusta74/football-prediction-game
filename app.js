@@ -1,19 +1,53 @@
 // App Version
-const APP_VERSION = "v1.0";
+const APP_VERSION = "v1.1"; // Updated for Firebase integration
 
-// Sample Data Storage (using localStorage for persistence)
+// Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
-let users = JSON.parse(localStorage.getItem('users')) || [];
-let pools = JSON.parse(localStorage.getItem('pools')) || [];
-let predictions = JSON.parse(localStorage.getItem('predictions')) || [];
+let users = [];
+let pools = [];
+let predictions = [];
 let currentMatchId = null;
+let useFirebase = false;
 
 // Admin Configuration
 const ADMIN_NICKNAME = "Menicos";
 
-// Log version and data on load
-console.log(`Football Prediction Game ${APP_VERSION}`);
-console.log(`Loaded ${users.length} users, ${pools.length} pools, ${predictions.length} predictions`);
+// Initialize Firebase and load data
+async function initializeApp() {
+    console.log(`Football Prediction Game ${APP_VERSION}`);
+    
+    // Try to initialize Firebase
+    useFirebase = initializeFirebase();
+    
+    if (useFirebase) {
+        console.log('Using Firebase for data storage');
+        // Load data from Firebase
+        await loadDataFromFirebase();
+    } else {
+        console.log('Firebase not available, using localStorage');
+        // Fallback to localStorage
+        users = JSON.parse(localStorage.getItem('users')) || [];
+        pools = JSON.parse(localStorage.getItem('pools')) || [];
+        predictions = JSON.parse(localStorage.getItem('predictions')) || [];
+    }
+    
+    console.log(`Loaded ${users.length} users, ${pools.length} pools, ${predictions.length} predictions`);
+}
+
+// Load all data from Firebase
+async function loadDataFromFirebase() {
+    try {
+        users = await FirebaseDB.getUsers();
+        pools = await FirebaseDB.getPools();
+        predictions = await FirebaseDB.getPredictions();
+    } catch (error) {
+        console.error('Error loading data from Firebase:', error);
+        // Fallback to localStorage
+        users = JSON.parse(localStorage.getItem('users')) || [];
+        pools = JSON.parse(localStorage.getItem('pools')) || [];
+        predictions = JSON.parse(localStorage.getItem('predictions')) || [];
+    }
+}
 
 // Check if current user is admin
 function isAdmin() {
@@ -225,7 +259,10 @@ const sampleMatches = [
 ];
 
 // Initialize app
-function init() {
+async function init() {
+    // Initialize Firebase and load data
+    await initializeApp();
+    
     const savedUser = localStorage.getItem('currentUser');
     
     // Check if there's a pool invite in the URL
@@ -383,20 +420,18 @@ function register() {
     };
 
     users.push(newUser);
-    saveUsers();
+    await saveUsers();
     
     // Notify admin about new registration
-    notifyAdminNewUser(newUser);
+    await notifyAdminNewUser(newUser);
 
     alert('Account created successfully! Please login.');
     showLogin();
 }
 
 // Notify admin about new user registration
-function notifyAdminNewUser(newUser) {
-    // Store notification for admin
-    let adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
-    adminNotifications.push({
+async function notifyAdminNewUser(newUser) {
+    const notification = {
         type: 'new_user',
         user: {
             nickname: newUser.nickname,
@@ -405,10 +440,17 @@ function notifyAdminNewUser(newUser) {
         },
         timestamp: new Date().toISOString(),
         read: false
-    });
-    localStorage.setItem('adminNotifications', JSON.stringify(adminNotifications));
+    };
     
-    // In a real application, this would send an email to admin
+    if (useFirebase) {
+        await FirebaseDB.saveNotification(notification);
+    } else {
+        // Fallback to localStorage
+        let adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
+        adminNotifications.push(notification);
+        localStorage.setItem('adminNotifications', JSON.stringify(adminNotifications));
+    }
+    
     console.log(`[ADMIN NOTIFICATION] New user registered: ${newUser.nickname} (${newUser.email})`);
 }
 
@@ -1235,25 +1277,46 @@ function editMatchResult(matchId) {
     alert(`Match result updated!\n${match.homeTeam} ${home} - ${away} ${match.awayTeam}\n\nPredictions marked as unprocessed. Click "Process Results" to recalculate payouts.`);
 }
 
-function updateUserInStorage() {
+async function updateUserInStorage() {
     const userIndex = users.findIndex(u => u.id === currentUser.id);
     if (userIndex !== -1) {
         users[userIndex] = currentUser;
-        saveUsers();
+        await saveUsers();
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
     }
 }
 
-function saveUsers() {
-    localStorage.setItem('users', JSON.stringify(users));
+async function saveUsers() {
+    if (useFirebase) {
+        // Save all users to Firebase
+        for (const user of users) {
+            await FirebaseDB.saveUser(user);
+        }
+    } else {
+        localStorage.setItem('users', JSON.stringify(users));
+    }
 }
 
-function savePools() {
-    localStorage.setItem('pools', JSON.stringify(pools));
+async function savePools() {
+    if (useFirebase) {
+        // Save all pools to Firebase
+        for (const pool of pools) {
+            await FirebaseDB.savePool(pool);
+        }
+    } else {
+        localStorage.setItem('pools', JSON.stringify(pools));
+    }
 }
 
-function savePredictions() {
-    localStorage.setItem('predictions', JSON.stringify(predictions));
+async function savePredictions() {
+    if (useFirebase) {
+        // Save all predictions to Firebase
+        for (const prediction of predictions) {
+            await FirebaseDB.savePrediction(prediction);
+        }
+    } else {
+        localStorage.setItem('predictions', JSON.stringify(predictions));
+    }
 }
 
 // Toggle disclaimer visibility
@@ -1286,25 +1349,40 @@ function updateAdminNotificationBadge() {
     }
 }
 
-function loadUsersTab() {
+async function loadUsersTab() {
     if (!isAdmin()) return;
     
-    // Reload users from localStorage to ensure we have the latest data
-    users = JSON.parse(localStorage.getItem('users')) || [];
-    
     const usersList = document.getElementById('usersList');
-    const adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
-    const unreadCount = adminNotifications.filter(n => !n.read).length;
     
-    // Mark all notifications as read
-    adminNotifications.forEach(n => n.read = true);
-    localStorage.setItem('adminNotifications', JSON.stringify(adminNotifications));
-    updateAdminNotificationBadge();
+    // Show loading state
+    usersList.innerHTML = '<div style="text-align: center; padding: 40px;"><p>Loading users...</p></div>';
+    
+    let unreadCount = 0;
+    
+    // Reload users from Firebase to ensure we have the latest data
+    if (useFirebase) {
+        users = await FirebaseDB.getUsers();
+        const adminNotifications = await FirebaseDB.getNotifications();
+        unreadCount = adminNotifications.filter(n => !n.read).length;
+        
+        // Mark all notifications as read
+        await FirebaseDB.markNotificationsRead();
+        updateAdminNotificationBadge();
+    } else {
+        users = JSON.parse(localStorage.getItem('users')) || [];
+        const adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
+        unreadCount = adminNotifications.filter(n => !n.read).length;
+        
+        // Mark all notifications as read
+        adminNotifications.forEach(n => n.read = true);
+        localStorage.setItem('adminNotifications', JSON.stringify(adminNotifications));
+        updateAdminNotificationBadge();
+    }
     
     // Sort users by creation date (newest first)
     const sortedUsers = [...users].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
-    console.log(`Admin viewing ${sortedUsers.length} users`);
+    console.log(`Admin viewing ${sortedUsers.length} users (Firebase: ${useFirebase})`);
     
     usersList.innerHTML = `
         <div class="admin-stats">
