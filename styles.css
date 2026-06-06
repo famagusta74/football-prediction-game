@@ -12,7 +12,7 @@ body {
     position: relative;
 }
 
-/* Documentation Link */
+/* Documentation Link (Login Screen) */
 .docs-link {
     position: fixed;
     top: 20px;
@@ -35,6 +35,49 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     background: white;
+}
+
+/* Documentation Button (Dashboard Header) */
+.btn-docs {
+    background: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-docs:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Header Bob Badge */
+.header-bob-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.header-bob-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.header-bob-text {
+    color: white;
+    font-size: 0.9em;
+    font-weight: 500;
 }
 
 /* IBM Bob Builder Badge */

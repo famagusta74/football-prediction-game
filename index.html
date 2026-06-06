@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v1.5 - Full Documentation</div>
+            <div class="version-header">v1.6 - Enhanced Header</div>
             <div class="logo">⚽</div>
             <h1>Football Prediction Game</h1>
             
@@ -134,9 +134,6 @@
 
     <!-- Main Dashboard -->
     <div id="dashboardScreen" class="screen">
-        <a href="docs/index.html" class="docs-link" target="_blank">
-            📚 Full Documentation
-        </a>
         <div class="header">
             <div class="user-info">
                 <span id="userNickname">Player</span>
@@ -144,12 +141,22 @@
                     <span class="coin-icon">🪙</span>
                     <span id="userCoins">1000</span>
                 </div>
-                <div class="version-badge">v1.5</div>
+                <div class="version-badge">v1.6</div>
             </div>
-            <div style="display: flex; gap: 10px;">
+            
+            <!-- Bob Creator Badge -->
+            <div class="header-bob-badge">
+                <img src="bobimage.jpeg" alt="IBM Bob" class="header-bob-img">
+                <span class="header-bob-text">Created with IBM Bob</span>
+            </div>
+            
+            <div style="display: flex; gap: 10px; align-items: center;">
                 <button onclick="processFinishedMatches()" class="btn-secondary" style="background: #28a745; color: white; padding: 10px 20px;">
                     🧪 Process Results
                 </button>
+                <a href="docs/index.html" class="btn-docs" target="_blank">
+                    📚 Documentation
+                </a>
                 <button onclick="logout()" class="btn-logout">Logout</button>
             </div>
         </div>

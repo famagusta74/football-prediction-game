@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.5"; // Added full documentation and IBM Bob builder badge
+const APP_VERSION = "v1.6"; // Improved header with Bob badge and documentation link
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
