@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.1"; // Updated for Firebase integration
+const APP_VERSION = "v1.2"; // Firebase integration with auto-migration
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
