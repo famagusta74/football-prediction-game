@@ -111,6 +111,10 @@
             <button class="tab active" onclick="showTab('predictions')">Predictions</button>
             <button class="tab" onclick="showTab('pools')">My Pools</button>
             <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
+            <button class="tab" onclick="showTab('users')" style="display: none;">
+                Users
+                <span id="adminNotificationBadge" class="notification-badge" style="display: none;">0</span>
+            </button>
         </div>
 
         <!-- Predictions Tab -->
@@ -136,9 +140,17 @@
             <div class="container">
                 <h2>Leaderboard</h2>
                 <select id="poolSelect" onchange="updateLeaderboard()">
-                    <option value="global">Global</option>
+                    <option value="global">🌍 Global Leaderboard</option>
                 </select>
                 <div id="leaderboardList" class="leaderboard-list"></div>
+            </div>
+        </div>
+
+        <!-- Users Tab (Admin Only) -->
+        <div id="usersTab" class="tab-content">
+            <div class="container">
+                <h2>👑 Admin: User Management</h2>
+                <div id="usersList"></div>
             </div>
         </div>
     </div>

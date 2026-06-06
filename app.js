@@ -377,9 +377,32 @@ function register() {
 
     users.push(newUser);
     saveUsers();
+    
+    // Notify admin about new registration
+    notifyAdminNewUser(newUser);
 
     alert('Account created successfully! Please login.');
     showLogin();
+}
+
+// Notify admin about new user registration
+function notifyAdminNewUser(newUser) {
+    // Store notification for admin
+    let adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
+    adminNotifications.push({
+        type: 'new_user',
+        user: {
+            nickname: newUser.nickname,
+            email: newUser.email,
+            createdAt: newUser.createdAt
+        },
+        timestamp: new Date().toISOString(),
+        read: false
+    });
+    localStorage.setItem('adminNotifications', JSON.stringify(adminNotifications));
+    
+    // In a real application, this would send an email to admin
+    console.log(`[ADMIN NOTIFICATION] New user registered: ${newUser.nickname} (${newUser.email})`);
 }
 
 function logout() {
@@ -397,6 +420,20 @@ function showDashboard() {
     
     document.getElementById('userNickname').textContent = currentUser.nickname;
     document.getElementById('userCoins').textContent = currentUser.coins;
+    
+    // Show/hide admin tab based on user role
+    const adminTab = document.querySelector('.tab[onclick="showTab(\'users\')"]');
+    if (adminTab) {
+        adminTab.style.display = isAdmin() ? 'block' : 'none';
+    }
+    
+    // Show admin notification badge if there are unread notifications
+    if (isAdmin()) {
+        updateAdminNotificationBadge();
+    }
+    if (isAdmin()) {
+        updateAdminNotificationBadge();
+    }
     
     loadMatches();
     loadPools();
@@ -805,37 +842,16 @@ function updateLeaderboard() {
     const poolId = poolSelect.value;
     const leaderboardList = document.getElementById('leaderboardList');
     
-    // Check if user has any pools
-    const userPools = pools.filter(p => p.members.includes(currentUser.id));
-    
     let usersToRank = [];
     
-    if (userPools.length === 0) {
-        // User has no pools - show message
-        leaderboardList.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #666;">
-                <p style="font-size: 18px; margin-bottom: 20px;">📊 No Rankings Available</p>
-                <p>Join or create a pool to see rankings!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // User has pools - show only pool rankings
-    if (poolId === 'global' || !poolId) {
-        // Default to first pool if global is selected or no selection
-        poolSelect.value = userPools[0].id;
-        const pool = userPools[0];
-        usersToRank = users.filter(u => pool.members.includes(u.id));
+    // Global leaderboard - show all users
+    if (poolId === 'global') {
+        usersToRank = users;
     } else {
+        // Pool-specific leaderboard
         const pool = pools.find(p => p.id === parseInt(poolId));
-        if (pool && pool.members.includes(currentUser.id)) {
+        if (pool) {
             usersToRank = users.filter(u => pool.members.includes(u.id));
-        } else {
-            // User not in this pool - default to first pool
-            poolSelect.value = userPools[0].id;
-            const firstPool = userPools[0];
-            usersToRank = users.filter(u => firstPool.members.includes(u.id));
         }
     }
     
@@ -1228,6 +1244,85 @@ function toggleDisclaimer() {
         content.classList.add('expanded');
         arrow.classList.add('rotated');
     }
+}
+
+// Admin Functions
+function updateAdminNotificationBadge() {
+    const adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
+    const unreadCount = adminNotifications.filter(n => !n.read).length;
+    
+    const badge = document.getElementById('adminNotificationBadge');
+    if (badge) {
+        if (unreadCount > 0) {
+            badge.textContent = unreadCount;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+}
+
+function loadUsersTab() {
+    if (!isAdmin()) return;
+    
+    const usersList = document.getElementById('usersList');
+    const adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
+    const unreadCount = adminNotifications.filter(n => !n.read).length;
+    
+    // Mark all notifications as read
+    adminNotifications.forEach(n => n.read = true);
+    localStorage.setItem('adminNotifications', JSON.stringify(adminNotifications));
+    updateAdminNotificationBadge();
+    
+    // Sort users by creation date (newest first)
+    const sortedUsers = [...users].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    usersList.innerHTML = `
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-value">${users.length}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${unreadCount}</div>
+                <div class="stat-label">New Registrations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${pools.length}</div>
+                <div class="stat-label">Total Pools</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${predictions.length}</div>
+                <div class="stat-label">Total Predictions</div>
+            </div>
+        </div>
+        <div class="users-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nickname</th>
+                        <th>Email</th>
+                        <th>Coins</th>
+                        <th>Predictions</th>
+                        <th>Accuracy</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${sortedUsers.map(user => `
+                        <tr>
+                            <td><strong>${user.nickname}</strong>${user.nickname === ADMIN_NICKNAME ? ' 👑' : ''}</td>
+                            <td>${user.email}</td>
+                            <td>${user.coins} 🪙</td>
+                            <td>${user.totalPredictions || 0}</td>
+                            <td>${user.totalPredictions ? Math.round((user.correctPredictions / user.totalPredictions) * 100) : 0}%</td>
+                            <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
 // Initialize app when page loads
