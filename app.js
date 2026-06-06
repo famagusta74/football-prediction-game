@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6"; // Improved header with Bob badge and documentation link
+const APP_VERSION = "v1.6.2"; // Fixed Bob badge text visibility
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
