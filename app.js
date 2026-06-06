@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.4"; // Added admin Matches tab for result management
+const APP_VERSION = "v1.5"; // Added full documentation and IBM Bob builder badge
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;

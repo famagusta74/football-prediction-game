@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Prediction Game - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .builder-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .builder-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .builder-text {
+            text-align: left;
+        }
+
+        .builder-text h3 {
+            margin-bottom: 5px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .doc-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .doc-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .doc-card h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .doc-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .doc-card a {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .doc-card a:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid #eee;
+        }
+
+        .back-link a {
+            display: inline-block;
+            background: #2c3e50;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            background: #34495e;
+            transform: scale(1.05);
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .doc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .builder-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .builder-text {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚽ Football Prediction Game <span class="version-badge">v1.4</span></h1>
+            <p>Complete Documentation & Technical Specifications</p>
+            
+            <div class="builder-info">
+                <div class="builder-logo">🤖</div>
+                <div class="builder-text">
+                    <h3>Built by IBM Bob</h3>
+                    <p>AI-Powered Development Assistant</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2 style="color: #2c3e50; margin-bottom: 20px;">📚 Documentation Library</h2>
+            <p style="color: #666; line-height: 1.8; margin-bottom: 30px;">
+                Welcome to the complete documentation for the Football Prediction Game. 
+                This comprehensive resource includes application definitions, technical specifications, 
+                and detailed source code documentation. All documents are freely accessible and 
+                designed to help users, developers, and administrators understand every aspect of the application.
+            </p>
+
+            <div class="doc-grid">
+                <div class="doc-card">
+                    <div class="doc-icon">📋</div>
+                    <h2>Application Definition</h2>
+                    <p>
+                        Comprehensive overview of the application including features, user roles, 
+                        workflows, business rules, and data models. Perfect for understanding 
+                        what the application does and how it works.
+                    </p>
+                    <a href="APPLICATION_DEFINITION.md" target="_blank">Read Document →</a>
+                </div>
+
+                <div class="doc-card">
+                    <div class="doc-icon">⚙️</div>
+                    <h2>Technical Specification</h2>
+                    <p>
+                        Detailed technical architecture, system design, database structure, 
+                        API reference, and data flow diagrams. Essential for developers and 
+                        technical stakeholders.
+                    </p>
+                    <a href="TECHNICAL_SPECIFICATION.md" target="_blank">Read Document →</a>
+                </div>
+
+                <div class="doc-card">
+                    <div class="doc-icon">💻</div>
+                    <h2>Source Code Documentation</h2>
+                    <p>
+                        In-depth code documentation with examples, best practices, module 
+                        descriptions, and implementation details. Ideal for developers 
+                        working with the codebase.
+                    </p>
+                    <a href="SOURCE_CODE_DOCUMENTATION.md" target="_blank">Read Document →</a>
+                </div>
+            </div>
+
+            <div class="back-link">
+                <a href="../index.html">← Back to Application</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
