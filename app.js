@@ -5,6 +5,14 @@ let pools = JSON.parse(localStorage.getItem('pools')) || [];
 let predictions = JSON.parse(localStorage.getItem('predictions')) || [];
 let currentMatchId = null;
 
+// Admin Configuration
+const ADMIN_NICKNAME = "Menicos";
+
+// Check if current user is admin
+function isAdmin() {
+    return currentUser && currentUser.nickname === ADMIN_NICKNAME;
+}
+
 // FIFA World Cup 2026 Matches Data (from FIFA website)
 const sampleMatches = [
     {
@@ -16,18 +24,6 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group A",
         venue: "Mexico City Stadium (Mexico City)"
-    },
-    // TEST MATCH - Set to past date for testing
-    {
-        id: 99,
-        homeTeam: "Test Team A",
-        awayTeam: "Test Team B",
-        kickoff: "2024-01-01T12:00:00", // Past date for testing
-        status: "finished",
-        league: "TEST MATCH",
-        stage: "Test Match",
-        venue: "Test Stadium",
-        finalScore: { home: 2, away: 1 } // Actual result for testing payouts
     },
     {
         id: 2,
@@ -791,8 +787,13 @@ function calculatePayout(prediction, finalScore) {
     return 0;
 }
 
-// Process finished matches and award payouts (TEST FUNCTION)
+// Process finished matches and award payouts
 function processFinishedMatches() {
+    if (!isAdmin()) {
+        alert('Only admin can process match results!');
+        return;
+    }
+    
     let processedCount = 0;
     let totalPayout = 0;
     
@@ -848,6 +849,230 @@ function processFinishedMatches() {
     updateLeaderboard();
     
     alert(`Processed ${processedCount} predictions!\nTotal payouts: ${totalPayout} coins\n\nYour balance: ${currentUser.coins} coins`);
+}
+
+// Admin: Show admin panel
+function showAdminPanel() {
+    if (!isAdmin()) {
+        alert('Access denied! Admin only.');
+        return;
+    }
+    document.getElementById('adminModal').style.display = 'block';
+    loadAdminUsers();
+    loadAdminMatches();
+}
+
+function closeAdminPanel() {
+    document.getElementById('adminModal').style.display = 'none';
+}
+
+// Admin: Load users for management
+function loadAdminUsers() {
+    const usersList = document.getElementById('adminUsersList');
+    usersList.innerHTML = '';
+    
+    users.forEach(user => {
+        const userItem = document.createElement('div');
+        userItem.className = 'admin-user-item';
+        userItem.innerHTML = `
+            <div>
+                <strong>${user.nickname}</strong> ${user.nickname === ADMIN_NICKNAME ? '(Admin)' : ''}
+                <br>
+                <small>Coins: ${user.coins} 🪙 | Email: ${user.email}</small>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="resetUserCoins('${user.id}')" class="btn-secondary" style="padding: 5px 10px;">
+                    Reset Coins
+                </button>
+                ${user.nickname !== ADMIN_NICKNAME ? `
+                    <button onclick="deleteUser('${user.id}')" class="btn-secondary" style="padding: 5px 10px; background: #dc3545;">
+                        Delete
+                    </button>
+                ` : ''}
+            </div>
+        `;
+        usersList.appendChild(userItem);
+    });
+}
+
+// Admin: Reset user coins
+function resetUserCoins(userId) {
+    if (!isAdmin()) return;
+    
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+    
+    const newAmount = prompt(`Reset coins for ${user.nickname}?\nCurrent: ${user.coins} coins\n\nEnter new amount:`, '1000');
+    if (newAmount === null) return;
+    
+    const amount = parseInt(newAmount);
+    if (isNaN(amount) || amount < 0) {
+        alert('Invalid amount!');
+        return;
+    }
+    
+    user.coins = amount;
+    saveUsers();
+    
+    // Update if it's current user
+    if (user.id === currentUser.id) {
+        currentUser.coins = amount;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        document.getElementById('userCoins').textContent = currentUser.coins;
+    }
+    
+    loadAdminUsers();
+    alert(`Coins reset for ${user.nickname}!\nNew balance: ${amount} coins`);
+}
+
+// Admin: Delete user
+function deleteUser(userId) {
+    if (!isAdmin()) return;
+    
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+    
+    if (user.nickname === ADMIN_NICKNAME) {
+        alert('Cannot delete admin user!');
+        return;
+    }
+    
+    if (!confirm(`Delete user "${user.nickname}"?\n\nThis will also remove:\n- All their predictions\n- Their pool memberships\n\nThis action cannot be undone!`)) {
+        return;
+    }
+    
+    // Remove user from users array
+    users = users.filter(u => u.id !== userId);
+    
+    // Remove user's predictions
+    predictions = predictions.filter(p => p.userId !== userId);
+    
+    // Remove user from all pools
+    pools.forEach(pool => {
+        pool.members = pool.members.filter(memberId => memberId !== userId);
+    });
+    
+    // Save changes
+    saveUsers();
+    savePredictions();
+    savePools();
+    
+    loadAdminUsers();
+    updateLeaderboard();
+    
+    alert(`User "${user.nickname}" has been deleted.`);
+}
+
+// Admin: Load matches for result entry
+function loadAdminMatches() {
+    const matchesList = document.getElementById('adminMatchesList');
+    matchesList.innerHTML = '';
+    
+    sampleMatches.forEach(match => {
+        const matchItem = document.createElement('div');
+        matchItem.className = 'admin-match-item';
+        
+        const matchDate = new Date(match.kickoff);
+        const isFinished = match.status === 'finished';
+        
+        matchItem.innerHTML = `
+            <div>
+                <strong>${match.homeTeam} vs ${match.awayTeam}</strong>
+                <br>
+                <small>${matchDate.toLocaleString()} | ${match.stage}</small>
+                <br>
+                <small>Status: <span style="color: ${isFinished ? '#28a745' : '#ffc107'}">${match.status.toUpperCase()}</span></small>
+                ${isFinished && match.finalScore ? `<br><small>Final Score: ${match.finalScore.home} - ${match.finalScore.away}</small>` : ''}
+            </div>
+            <div>
+                ${!isFinished ? `
+                    <button onclick="enterMatchResult(${match.id})" class="btn-primary" style="padding: 5px 15px;">
+                        Enter Result
+                    </button>
+                ` : `
+                    <button onclick="editMatchResult(${match.id})" class="btn-secondary" style="padding: 5px 15px;">
+                        Edit Result
+                    </button>
+                `}
+            </div>
+        `;
+        matchesList.appendChild(matchItem);
+    });
+}
+
+// Admin: Enter match result
+function enterMatchResult(matchId) {
+    if (!isAdmin()) return;
+    
+    const match = sampleMatches.find(m => m.id === matchId);
+    if (!match) return;
+    
+    const homeScore = prompt(`Enter result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nHome team (${match.homeTeam}) score:`, '0');
+    if (homeScore === null) return;
+    
+    const awayScore = prompt(`Away team (${match.awayTeam}) score:`, '0');
+    if (awayScore === null) return;
+    
+    const home = parseInt(homeScore);
+    const away = parseInt(awayScore);
+    
+    if (isNaN(home) || isNaN(away) || home < 0 || away < 0) {
+        alert('Invalid scores!');
+        return;
+    }
+    
+    // Update match
+    match.status = 'finished';
+    match.finalScore = { home, away };
+    
+    // Save to localStorage (matches are in sampleMatches array, need to persist)
+    localStorage.setItem('matches', JSON.stringify(sampleMatches));
+    
+    loadAdminMatches();
+    loadMatches(); // Refresh main matches view
+    
+    alert(`Match result saved!\n${match.homeTeam} ${home} - ${away} ${match.awayTeam}\n\nDon't forget to click "Process Results" to award payouts!`);
+}
+
+// Admin: Edit match result
+function editMatchResult(matchId) {
+    if (!isAdmin()) return;
+    
+    const match = sampleMatches.find(m => m.id === matchId);
+    if (!match || !match.finalScore) return;
+    
+    const homeScore = prompt(`Edit result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nCurrent: ${match.finalScore.home} - ${match.finalScore.away}\n\nHome team (${match.homeTeam}) score:`, match.finalScore.home);
+    if (homeScore === null) return;
+    
+    const awayScore = prompt(`Away team (${match.awayTeam}) score:`, match.finalScore.away);
+    if (awayScore === null) return;
+    
+    const home = parseInt(homeScore);
+    const away = parseInt(awayScore);
+    
+    if (isNaN(home) || isNaN(away) || home < 0 || away < 0) {
+        alert('Invalid scores!');
+        return;
+    }
+    
+    // Update match
+    match.finalScore = { home, away };
+    
+    // Mark all predictions for this match as unprocessed so they can be recalculated
+    predictions.forEach(p => {
+        if (p.matchId === matchId) {
+            p.processed = false;
+        }
+    });
+    savePredictions();
+    
+    // Save matches
+    localStorage.setItem('matches', JSON.stringify(sampleMatches));
+    
+    loadAdminMatches();
+    loadMatches();
+    
+    alert(`Match result updated!\n${match.homeTeam} ${home} - ${away} ${match.awayTeam}\n\nPredictions marked as unprocessed. Click "Process Results" to recalculate payouts.`);
 }
 
 function updateUserInStorage() {
