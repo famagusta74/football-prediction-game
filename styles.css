@@ -97,6 +97,16 @@ input:focus, textarea:focus, select:focus {
 }
 
 .btn-secondary {
+
+.version-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 15px;
+}
     background: #f0f0f0;
     color: #333;
 }

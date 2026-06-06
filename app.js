@@ -1,3 +1,6 @@
+// App Version
+const APP_VERSION = "v1.0";
+
 // Sample Data Storage (using localStorage for persistence)
 let currentUser = null;
 let users = JSON.parse(localStorage.getItem('users')) || [];
@@ -7,6 +10,10 @@ let currentMatchId = null;
 
 // Admin Configuration
 const ADMIN_NICKNAME = "Menicos";
+
+// Log version and data on load
+console.log(`Football Prediction Game ${APP_VERSION}`);
+console.log(`Loaded ${users.length} users, ${pools.length} pools, ${predictions.length} predictions`);
 
 // Check if current user is admin
 function isAdmin() {
@@ -1282,6 +1289,9 @@ function updateAdminNotificationBadge() {
 function loadUsersTab() {
     if (!isAdmin()) return;
     
+    // Reload users from localStorage to ensure we have the latest data
+    users = JSON.parse(localStorage.getItem('users')) || [];
+    
     const usersList = document.getElementById('usersList');
     const adminNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
     const unreadCount = adminNotifications.filter(n => !n.read).length;
@@ -1293,6 +1303,8 @@ function loadUsersTab() {
     
     // Sort users by creation date (newest first)
     const sortedUsers = [...users].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    console.log(`Admin viewing ${sortedUsers.length} users`);
     
     usersList.innerHTML = `
         <div class="admin-stats">
