@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6.3"; // Fixed Bob logo background styling
+const APP_VERSION = "v1.6.4"; // Fixed Bob badge text visibility on login screen
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
