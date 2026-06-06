@@ -60,7 +60,9 @@ body {
 .builder-icon-img {
     width: 60px;
     height: 60px;
+    border-radius: 50%;
     animation: float 3s ease-in-out infinite;
+    object-fit: cover;
 }
 
 @keyframes float {
