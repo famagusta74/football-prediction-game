@@ -37,6 +37,16 @@ const sampleMatches = [
     },
     {
         id: 3,
+        homeTeam: "Canada",
+        awayTeam: "Bosnia and Herzegovina",
+        kickoff: "2026-06-12T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group B",
+        venue: "Toronto Stadium (Toronto)"
+    },
+    {
+        id: 4,
         homeTeam: "USA",
         awayTeam: "Paraguay",
         kickoff: "2026-06-13T04:00:00",
@@ -46,7 +56,7 @@ const sampleMatches = [
         venue: "Los Angeles Stadium (Los Angeles)"
     },
     {
-        id: 4,
+        id: 5,
         homeTeam: "Qatar",
         awayTeam: "Switzerland",
         kickoff: "2026-06-13T22:00:00",
@@ -56,7 +66,7 @@ const sampleMatches = [
         venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
     },
     {
-        id: 5,
+        id: 6,
         homeTeam: "Brazil",
         awayTeam: "Morocco",
         kickoff: "2026-06-14T01:00:00",
@@ -66,7 +76,27 @@ const sampleMatches = [
         venue: "New York/New Jersey Stadium (New Jersey)"
     },
     {
-        id: 6,
+        id: 7,
+        homeTeam: "Haiti",
+        awayTeam: "Scotland",
+        kickoff: "2026-06-14T04:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group C",
+        venue: "Boston Stadium (Boston)"
+    },
+    {
+        id: 8,
+        homeTeam: "Australia",
+        awayTeam: "Türkiye",
+        kickoff: "2026-06-14T07:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group D",
+        venue: "BC Place Vancouver (Vancouver)"
+    },
+    {
+        id: 9,
         homeTeam: "Germany",
         awayTeam: "Curaçao",
         kickoff: "2026-06-14T20:00:00",
@@ -76,7 +106,7 @@ const sampleMatches = [
         venue: "Houston Stadium (Houston)"
     },
     {
-        id: 7,
+        id: 10,
         homeTeam: "Netherlands",
         awayTeam: "Japan",
         kickoff: "2026-06-14T23:00:00",
@@ -86,7 +116,7 @@ const sampleMatches = [
         venue: "Dallas Stadium (Dallas)"
     },
     {
-        id: 8,
+        id: 11,
         homeTeam: "Côte d'Ivoire",
         awayTeam: "Ecuador",
         kickoff: "2026-06-15T02:00:00",
@@ -96,17 +126,27 @@ const sampleMatches = [
         venue: "Philadelphia Stadium (Philadelphia)"
     },
     {
-        id: 9,
-        homeTeam: "Sweden",
-        awayTeam: "Tunisia",
-        kickoff: "2026-06-15T05:00:00",
+        id: 12,
+        homeTeam: "Spain",
+        awayTeam: "Cabo Verde",
+        kickoff: "2026-06-15T19:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group F",
+        stage: "First Stage - Group H",
+        venue: "Atlanta Stadium (Atlanta)"
+    },
+    {
+        id: 13,
+        homeTeam: "Belgium",
+        awayTeam: "Egypt",
+        kickoff: "2026-06-15T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group G",
         venue: "Seattle Stadium (Seattle)"
     },
     {
-        id: 10,
+        id: 14,
         homeTeam: "Saudi Arabia",
         awayTeam: "Uruguay",
         kickoff: "2026-06-16T01:00:00",
@@ -115,26 +155,6 @@ const sampleMatches = [
         stage: "First Stage - Group H",
         venue: "Miami Stadium (Miami)"
     },
-    {
-        id: 11,
-        homeTeam: "IR Iran",
-        awayTeam: "New Zealand",
-        kickoff: "2026-06-16T04:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "First Stage - Group G",
-        venue: "Los Angeles Stadium (Los Angeles)"
-    },
-    {
-        id: 12,
-        homeTeam: "France",
-        awayTeam: "Senegal",
-        kickoff: "2026-06-16T22:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "First Stage - Group I",
-        venue: "New York/New Jersey Stadium (New Jersey)"
-    }
 ];
 
 // Initialize app
@@ -1134,6 +1154,20 @@ function savePools() {
 
 function savePredictions() {
     localStorage.setItem('predictions', JSON.stringify(predictions));
+}
+
+// Toggle disclaimer visibility
+function toggleDisclaimer() {
+    const content = document.getElementById('disclaimerContent');
+    const arrow = document.getElementById('disclaimerArrow');
+    
+    if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        arrow.classList.remove('rotated');
+    } else {
+        content.classList.add('expanded');
+        arrow.classList.add('rotated');
+    }
 }
 
 // Initialize app when page loads

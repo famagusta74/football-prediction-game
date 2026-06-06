@@ -536,4 +536,98 @@ textarea {
     }
 }
 
+/* Disclaimer Section */
+.disclaimer-section {
+    margin-top: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.disclaimer-toggle {
+    width: 100%;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1e3c72;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.disclaimer-toggle:hover {
+    background: #e9ecef;
+    border-color: #1e3c72;
+}
+
+#disclaimerArrow {
+    transition: transform 0.3s;
+}
+
+#disclaimerArrow.rotated {
+    transform: rotate(180deg);
+}
+
+.disclaimer-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+    background: #f8f9fa;
+    border: 2px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    margin-top: -8px;
+}
+
+.disclaimer-content.expanded {
+    max-height: 2000px;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.disclaimer-content h3 {
+    color: #1e3c72;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.disclaimer-content h4 {
+    color: #2a5298;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.disclaimer-content p {
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.disclaimer-content ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.disclaimer-content li {
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 5px;
+}
+
+.disclaimer-content a {
+    color: #1e3c72;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.disclaimer-content a:hover {
+    text-decoration: underline;
+}
+
 /* Made with Bob */
