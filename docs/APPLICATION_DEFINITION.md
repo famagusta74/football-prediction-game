@@ -4,11 +4,11 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy and can track their performance on leaderboards.
 
-**Version:** 1.4  
-**Last Updated:** June 2026  
-**Built by:** IBM Bob AI Assistant  
-**Platform:** Web Application (HTML5, CSS3, JavaScript)  
-**Database:** Firebase Realtime Database  
+**Version:** 1.6.2
+**Last Updated:** June 2026
+**Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
+**Platform:** Web Application (HTML5, CSS3, JavaScript)
+**Database:** Firebase Realtime Database
 
 ---
 
@@ -329,7 +329,14 @@ Enable football fans to:
 
 ---
 
-**Document Version:** 1.0  
-**Created:** June 2026  
-**Author:** IBM Bob AI Assistant  
+**Document Version:** 1.6.2
+**Created:** June 2026
+**Author:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Status:** Active
+**Latest Features:**
+- Admin Matches tab for result management
+- Comprehensive documentation portal
+- IBM Bob branding with clickable links
+- Cross-device Firebase synchronization
+</content>
+<line_count>322</line_count>
