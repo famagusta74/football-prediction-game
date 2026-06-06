@@ -110,6 +110,8 @@ body {
     height: 35px;
     border-radius: 50%;
     object-fit: cover;
+    background: #808080;
+    padding: 2px;
 }
 
 .header-bob-text {
@@ -144,6 +146,8 @@ body {
     border-radius: 50%;
     animation: float 3s ease-in-out infinite;
     object-fit: cover;
+    background: #808080;
+    padding: 2px;
 }
 
 @keyframes float {
