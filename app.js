@@ -127,6 +127,16 @@ const sampleMatches = [
     },
     {
         id: 12,
+        homeTeam: "Sweden",
+        awayTeam: "Tunisia",
+        kickoff: "2026-06-15T05:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group F",
+        venue: "Monterrey Stadium (Monterrey)"
+    },
+    {
+        id: 13,
         homeTeam: "Spain",
         awayTeam: "Cabo Verde",
         kickoff: "2026-06-15T19:00:00",
@@ -136,7 +146,7 @@ const sampleMatches = [
         venue: "Atlanta Stadium (Atlanta)"
     },
     {
-        id: 13,
+        id: 14,
         homeTeam: "Belgium",
         awayTeam: "Egypt",
         kickoff: "2026-06-15T22:00:00",
@@ -146,7 +156,7 @@ const sampleMatches = [
         venue: "Seattle Stadium (Seattle)"
     },
     {
-        id: 14,
+        id: 15,
         homeTeam: "Saudi Arabia",
         awayTeam: "Uruguay",
         kickoff: "2026-06-16T01:00:00",
@@ -154,6 +164,56 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group H",
         venue: "Miami Stadium (Miami)"
+    },
+    {
+        id: 16,
+        homeTeam: "IR Iran",
+        awayTeam: "New Zealand",
+        kickoff: "2026-06-16T04:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group G",
+        venue: "Los Angeles Stadium (Los Angeles)"
+    },
+    {
+        id: 17,
+        homeTeam: "France",
+        awayTeam: "Senegal",
+        kickoff: "2026-06-16T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group I",
+        venue: "New York/New Jersey Stadium (New Jersey)"
+    },
+    {
+        id: 18,
+        homeTeam: "Austria",
+        awayTeam: "Jordan",
+        kickoff: "2026-06-17T07:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group J",
+        venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
+    },
+    {
+        id: 19,
+        homeTeam: "Portugal",
+        awayTeam: "Congo DR",
+        kickoff: "2026-06-17T20:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group K",
+        venue: "Houston Stadium (Houston)"
+    },
+    {
+        id: 20,
+        homeTeam: "England",
+        awayTeam: "Croatia",
+        kickoff: "2026-06-17T23:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group L",
+        venue: "Dallas Stadium (Dallas)"
     },
 ];
 
