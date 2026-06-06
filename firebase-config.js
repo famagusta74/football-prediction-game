@@ -1,15 +1,14 @@
 // Firebase Configuration
-// IMPORTANT: Replace these values with your actual Firebase project credentials
-// Get these from: Firebase Console > Project Settings > General > Your apps > Web app
+// Your web app's Firebase configuration
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY_HERE",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyATsmrz6NlM1bgootQFhIrZAmT-vui_chI",
+    authDomain: "football-prediction-game-ca155.firebaseapp.com",
+    databaseURL: "https://football-prediction-game-ca155-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "football-prediction-game-ca155",
+    storageBucket: "football-prediction-game-ca155.firebasestorage.app",
+    messagingSenderId: "266847662424",
+    appId: "1:266847662424:web:fc24bb439d3015e02cf52d"
 };
 
 // Initialize Firebase
