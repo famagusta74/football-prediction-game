@@ -460,6 +460,10 @@ function showTab(tabName) {
     
     if (tabName === 'leaderboard') {
         updateLeaderboard();
+    } else if (tabName === 'users' && isAdmin()) {
+        loadUsersTab();
+    } else if (tabName === 'pools') {
+        loadPools();
     }
 }
 
@@ -663,17 +667,25 @@ function loadPools() {
     const poolSelect = document.getElementById('poolSelect');
     
     poolsList.innerHTML = '';
-    poolSelect.innerHTML = ''; // Remove global option - users only see their pools
     
-    const userPools = pools.filter(p => p.members.includes(currentUser.id));
+    // Admin sees all pools, regular users see only their pools
+    const displayPools = isAdmin() ? pools : pools.filter(p => p.members.includes(currentUser.id));
     
-    if (userPools.length === 0) {
+    // Always add global option first
+    poolSelect.innerHTML = '<option value="global">🌍 Global Leaderboard</option>';
+    
+    if (displayPools.length === 0) {
         poolsList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">You are not in any pools yet. Create or join one!</p>';
-        poolSelect.innerHTML = '<option value="">No pools yet</option>';
         return;
     }
     
-    userPools.forEach(pool => {
+    // Add admin badge if viewing all pools
+    if (isAdmin() && pools.length > displayPools.length) {
+        poolsList.innerHTML = '<div style="background: #ffc107; color: #000; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; font-weight: bold;">👑 Admin View: Showing All Pools</div>';
+    }
+    
+    displayPools.forEach(pool => {
+        const isUserMember = pool.members.includes(currentUser.id);
         // Add to pools list
         const poolCard = document.createElement('div');
         poolCard.className = 'pool-card';
@@ -683,7 +695,7 @@ function loadPools() {
         
         poolCard.innerHTML = `
             <div class="pool-header">
-                <span class="pool-name">${pool.name}</span>
+                <span class="pool-name">${pool.name}${!isUserMember && isAdmin() ? ' 👁️' : ''}</span>
                 <span class="pool-code">Code: ${pool.code}</span>
             </div>
             <p style="color: #666; margin: 10px 0;">${pool.description || 'No description'}</p>
@@ -691,6 +703,11 @@ function loadPools() {
                 <span>👥 ${pool.members.length} members</span>
                 <span>👑 Admin: ${getUserNickname(pool.adminId)}</span>
             </div>
+            ${!isUserMember && isAdmin() ? `
+                <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 5px; font-size: 14px;">
+                    👁️ Viewing as admin (not a member)
+                </div>
+            ` : ''}
             ${pool.adminId === currentUser.id ? `
                 <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
                     <p style="font-size: 14px; color: #666; margin-bottom: 8px;">📤 Invite Link:</p>
