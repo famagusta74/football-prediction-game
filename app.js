@@ -21,6 +21,15 @@ async function initializeApp() {
     
     if (useFirebase) {
         console.log('Using Firebase for data storage');
+        
+        // Check if migration is needed
+        const migrationDone = localStorage.getItem('firebaseMigrationDone');
+        
+        if (!migrationDone) {
+            console.log('First time with Firebase - migrating localStorage data...');
+            await migrateLocalStorageToFirebase();
+        }
+        
         // Load data from Firebase
         await loadDataFromFirebase();
     } else {
@@ -32,6 +41,63 @@ async function initializeApp() {
     }
     
     console.log(`Loaded ${users.length} users, ${pools.length} pools, ${predictions.length} predictions`);
+}
+
+// Migrate all localStorage data to Firebase (one-time operation)
+async function migrateLocalStorageToFirebase() {
+    try {
+        console.log('Starting migration from localStorage to Firebase...');
+        
+        // Get all data from localStorage
+        const localUsers = JSON.parse(localStorage.getItem('users')) || [];
+        const localPools = JSON.parse(localStorage.getItem('pools')) || [];
+        const localPredictions = JSON.parse(localStorage.getItem('predictions')) || [];
+        const localNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
+        
+        console.log(`Found: ${localUsers.length} users, ${localPools.length} pools, ${localPredictions.length} predictions, ${localNotifications.length} notifications`);
+        
+        // Migrate users
+        for (const user of localUsers) {
+            await FirebaseDB.saveUser(user);
+            console.log(`Migrated user: ${user.nickname}`);
+        }
+        
+        // Migrate pools
+        for (const pool of localPools) {
+            await FirebaseDB.savePool(pool);
+            console.log(`Migrated pool: ${pool.name}`);
+        }
+        
+        // Migrate predictions
+        for (const prediction of localPredictions) {
+            await FirebaseDB.savePrediction(prediction);
+        }
+        console.log(`Migrated ${localPredictions.length} predictions`);
+        
+        // Migrate notifications
+        for (const notification of localNotifications) {
+            await FirebaseDB.saveNotification(notification);
+        }
+        console.log(`Migrated ${localNotifications.length} notifications`);
+        
+        // Mark migration as complete
+        localStorage.setItem('firebaseMigrationDone', 'true');
+        
+        // Clear old localStorage data (keep only migration flag and currentUser)
+        const currentUser = localStorage.getItem('currentUser');
+        localStorage.clear();
+        localStorage.setItem('firebaseMigrationDone', 'true');
+        if (currentUser) {
+            localStorage.setItem('currentUser', currentUser);
+        }
+        
+        console.log('✅ Migration complete! localStorage cleared. All data now in Firebase.');
+        alert('✅ Your data has been migrated to Firebase!\n\nYou can now access your account from any device.');
+        
+    } catch (error) {
+        console.error('Migration error:', error);
+        alert('⚠️ Migration encountered an error. Your localStorage data is still safe.');
+    }
 }
 
 // Load all data from Firebase
