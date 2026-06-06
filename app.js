@@ -27,13 +27,13 @@ const sampleMatches = [
     },
     {
         id: 2,
-        homeTeam: "Canada",
-        awayTeam: "Bosnia and Herzegovina",
-        kickoff: "2026-06-12T22:00:00",
+        homeTeam: "Korea Republic",
+        awayTeam: "Czechia",
+        kickoff: "2026-06-12T05:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group B",
-        venue: "Toronto Stadium (Toronto)"
+        stage: "First Stage - Group A",
+        venue: "Guadalajara Stadium (Guadalajara)"
     },
     {
         id: 3,
@@ -47,53 +47,93 @@ const sampleMatches = [
     },
     {
         id: 4,
-        homeTeam: "England",
-        awayTeam: "Japan",
-        kickoff: "2026-06-14T20:00:00",
+        homeTeam: "Qatar",
+        awayTeam: "Switzerland",
+        kickoff: "2026-06-13T22:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group C",
-        venue: "MetLife Stadium (New York)"
+        stage: "First Stage - Group B",
+        venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
     },
     {
         id: 5,
-        homeTeam: "Germany",
-        awayTeam: "Australia",
-        kickoff: "2026-06-15T18:00:00",
+        homeTeam: "Brazil",
+        awayTeam: "Morocco",
+        kickoff: "2026-06-14T01:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
-        stage: "First Stage - Group D",
-        venue: "AT&T Stadium (Dallas)"
+        stage: "First Stage - Group C",
+        venue: "New York/New Jersey Stadium (New Jersey)"
     },
     {
         id: 6,
-        homeTeam: "France",
-        awayTeam: "Morocco",
-        kickoff: "2026-06-16T21:00:00",
+        homeTeam: "Germany",
+        awayTeam: "Curaçao",
+        kickoff: "2026-06-14T20:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group E",
-        venue: "SoFi Stadium (Los Angeles)"
+        venue: "Houston Stadium (Houston)"
     },
     {
         id: 7,
-        homeTeam: "Spain",
-        awayTeam: "South Korea",
-        kickoff: "2026-06-17T19:00:00",
+        homeTeam: "Netherlands",
+        awayTeam: "Japan",
+        kickoff: "2026-06-14T23:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group F",
-        venue: "Arrowhead Stadium (Kansas City)"
+        venue: "Dallas Stadium (Dallas)"
     },
     {
         id: 8,
-        homeTeam: "Brazil",
-        awayTeam: "Argentina",
-        kickoff: "2026-06-18T22:00:00",
+        homeTeam: "Côte d'Ivoire",
+        awayTeam: "Ecuador",
+        kickoff: "2026-06-15T02:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group E",
+        venue: "Philadelphia Stadium (Philadelphia)"
+    },
+    {
+        id: 9,
+        homeTeam: "Sweden",
+        awayTeam: "Tunisia",
+        kickoff: "2026-06-15T05:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group F",
+        venue: "Seattle Stadium (Seattle)"
+    },
+    {
+        id: 10,
+        homeTeam: "Saudi Arabia",
+        awayTeam: "Uruguay",
+        kickoff: "2026-06-16T01:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group H",
+        venue: "Miami Stadium (Miami)"
+    },
+    {
+        id: 11,
+        homeTeam: "IR Iran",
+        awayTeam: "New Zealand",
+        kickoff: "2026-06-16T04:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group G",
-        venue: "Mercedes-Benz Stadium (Atlanta)"
+        venue: "Los Angeles Stadium (Los Angeles)"
+    },
+    {
+        id: 12,
+        homeTeam: "France",
+        awayTeam: "Senegal",
+        kickoff: "2026-06-16T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group I",
+        venue: "New York/New Jersey Stadium (New Jersey)"
     }
 ];
 
