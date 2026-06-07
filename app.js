@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.7.1"; // HTML-based activity screens for users and admins
+const APP_VERSION = "v1.7.2"; // Prediction edit activity history correction
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;

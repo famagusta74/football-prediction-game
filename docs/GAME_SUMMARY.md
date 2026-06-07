@@ -98,7 +98,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.7.1:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.7.2:
 - Application constant in [`app.js:2`](app.js:2)
 - Login screen version label in [`index.html:21`](index.html:21)
 - Dashboard version badge in [`index.html:146`](index.html:146)
@@ -122,7 +122,7 @@ For each change made to the game:
 This should ideally be added as a dedicated maintenance or release procedure in the main project documentation.
 
 ## Latest Update Summary
-Version v1.7.1 includes the latest HTML activity-history improvements and coin-balance clarification changes:
+Version v1.7.2 includes the latest prediction-edit activity-history correction and coin-audit improvements:
 
 - The admin user activity viewer now renders directly in HTML inside the admin area instead of opening in a popup
 - A new [`Activity`](index.html) tab lets each user review their own coin history in HTML
