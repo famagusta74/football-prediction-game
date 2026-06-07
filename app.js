@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6.7"; // Activity view fix and documentation portal update
+const APP_VERSION = "v1.6.8"; // Activity view rendering fix and daily bonus adjustment
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -220,7 +220,21 @@ function getMatchLabel(matchId) {
 
 function showUserActivity(userId) {
     selectedUserActivityId = userId;
+
+    const container = document.getElementById('userActivityLog');
+    if (!container) {
+        loadUsersTab().then(() => {
+            renderUserActivityLog(userId);
+            const refreshedContainer = document.getElementById('userActivityLog');
+            if (refreshedContainer) {
+                refreshedContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+        return;
+    }
+
     renderUserActivityLog(userId);
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderUserActivityLog(userId) {
@@ -586,7 +600,7 @@ async function login() {
         
         if (hoursSinceLastLogin >= 24) {
             const previousCoins = user.coins;
-            user.coins = Math.min(user.coins + 500, 2000); // Daily bonus, max 2000
+            user.coins = Math.min(user.coins + 100, 2000); // Daily bonus, max 2000
             user.lastLogin = now.toISOString();
 
             const bonusAwarded = user.coins - previousCoins;
