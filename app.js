@@ -283,7 +283,10 @@ function buildActivityEntriesHtml(user, emptyMessage) {
                     <div style="font-size: 13px; color: #555;">
                         ${entry.details.reason || ''}
                         ${entry.details.matchId ? `<div>Match: ${getMatchLabel(entry.details.matchId)}</div>` : ''}
+                        ${entry.details.previousPredictionScore ? `<div>Previous prediction: ${entry.details.previousPredictionScore}</div>` : ''}
                         ${entry.details.predictionScore ? `<div>Prediction: ${entry.details.predictionScore}</div>` : ''}
+                        ${entry.details.previousBetAmount !== undefined ? `<div>Previous bet: ${entry.details.previousBetAmount} 🪙</div>` : ''}
+                        ${entry.details.updatedBetAmount !== undefined ? `<div>Updated bet: ${entry.details.updatedBetAmount} 🪙</div>` : ''}
                         ${entry.details.finalScore ? `<div>Final score: ${entry.details.finalScore}</div>` : ''}
                         ${entry.details.changedBy ? `<div>Changed by: ${entry.details.changedBy}</div>` : ''}
                     </div>
@@ -1028,6 +1031,9 @@ function submitPrediction() {
         
         if (userChoice) {
             // Modify existing prediction - no additional coins needed
+            const previousPredictionScore = `${existingPrediction.homeScore} - ${existingPrediction.awayScore}`;
+            const previousBetAmount = existingPrediction.betAmount;
+
             existingPrediction.homeScore = homeScore;
             existingPrediction.awayScore = awayScore;
             existingPrediction.betAmount = betAmount;
@@ -1036,7 +1042,10 @@ function submitPrediction() {
             addUserActivity(currentUser.id, 'prediction_edit', 0, {
                 reason: 'Prediction updated before kickoff',
                 matchId: currentMatchId,
-                predictionScore: `${homeScore} - ${awayScore}`
+                predictionScore: `${homeScore} - ${awayScore}`,
+                previousPredictionScore,
+                previousBetAmount,
+                updatedBetAmount: betAmount
             });
             
             savePredictions();

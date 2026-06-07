@@ -126,6 +126,7 @@ Version v1.7.1 includes the latest HTML activity-history improvements and coin-b
 
 - The admin user activity viewer now renders directly in HTML inside the admin area instead of opening in a popup
 - A new [`Activity`](index.html) tab lets each user review their own coin history in HTML
+- Prediction edit history now shows the updated score together with the previous score and bet values for clearer audit tracking
 - Daily login bonus has been reduced to 100 coins
 - The prediction page includes a reminder that users can log in every day to win coins
 - Match locking, admin promotion controls, and coin audit history remain part of the current release baseline
