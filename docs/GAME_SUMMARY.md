@@ -79,6 +79,17 @@ The game is no longer limited to a single hardcoded admin identity, but promotio
 - Any user marked as admin can manage match results, process payouts, and access user-management capabilities
 - The primary admin should remain protected as the permanent first admin account
 
+## Coin Activity Audit Trail
+The game now includes an admin-facing coin activity history for each user.
+
+- Admins can open a user record and view coin activity in detail
+- The activity log shows when coins were deducted for predictions
+- The activity log shows when payouts were added after result processing
+- The activity log also records daily bonuses and admin coin resets
+- Each entry includes the amount, timestamp, resulting balance, and related match context when available
+
+This makes it easier to investigate unexpected balance changes and understand exactly how a user's coin total was built over time.
+
 ## Development and Release Notes
 The current project documentation only partially covers release workflow.
 
@@ -87,7 +98,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current activity-log release is version v1.6.6:
 - Application constant in [`app.js:2`](app.js:2)
 - Login screen version label in [`index.html:21`](index.html:21)
 - Dashboard version badge in [`index.html:146`](index.html:146)

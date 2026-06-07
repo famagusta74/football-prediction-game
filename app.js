@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6.5"; // Match locking and delegated admin management
+const APP_VERSION = "v1.6.6"; // User activity log and coin audit trail
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -9,6 +9,7 @@ let predictions = [];
 let matches = []; // Will be loaded from Firebase or use sampleMatches as default
 let currentMatchId = null;
 let useFirebase = false;
+let selectedUserActivityId = null;
 
 // Admin Configuration
 const ADMIN_NICKNAME = "Menicos";
@@ -166,6 +167,108 @@ function hasMatchStarted(match) {
 
 function isMatchLocked(match) {
     return hasMatchStarted(match) || match.status === 'finished';
+}
+
+function ensureUserActivityLog(user) {
+    if (!Array.isArray(user.activityLog)) {
+        user.activityLog = [];
+    }
+    return user.activityLog;
+}
+
+function addUserActivity(userId, type, amount, details = {}) {
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+
+    const activityLog = ensureUserActivityLog(user);
+    activityLog.unshift({
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        type,
+        amount,
+        balanceAfter: user.coins,
+        timestamp: new Date().toISOString(),
+        details
+    });
+
+    if (activityLog.length > 200) {
+        activityLog.length = 200;
+    }
+
+    if (currentUser && currentUser.id === userId) {
+        currentUser.activityLog = activityLog;
+    }
+}
+
+function getActivityTypeLabel(type) {
+    const labels = {
+        daily_bonus: 'Daily Bonus',
+        prediction_bet: 'Prediction Bet',
+        prediction_edit: 'Prediction Edit',
+        payout: 'Match Payout',
+        admin_reset: 'Admin Coin Reset',
+        admin_grant: 'Admin Granted',
+        admin_remove: 'Admin Removed'
+    };
+
+    return labels[type] || type;
+}
+
+function getMatchLabel(matchId) {
+    const match = matches.find(m => m.id === matchId);
+    return match ? `${match.homeTeam} vs ${match.awayTeam}` : `Match #${matchId}`;
+}
+
+function renderUserActivityLog(userId) {
+    const container = document.getElementById('userActivityLog');
+    if (!container) return;
+
+    const user = users.find(u => u.id === userId);
+    if (!user) {
+        container.innerHTML = '<p style="color: #666;">Select a user to view activity.</p>';
+        return;
+    }
+
+    const activityLog = ensureUserActivityLog(user);
+
+    if (activityLog.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 20px; background: #f8f9fa; border-radius: 10px; color: #666;">
+                No coin activity recorded yet for <strong>${user.nickname}</strong>.
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = `
+        <div style="margin-top: 20px;">
+            <h3 style="margin-bottom: 15px;">Coin Activity: ${user.nickname}</h3>
+            <div style="display: grid; gap: 12px;">
+                ${activityLog.map(entry => `
+                    <div style="padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: #fff;">
+                        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
+                            <strong>${getActivityTypeLabel(entry.type)}</strong>
+                            <span style="color: ${entry.amount >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">
+                                ${entry.amount >= 0 ? '+' : ''}${entry.amount} 🪙
+                            </span>
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-bottom: 6px;">
+                            ${new Date(entry.timestamp).toLocaleString()}
+                        </div>
+                        <div style="font-size: 14px; color: #333; margin-bottom: 4px;">
+                            Balance after: <strong>${entry.balanceAfter} 🪙</strong>
+                        </div>
+                        <div style="font-size: 13px; color: #555;">
+                            ${entry.details.reason || ''}
+                            ${entry.details.matchId ? `<div>Match: ${getMatchLabel(entry.details.matchId)}</div>` : ''}
+                            ${entry.details.predictionScore ? `<div>Prediction: ${entry.details.predictionScore}</div>` : ''}
+                            ${entry.details.finalScore ? `<div>Final score: ${entry.details.finalScore}</div>` : ''}
+                            ${entry.details.changedBy ? `<div>Changed by: ${entry.details.changedBy}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
 }
 
 // FIFA World Cup 2026 Matches Data (from FIFA website)
@@ -477,8 +580,17 @@ async function login() {
         const hoursSinceLastLogin = (now - lastLogin) / (1000 * 60 * 60);
         
         if (hoursSinceLastLogin >= 24) {
+            const previousCoins = user.coins;
             user.coins = Math.min(user.coins + 500, 2000); // Daily bonus, max 2000
             user.lastLogin = now.toISOString();
+
+            const bonusAwarded = user.coins - previousCoins;
+            if (bonusAwarded > 0) {
+                addUserActivity(user.id, 'daily_bonus', bonusAwarded, {
+                    reason: 'Daily login bonus applied'
+                });
+            }
+
             await saveUsers();
         }
         
@@ -829,6 +941,12 @@ function submitPrediction() {
             existingPrediction.awayScore = awayScore;
             existingPrediction.betAmount = betAmount;
             existingPrediction.modifiedAt = new Date().toISOString();
+
+            addUserActivity(currentUser.id, 'prediction_edit', 0, {
+                reason: 'Prediction updated before kickoff',
+                matchId: currentMatchId,
+                predictionScore: `${homeScore} - ${awayScore}`
+            });
             
             savePredictions();
             
@@ -862,6 +980,13 @@ function submitPrediction() {
     // Deduct coins for new bet
     currentUser.coins -= betAmount;
     currentUser.totalPredictions = (currentUser.totalPredictions || 0) + 1;
+
+    addUserActivity(currentUser.id, 'prediction_bet', -betAmount, {
+        reason: 'Coins deducted for new prediction',
+        matchId: currentMatchId,
+        predictionScore: `${homeScore} - ${awayScore}`
+    });
+
     updateUserInStorage();
     savePredictions();
     
@@ -1177,6 +1302,13 @@ function processFinishedMatches() {
                 if (user) {
                     // Award payout
                     user.coins += payout;
+
+                    addUserActivity(user.id, 'payout', payout, {
+                        reason: payout > 0 ? 'Prediction payout processed' : 'Prediction processed with no winnings',
+                        matchId: match.id,
+                        predictionScore: `${prediction.homeScore} - ${prediction.awayScore}`,
+                        finalScore: `${match.finalScore.home} - ${match.finalScore.away}`
+                    });
                     
                     // Update stats
                     if (payout > 0) {
@@ -1258,6 +1390,12 @@ async function toggleAdminStatus(userId) {
     }
 
     user.isAdmin = willBecomeAdmin;
+
+    addUserActivity(user.id, willBecomeAdmin ? 'admin_grant' : 'admin_remove', 0, {
+        reason: willBecomeAdmin ? 'User promoted to admin' : 'Admin access removed',
+        changedBy: currentUser.nickname
+    });
+
     await saveUsers();
 
     if (currentUser && currentUser.id === user.id) {
@@ -1318,7 +1456,14 @@ function resetUserCoins(userId) {
         return;
     }
     
+    const previousCoins = user.coins;
     user.coins = amount;
+
+    addUserActivity(user.id, 'admin_reset', amount - previousCoins, {
+        reason: `Admin reset coins from ${previousCoins} to ${amount}`,
+        changedBy: currentUser.nickname
+    });
+
     saveUsers();
     
     // Update if it's current user
@@ -1641,6 +1786,9 @@ async function loadUsersTab() {
                             <td>
                                 <strong>${user.nickname}</strong>${user.isAdmin ? ' 👑' : ''}
                                 <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <button onclick="selectedUserActivityId='${user.id}'; renderUserActivityLog('${user.id}')" class="btn-secondary" style="padding: 4px 10px; background: #17a2b8; font-size: 12px;">
+                                        View Activity
+                                    </button>
                                     ${(currentUser && currentUser.nickname === ADMIN_NICKNAME) || user.isAdmin ? `
                                         <button onclick="toggleAdminStatus('${user.id}')" class="btn-secondary" style="padding: 4px 10px; background: ${user.isAdmin ? '#6c757d' : '#1e3c72'}; font-size: 12px;">
                                             ${user.isAdmin ? 'Remove Admin' : 'Make Admin'}
@@ -1658,7 +1806,12 @@ async function loadUsersTab() {
                 </tbody>
             </table>
         </div>
+        <div id="userActivityLog" style="margin-top: 24px;"></div>
     `;
+
+    if (selectedUserActivityId) {
+        renderUserActivityLog(selectedUserActivityId);
+    }
 }
 
 // Initialize app when page loads
