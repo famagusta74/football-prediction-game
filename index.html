@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v1.6.9 - Activity Visibility Fix with Transaction Summary</div>
+            <div class="version-header">v1.7.0 - Modal-Based Activity Viewer</div>
             <div class="logo">⚽</div>
             <h1>Football Prediction Game</h1>
             
@@ -111,7 +111,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.6.9 - Activity Visibility Fix with Transaction Summary
+                Version 1.7.0 - Modal-Based Activity Viewer
             </div>
         </div>
     </div>
@@ -129,7 +129,7 @@
                 <button onclick="showLogin()" class="btn-secondary">Back to Login</button>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.6.9 - Activity Visibility Fix with Transaction Summary
+                Version 1.7.0 - Modal-Based Activity Viewer
             </div>
         </div>
     </div>
@@ -143,7 +143,7 @@
                     <span class="coin-icon">🪙</span>
                     <span id="userCoins">1000</span>
                 </div>
-                <div class="version-badge">v1.6.9</div>
+                <div class="version-badge">v1.7.0</div>
             </div>
             
             <!-- Bob Creator Badge -->
@@ -224,6 +224,14 @@
                 <h2>👑 Admin: User Management</h2>
                 <div id="usersList"></div>
             </div>
+        </div>
+    </div>
+
+    <div id="activityModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeActivityModal()">&times;</span>
+            <h3>User Coin Activity</h3>
+            <div id="activityModalContent" style="max-height: 60vh; overflow-y: auto;"></div>
         </div>
     </div>
 

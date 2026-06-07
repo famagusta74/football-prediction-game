@@ -14,7 +14,7 @@ Players use virtual coins to predict the outcomes of scheduled World Cup matches
 - Exact score predictions return 5x the bet.
 - Correct match result predictions return 2x the bet.
 - Incorrect predictions lose the bet amount.
-- A daily bonus can replenish coins by 500, up to a maximum balance of 2000.
+- A daily bonus can replenish coins by 100, up to a maximum balance of 2000.
 
 ## Social Features
 - Users can create private pools.
@@ -82,7 +82,7 @@ The game is no longer limited to a single hardcoded admin identity, but promotio
 ## Coin Activity Audit Trail
 The game now includes an admin-facing coin activity history for each user.
 
-- Admins can open a user record and view coin activity in detail
+- Admins can open a user record and view coin activity in detail through the activity viewer
 - The activity log shows when coins were deducted for predictions
 - The activity log shows when payouts were added after result processing
 - The activity log also records daily bonuses and admin coin resets
@@ -98,7 +98,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current activity-log release is version v1.6.6:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.7.0:
 - Application constant in [`app.js:2`](app.js:2)
 - Login screen version label in [`index.html:21`](index.html:21)
 - Dashboard version badge in [`index.html:146`](index.html:146)
@@ -120,3 +120,11 @@ For each change made to the game:
 5. Verify the GitHub Pages deployment after push
 
 This should ideally be added as a dedicated maintenance or release procedure in the main project documentation.
+
+## Latest Update Summary
+Version v1.7.0 includes the latest admin activity-viewer improvements and coin-balance clarification changes:
+
+- The admin user activity viewer now opens in a dedicated modal for clearer visibility
+- Daily login bonus has been reduced to 100 coins
+- The prediction page includes a reminder that users can log in every day to win coins
+- Match locking, admin promotion controls, and coin audit history remain part of the current release baseline

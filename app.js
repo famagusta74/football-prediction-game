@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6.9"; // Activity visibility fix with transaction summary
+const APP_VERSION = "v1.7.0"; // Modal-based activity viewer
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -218,6 +218,13 @@ function getMatchLabel(matchId) {
     return match ? `${match.homeTeam} vs ${match.awayTeam}` : `Match #${matchId}`;
 }
 
+function closeActivityModal() {
+    const modal = document.getElementById('activityModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
 function showUserActivity(userId) {
     selectedUserActivityId = userId;
 
@@ -226,32 +233,45 @@ function showUserActivity(userId) {
         return;
     }
 
-    const activityLog = ensureUserActivityLog(user);
-    const summaryLines = activityLog.length > 0
-        ? activityLog.map(entry => {
-            const parts = [
-                `${new Date(entry.timestamp).toLocaleString()}`,
-                `${getActivityTypeLabel(entry.type)}`,
-                `${entry.amount >= 0 ? '+' : ''}${entry.amount} coins`,
-                `Balance: ${entry.balanceAfter} coins`
-            ];
-
-            if (entry.details.reason) parts.push(entry.details.reason);
-            if (entry.details.matchId) parts.push(`Match: ${getMatchLabel(entry.details.matchId)}`);
-            if (entry.details.predictionScore) parts.push(`Prediction: ${entry.details.predictionScore}`);
-            if (entry.details.finalScore) parts.push(`Final score: ${entry.details.finalScore}`);
-
-            return `• ${parts.join(' | ')}`;
-        }).join('\n')
-        : 'No coin activity recorded yet.';
-
-    alert(`Coin Activity for ${user.nickname}\n\n${summaryLines}`);
-    renderUserActivityLog(userId);
-
-    const container = document.getElementById('userActivityLog');
-    if (container) {
-        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const modal = document.getElementById('activityModal');
+    const modalContent = document.getElementById('activityModalContent');
+    if (!modal || !modalContent) {
+        return;
     }
+
+    const activityLog = ensureUserActivityLog(user);
+
+    modalContent.innerHTML = activityLog.length > 0
+        ? `
+            <div style="display: grid; gap: 12px;">
+                ${activityLog.map(entry => `
+                    <div style="padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: #fff;">
+                        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
+                            <strong>${getActivityTypeLabel(entry.type)}</strong>
+                            <span style="color: ${entry.amount >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">
+                                ${entry.amount >= 0 ? '+' : ''}${entry.amount} 🪙
+                            </span>
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-bottom: 6px;">
+                            ${new Date(entry.timestamp).toLocaleString()}
+                        </div>
+                        <div style="font-size: 14px; color: #333; margin-bottom: 4px;">
+                            Balance after: <strong>${entry.balanceAfter} 🪙</strong>
+                        </div>
+                        <div style="font-size: 13px; color: #555;">
+                            ${entry.details.reason || ''}
+                            ${entry.details.matchId ? `<div>Match: ${getMatchLabel(entry.details.matchId)}</div>` : ''}
+                            ${entry.details.predictionScore ? `<div>Prediction: ${entry.details.predictionScore}</div>` : ''}
+                            ${entry.details.finalScore ? `<div>Final score: ${entry.details.finalScore}</div>` : ''}
+                            ${entry.details.changedBy ? `<div>Changed by: ${entry.details.changedBy}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `
+        : `<div style="padding: 20px; background: #f8f9fa; border-radius: 10px; color: #666;">No coin activity recorded yet for <strong>${user.nickname}</strong>.</div>`;
+
+    modal.classList.add('active');
 }
 
 function renderUserActivityLog(userId) {
