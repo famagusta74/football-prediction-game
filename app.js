@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.7.0"; // Modal-based activity viewer
+const APP_VERSION = "v1.7.1"; // HTML-based activity screens for users and admins
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -10,6 +10,7 @@ let matches = []; // Will be loaded from Firebase or use sampleMatches as defaul
 let currentMatchId = null;
 let useFirebase = false;
 let selectedUserActivityId = null;
+let activeTabName = 'predictions';
 
 // Admin Configuration
 const ADMIN_NICKNAME = "Menicos";
@@ -218,113 +219,132 @@ function getMatchLabel(matchId) {
     return match ? `${match.homeTeam} vs ${match.awayTeam}` : `Match #${matchId}`;
 }
 
-function closeActivityModal() {
-    const modal = document.getElementById('activityModal');
-    if (modal) {
-        modal.classList.remove('active');
+function buildActivitySummary(user) {
+    const activityLog = ensureUserActivityLog(user);
+    const summary = activityLog.reduce((acc, entry) => {
+        if (entry.amount > 0) {
+            acc.totalIn += entry.amount;
+        } else if (entry.amount < 0) {
+            acc.totalOut += Math.abs(entry.amount);
+        }
+        acc.entries += 1;
+        return acc;
+    }, { totalIn: 0, totalOut: 0, entries: 0 });
+
+    return `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+            <div style="background: #f8f9fa; border-radius: 12px; padding: 16px; border: 1px solid #e9ecef;">
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Current Balance</div>
+                <div style="font-size: 24px; font-weight: bold; color: #1e3c72;">${user.coins} 🪙</div>
+            </div>
+            <div style="background: #f8fff9; border-radius: 12px; padding: 16px; border: 1px solid #cfe8d6;">
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Total In</div>
+                <div style="font-size: 24px; font-weight: bold; color: #28a745;">+${summary.totalIn} 🪙</div>
+            </div>
+            <div style="background: #fff8f8; border-radius: 12px; padding: 16px; border: 1px solid #f1d0d0;">
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Total Out</div>
+                <div style="font-size: 24px; font-weight: bold; color: #dc3545;">-${summary.totalOut} 🪙</div>
+            </div>
+            <div style="background: #f8f9fa; border-radius: 12px; padding: 16px; border: 1px solid #e9ecef;">
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Entries</div>
+                <div style="font-size: 24px; font-weight: bold; color: #343a40;">${summary.entries}</div>
+            </div>
+        </div>
+    `;
+}
+
+function buildActivityEntriesHtml(user, emptyMessage) {
+    const activityLog = ensureUserActivityLog(user);
+
+    if (activityLog.length === 0) {
+        return `
+            <div style="padding: 20px; background: #f8f9fa; border-radius: 10px; color: #666;">
+                ${emptyMessage}
+            </div>
+        `;
     }
+
+    return `
+        <div style="display: grid; gap: 12px;">
+            ${activityLog.map(entry => `
+                <div style="padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: #fff;">
+                    <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
+                        <strong>${getActivityTypeLabel(entry.type)}</strong>
+                        <span style="color: ${entry.amount >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">
+                            ${entry.amount >= 0 ? '+' : ''}${entry.amount} 🪙
+                        </span>
+                    </div>
+                    <div style="font-size: 13px; color: #666; margin-bottom: 6px;">
+                        ${new Date(entry.timestamp).toLocaleString()}
+                    </div>
+                    <div style="font-size: 14px; color: #333; margin-bottom: 4px;">
+                        Balance after: <strong>${entry.balanceAfter} 🪙</strong>
+                    </div>
+                    <div style="font-size: 13px; color: #555;">
+                        ${entry.details.reason || ''}
+                        ${entry.details.matchId ? `<div>Match: ${getMatchLabel(entry.details.matchId)}</div>` : ''}
+                        ${entry.details.predictionScore ? `<div>Prediction: ${entry.details.predictionScore}</div>` : ''}
+                        ${entry.details.finalScore ? `<div>Final score: ${entry.details.finalScore}</div>` : ''}
+                        ${entry.details.changedBy ? `<div>Changed by: ${entry.details.changedBy}</div>` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function renderCurrentUserActivity() {
+    const summaryContainer = document.getElementById('myActivitySummary');
+    const listContainer = document.getElementById('myActivityList');
+    if (!summaryContainer || !listContainer || !currentUser) return;
+
+    const latestCurrentUser = users.find(u => u.id === currentUser.id) || currentUser;
+    currentUser = latestCurrentUser;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    summaryContainer.innerHTML = buildActivitySummary(currentUser);
+    listContainer.innerHTML = buildActivityEntriesHtml(
+        currentUser,
+        `No coin activity recorded yet for <strong>${currentUser.nickname}</strong>.`
+    );
 }
 
 function showUserActivity(userId) {
     selectedUserActivityId = userId;
-
-    const user = users.find(u => String(u.id) === String(userId));
-    if (!user) {
-        return;
-    }
-
-    const modal = document.getElementById('activityModal');
-    const modalContent = document.getElementById('activityModalContent');
-    if (!modal || !modalContent) {
-        return;
-    }
-
-    const activityLog = ensureUserActivityLog(user);
-
-    modalContent.innerHTML = activityLog.length > 0
-        ? `
-            <div style="display: grid; gap: 12px;">
-                ${activityLog.map(entry => `
-                    <div style="padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: #fff;">
-                        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
-                            <strong>${getActivityTypeLabel(entry.type)}</strong>
-                            <span style="color: ${entry.amount >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">
-                                ${entry.amount >= 0 ? '+' : ''}${entry.amount} 🪙
-                            </span>
-                        </div>
-                        <div style="font-size: 13px; color: #666; margin-bottom: 6px;">
-                            ${new Date(entry.timestamp).toLocaleString()}
-                        </div>
-                        <div style="font-size: 14px; color: #333; margin-bottom: 4px;">
-                            Balance after: <strong>${entry.balanceAfter} 🪙</strong>
-                        </div>
-                        <div style="font-size: 13px; color: #555;">
-                            ${entry.details.reason || ''}
-                            ${entry.details.matchId ? `<div>Match: ${getMatchLabel(entry.details.matchId)}</div>` : ''}
-                            ${entry.details.predictionScore ? `<div>Prediction: ${entry.details.predictionScore}</div>` : ''}
-                            ${entry.details.finalScore ? `<div>Final score: ${entry.details.finalScore}</div>` : ''}
-                            ${entry.details.changedBy ? `<div>Changed by: ${entry.details.changedBy}</div>` : ''}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `
-        : `<div style="padding: 20px; background: #f8f9fa; border-radius: 10px; color: #666;">No coin activity recorded yet for <strong>${user.nickname}</strong>.</div>`;
-
-    modal.classList.add('active');
+    renderAdminActivityViewer();
 }
 
-function renderUserActivityLog(userId) {
-    const container = document.getElementById('userActivityLog');
-    if (!container) return;
+function renderAdminActivityViewer() {
+    const container = document.getElementById('adminActivityViewer');
+    if (!container || !isAdmin()) return;
 
-    const user = users.find(u => u.id === userId);
-    if (!user) {
-        container.innerHTML = '<p style="color: #666;">Select a user to view activity.</p>';
-        return;
-    }
-
-    const activityLog = ensureUserActivityLog(user);
-
-    if (activityLog.length === 0) {
+    if (!selectedUserActivityId) {
         container.innerHTML = `
             <div style="padding: 20px; background: #f8f9fa; border-radius: 10px; color: #666;">
-                No coin activity recorded yet for <strong>${user.nickname}</strong>.
+                Select <strong>View Activity</strong> for any user to inspect their full coin history here.
             </div>
         `;
         return;
     }
 
+    const user = users.find(u => String(u.id) === String(selectedUserActivityId));
+    if (!user) {
+        container.innerHTML = '<p style="color: #666;">Selected user was not found.</p>';
+        return;
+    }
+
     container.innerHTML = `
         <div style="margin-top: 20px;">
-            <h3 style="margin-bottom: 15px;">Coin Activity: ${user.nickname}</h3>
-            <div style="display: grid; gap: 12px;">
-                ${activityLog.map(entry => `
-                    <div style="padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: #fff;">
-                        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
-                            <strong>${getActivityTypeLabel(entry.type)}</strong>
-                            <span style="color: ${entry.amount >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">
-                                ${entry.amount >= 0 ? '+' : ''}${entry.amount} 🪙
-                            </span>
-                        </div>
-                        <div style="font-size: 13px; color: #666; margin-bottom: 6px;">
-                            ${new Date(entry.timestamp).toLocaleString()}
-                        </div>
-                        <div style="font-size: 14px; color: #333; margin-bottom: 4px;">
-                            Balance after: <strong>${entry.balanceAfter} 🪙</strong>
-                        </div>
-                        <div style="font-size: 13px; color: #555;">
-                            ${entry.details.reason || ''}
-                            ${entry.details.matchId ? `<div>Match: ${getMatchLabel(entry.details.matchId)}</div>` : ''}
-                            ${entry.details.predictionScore ? `<div>Prediction: ${entry.details.predictionScore}</div>` : ''}
-                            ${entry.details.finalScore ? `<div>Final score: ${entry.details.finalScore}</div>` : ''}
-                            ${entry.details.changedBy ? `<div>Changed by: ${entry.details.changedBy}</div>` : ''}
-                        </div>
-                    </div>
-                `).join('')}
+            <h3 style="margin-bottom: 10px;">Coin Activity: ${user.nickname}</h3>
+            <p style="color: #666; margin-bottom: 20px;">Full HTML transaction history for this user.</p>
+            <div style="margin-bottom: 20px;">
+                ${buildActivitySummary(user)}
             </div>
+            ${buildActivityEntriesHtml(user, `No coin activity recorded yet for <strong>${user.nickname}</strong>.`)}
         </div>
     `;
+
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // FIFA World Cup 2026 Matches Data (from FIFA website)
@@ -789,14 +809,22 @@ function showDashboard() {
     }
     
     updateLeaderboard();
+    renderCurrentUserActivity();
 }
 
 function showTab(tabName) {
-    // Update tab buttons
+    activeTabName = tabName;
+
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    } else {
+        const targetTab = document.querySelector(`.tab[onclick="showTab('${tabName}')"]`);
+        if (targetTab) {
+            targetTab.classList.add('active');
+        }
+    }
     
-    // Update tab content
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     document.getElementById(tabName + 'Tab').classList.add('active');
     
@@ -808,6 +836,8 @@ function showTab(tabName) {
         loadAdminMatches();
     } else if (tabName === 'pools') {
         loadPools();
+    } else if (tabName === 'activity') {
+        renderCurrentUserActivity();
     }
 }
 
@@ -1862,12 +1892,9 @@ async function loadUsersTab() {
                 </tbody>
             </table>
         </div>
-        <div id="userActivityLog" style="margin-top: 24px;"></div>
     `;
 
-    if (selectedUserActivityId) {
-        renderUserActivityLog(selectedUserActivityId);
-    }
+    renderAdminActivityViewer();
 }
 
 // Initialize app when page loads

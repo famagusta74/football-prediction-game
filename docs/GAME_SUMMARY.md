@@ -82,7 +82,7 @@ The game is no longer limited to a single hardcoded admin identity, but promotio
 ## Coin Activity Audit Trail
 The game now includes an admin-facing coin activity history for each user.
 
-- Admins can open a user record and view coin activity in detail through the activity viewer
+- Admins can open a user record and view coin activity in detail through an HTML activity viewer inside the admin area
 - The activity log shows when coins were deducted for predictions
 - The activity log shows when payouts were added after result processing
 - The activity log also records daily bonuses and admin coin resets
@@ -98,7 +98,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.7.0:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.7.1:
 - Application constant in [`app.js:2`](app.js:2)
 - Login screen version label in [`index.html:21`](index.html:21)
 - Dashboard version badge in [`index.html:146`](index.html:146)
@@ -122,9 +122,10 @@ For each change made to the game:
 This should ideally be added as a dedicated maintenance or release procedure in the main project documentation.
 
 ## Latest Update Summary
-Version v1.7.0 includes the latest admin activity-viewer improvements and coin-balance clarification changes:
+Version v1.7.1 includes the latest HTML activity-history improvements and coin-balance clarification changes:
 
-- The admin user activity viewer now opens in a dedicated modal for clearer visibility
+- The admin user activity viewer now renders directly in HTML inside the admin area instead of opening in a popup
+- A new [`Activity`](index.html) tab lets each user review their own coin history in HTML
 - Daily login bonus has been reduced to 100 coins
 - The prediction page includes a reminder that users can log in every day to win coins
 - Match locking, admin promotion controls, and coin audit history remain part of the current release baseline

@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v1.7.0 - Modal-Based Activity Viewer</div>
+            <div class="version-header">v1.7.1 - HTML Activity History Screens</div>
             <div class="logo">⚽</div>
             <h1>Football Prediction Game</h1>
             
@@ -111,7 +111,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.7.0 - Modal-Based Activity Viewer
+                Version 1.7.1 - HTML Activity History Screens
             </div>
         </div>
     </div>
@@ -129,7 +129,7 @@
                 <button onclick="showLogin()" class="btn-secondary">Back to Login</button>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.7.0 - Modal-Based Activity Viewer
+                Version 1.7.1 - HTML Activity History Screens
             </div>
         </div>
     </div>
@@ -143,7 +143,7 @@
                     <span class="coin-icon">🪙</span>
                     <span id="userCoins">1000</span>
                 </div>
-                <div class="version-badge">v1.7.0</div>
+                <div class="version-badge">v1.7.1</div>
             </div>
             
             <!-- Bob Creator Badge -->
@@ -170,6 +170,7 @@
             <button class="tab active" onclick="showTab('predictions')">Predictions</button>
             <button class="tab" onclick="showTab('pools')">My Pools</button>
             <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
+            <button class="tab" onclick="showTab('activity')">Activity</button>
             <button class="tab" onclick="showTab('matches')" style="display: none;">
                 ⚙️ Matches
             </button>
@@ -209,6 +210,16 @@
             </div>
         </div>
 
+        <!-- Activity Tab -->
+        <div id="activityTab" class="tab-content">
+            <div class="container">
+                <h2>My Activity</h2>
+                <p style="color: #666; margin-bottom: 20px;">Track your coin history, prediction deductions, payouts, daily bonuses, and admin changes in one place.</p>
+                <div id="myActivitySummary" style="margin-bottom: 20px;"></div>
+                <div id="myActivityList"></div>
+            </div>
+        </div>
+
         <!-- Matches Tab (Admin Only) -->
         <div id="matchesTab" class="tab-content">
             <div class="container">
@@ -223,15 +234,8 @@
             <div class="container">
                 <h2>👑 Admin: User Management</h2>
                 <div id="usersList"></div>
+                <div id="adminActivityViewer" style="margin-top: 30px;"></div>
             </div>
-        </div>
-    </div>
-
-    <div id="activityModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeActivityModal()">&times;</span>
-            <h3>User Coin Activity</h3>
-            <div id="activityModalContent" style="max-height: 60vh; overflow-y: auto;"></div>
         </div>
     </div>
 
