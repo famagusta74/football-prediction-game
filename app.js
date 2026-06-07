@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6.8"; // Activity view rendering fix and daily bonus adjustment
+const APP_VERSION = "v1.6.9"; // Activity visibility fix with transaction summary
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -221,20 +221,37 @@ function getMatchLabel(matchId) {
 function showUserActivity(userId) {
     selectedUserActivityId = userId;
 
-    const container = document.getElementById('userActivityLog');
-    if (!container) {
-        loadUsersTab().then(() => {
-            renderUserActivityLog(userId);
-            const refreshedContainer = document.getElementById('userActivityLog');
-            if (refreshedContainer) {
-                refreshedContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
+    const user = users.find(u => String(u.id) === String(userId));
+    if (!user) {
         return;
     }
 
+    const activityLog = ensureUserActivityLog(user);
+    const summaryLines = activityLog.length > 0
+        ? activityLog.map(entry => {
+            const parts = [
+                `${new Date(entry.timestamp).toLocaleString()}`,
+                `${getActivityTypeLabel(entry.type)}`,
+                `${entry.amount >= 0 ? '+' : ''}${entry.amount} coins`,
+                `Balance: ${entry.balanceAfter} coins`
+            ];
+
+            if (entry.details.reason) parts.push(entry.details.reason);
+            if (entry.details.matchId) parts.push(`Match: ${getMatchLabel(entry.details.matchId)}`);
+            if (entry.details.predictionScore) parts.push(`Prediction: ${entry.details.predictionScore}`);
+            if (entry.details.finalScore) parts.push(`Final score: ${entry.details.finalScore}`);
+
+            return `• ${parts.join(' | ')}`;
+        }).join('\n')
+        : 'No coin activity recorded yet.';
+
+    alert(`Coin Activity for ${user.nickname}\n\n${summaryLines}`);
     renderUserActivityLog(userId);
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const container = document.getElementById('userActivityLog');
+    if (container) {
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 function renderUserActivityLog(userId) {
