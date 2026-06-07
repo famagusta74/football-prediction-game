@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.7.2"; // Prediction edit activity history correction
+const APP_VERSION = "v1.7.3"; // Prediction edit bet-difference activity correction
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1030,16 +1030,23 @@ function submitPrediction() {
         );
         
         if (userChoice) {
-            // Modify existing prediction - no additional coins needed
             const previousPredictionScore = `${existingPrediction.homeScore} - ${existingPrediction.awayScore}`;
             const previousBetAmount = existingPrediction.betAmount;
+            const betDifference = betAmount - previousBetAmount;
+
+            if (betDifference > 0 && currentUser.coins < betDifference) {
+                alert(`Insufficient coins to increase your bet by ${betDifference} coins.`);
+                return;
+            }
 
             existingPrediction.homeScore = homeScore;
             existingPrediction.awayScore = awayScore;
             existingPrediction.betAmount = betAmount;
             existingPrediction.modifiedAt = new Date().toISOString();
 
-            addUserActivity(currentUser.id, 'prediction_edit', 0, {
+            currentUser.coins -= betDifference;
+
+            addUserActivity(currentUser.id, 'prediction_edit', -betDifference, {
                 reason: 'Prediction updated before kickoff',
                 matchId: currentMatchId,
                 predictionScore: `${homeScore} - ${awayScore}`,
