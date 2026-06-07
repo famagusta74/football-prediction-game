@@ -218,6 +218,11 @@ function getMatchLabel(matchId) {
     return match ? `${match.homeTeam} vs ${match.awayTeam}` : `Match #${matchId}`;
 }
 
+function showUserActivity(userId) {
+    selectedUserActivityId = userId;
+    renderUserActivityLog(userId);
+}
+
 function renderUserActivityLog(userId) {
     const container = document.getElementById('userActivityLog');
     if (!container) return;
@@ -1786,7 +1791,7 @@ async function loadUsersTab() {
                             <td>
                                 <strong>${user.nickname}</strong>${user.isAdmin ? ' 👑' : ''}
                                 <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
-                                    <button onclick="selectedUserActivityId='${user.id}'; renderUserActivityLog('${user.id}')" class="btn-secondary" style="padding: 4px 10px; background: #17a2b8; font-size: 12px;">
+                                    <button onclick="showUserActivity('${user.id}')" class="btn-secondary" style="padding: 4px 10px; background: #17a2b8; font-size: 12px;">
                                         View Activity
                                     </button>
                                     ${(currentUser && currentUser.nickname === ADMIN_NICKNAME) || user.isAdmin ? `
