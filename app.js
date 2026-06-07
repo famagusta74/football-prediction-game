@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6.4"; // Fixed Bob badge text visibility on login screen
+const APP_VERSION = "v1.6.5"; // Match locking and delegated admin management
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -12,6 +12,7 @@ let useFirebase = false;
 
 // Admin Configuration
 const ADMIN_NICKNAME = "Menicos";
+const DEFAULT_ADMIN_NICKNAMES = [ADMIN_NICKNAME];
 
 // Initialize Firebase and load data
 async function initializeApp() {
@@ -119,6 +120,10 @@ async function loadDataFromFirebase() {
         if (matches.length === 0) {
             matches = [...sampleMatches];
         }
+
+        if (normalizeAdminUsers()) {
+            await saveUsers();
+        }
     } catch (error) {
         console.error('Error loading data from Firebase:', error);
         // Fallback to localStorage
@@ -126,12 +131,41 @@ async function loadDataFromFirebase() {
         pools = JSON.parse(localStorage.getItem('pools')) || [];
         predictions = JSON.parse(localStorage.getItem('predictions')) || [];
         matches = JSON.parse(localStorage.getItem('matches')) || [...sampleMatches];
+
+        if (normalizeAdminUsers()) {
+            await saveUsers();
+        }
     }
 }
 
 // Check if current user is admin
+function normalizeAdminUsers() {
+    let changed = false;
+
+    users.forEach(user => {
+        if (typeof user.isAdmin !== 'boolean') {
+            user.isAdmin = DEFAULT_ADMIN_NICKNAMES.includes(user.nickname);
+            changed = true;
+        }
+    });
+
+    return changed;
+}
+
+function isAdminUser(user) {
+    return !!(user && user.isAdmin);
+}
+
 function isAdmin() {
-    return currentUser && currentUser.nickname === ADMIN_NICKNAME;
+    return isAdminUser(currentUser);
+}
+
+function hasMatchStarted(match) {
+    return new Date(match.kickoff) <= new Date();
+}
+
+function isMatchLocked(match) {
+    return hasMatchStarted(match) || match.status === 'finished';
 }
 
 // FIFA World Cup 2026 Matches Data (from FIFA website)
@@ -620,7 +654,8 @@ function loadMatches() {
         );
         
         const matchCard = document.createElement('div');
-        matchCard.className = 'match-card';
+        const matchLocked = isMatchLocked(match);
+        matchCard.className = `match-card${matchLocked ? ' locked' : ''}`;
         matchCard.onclick = () => openPredictionModal(match);
         
         const kickoffDate = new Date(match.kickoff);
@@ -634,6 +669,7 @@ function loadMatches() {
         
         // Calculate result if match is finished
         let resultInfo = '';
+        let lockInfo = '';
         if (match.status === 'finished' && match.finalScore && userPrediction) {
             const payout = calculatePayout(userPrediction, match.finalScore);
             const resultColor = payout > 0 ? '#28a745' : '#dc3545';
@@ -648,7 +684,21 @@ function loadMatches() {
                 </div>
             `;
         }
-        
+
+        if (match.status === 'finished' && match.finalScore) {
+            lockInfo = `
+                <div style="text-align: center; margin-top: 12px; color: #666; font-size: 13px; font-weight: 600;">
+                    🔒 Predictions closed - awaiting processed results
+                </div>
+            `;
+        } else if (matchLocked) {
+            lockInfo = `
+                <div style="text-align: center; margin-top: 12px; color: #dc3545; font-size: 13px; font-weight: 600;">
+                    🔒 Predictions closed once kickoff passed
+                </div>
+            `;
+        }
+
         matchCard.innerHTML = `
             <div class="match-header">
                 <span class="match-time">${formattedDate} - ${match.venue}</span>
@@ -671,6 +721,7 @@ function loadMatches() {
                 </div>
             ` : ''}
             ${resultInfo}
+            ${lockInfo}
         `;
         
         matchesList.appendChild(matchCard);
@@ -678,6 +729,11 @@ function loadMatches() {
 }
 
 function openPredictionModal(match) {
+    if (isMatchLocked(match)) {
+        alert('This match is locked. Predictions are frozen after kickoff and remain unavailable until an admin enters the final result and processes payouts.');
+        return;
+    }
+
     currentMatchId = match.id;
     
     document.getElementById('modalMatchTitle').textContent = 
@@ -724,6 +780,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function submitPrediction() {
+    const match = matches.find(m => m.id === currentMatchId);
+
+    if (!match) {
+        alert('Match not found');
+        return;
+    }
+
+    if (isMatchLocked(match)) {
+        alert('This match is locked. Predictions cannot be created or changed after kickoff.');
+        closePredictionModal();
+        loadMatches();
+        return;
+    }
+
     const homeScore = parseInt(document.getElementById('homeScore').value);
     const awayScore = parseInt(document.getElementById('awayScore').value);
     const betAmount = parseInt(document.getElementById('betAmount').value);
@@ -1161,6 +1231,45 @@ function closeAdminPanel() {
     document.getElementById('adminModal').style.display = 'none';
 }
 
+// Admin: Toggle admin access
+async function toggleAdminStatus(userId) {
+    if (!isAdmin()) return;
+
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+
+    if (user.nickname === ADMIN_NICKNAME && user.isAdmin) {
+        alert('The primary admin must always remain an admin.');
+        return;
+    }
+
+    const currentUserIsPrimaryAdmin = currentUser && currentUser.nickname === ADMIN_NICKNAME;
+    const willBecomeAdmin = !user.isAdmin;
+
+    if (willBecomeAdmin && !currentUserIsPrimaryAdmin) {
+        alert('Only Menicos can promote users to admin. Existing admins can still remove admin access from other users.');
+        return;
+    }
+
+    const actionLabel = willBecomeAdmin ? 'grant admin access to' : 'remove admin access from';
+
+    if (!confirm(`Are you sure you want to ${actionLabel} "${user.nickname}"?`)) {
+        return;
+    }
+
+    user.isAdmin = willBecomeAdmin;
+    await saveUsers();
+
+    if (currentUser && currentUser.id === user.id) {
+        currentUser.isAdmin = willBecomeAdmin;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    }
+
+    loadAdminUsers();
+    loadUsersTab();
+    alert(`${user.nickname} is ${willBecomeAdmin ? 'now' : 'no longer'} an admin.`);
+}
+
 // Admin: Load users for management
 function loadAdminUsers() {
     const usersList = document.getElementById('adminUsersList');
@@ -1171,13 +1280,16 @@ function loadAdminUsers() {
         userItem.className = 'admin-user-item';
         userItem.innerHTML = `
             <div>
-                <strong>${user.nickname}</strong> ${user.nickname === ADMIN_NICKNAME ? '(Admin)' : ''}
+                <strong>${user.nickname}</strong> ${user.isAdmin ? '(Admin)' : ''}
                 <br>
                 <small>Coins: ${user.coins} 🪙 | Email: ${user.email}</small>
             </div>
             <div style="display: flex; gap: 10px;">
                 <button onclick="resetUserCoins('${user.id}')" class="btn-secondary" style="padding: 5px 10px;">
                     Reset Coins
+                </button>
+                <button onclick="toggleAdminStatus('${user.id}')" class="btn-secondary" style="padding: 5px 10px; background: ${user.isAdmin ? '#6c757d' : '#1e3c72'};">
+                    ${user.isAdmin ? 'Remove Admin' : 'Make Admin'}
                 </button>
                 ${user.nickname !== ADMIN_NICKNAME ? `
                     <button onclick="deleteUser('${user.id}')" class="btn-secondary" style="padding: 5px 10px; background: #dc3545;">
@@ -1228,7 +1340,12 @@ function deleteUser(userId) {
     if (!user) return;
     
     if (user.nickname === ADMIN_NICKNAME) {
-        alert('Cannot delete admin user!');
+        alert('Cannot delete the primary admin user!');
+        return;
+    }
+
+    if (user.isAdmin) {
+        alert('Remove admin access before deleting this user.');
         return;
     }
     
@@ -1269,6 +1386,7 @@ function loadAdminMatches() {
         
         const matchDate = new Date(match.kickoff);
         const isFinished = match.status === 'finished';
+        const hasStarted = hasMatchStarted(match);
         
         matchItem.innerHTML = `
             <div>
@@ -1276,13 +1394,14 @@ function loadAdminMatches() {
                 <br>
                 <small>${matchDate.toLocaleString()} | ${match.stage}</small>
                 <br>
-                <small>Status: <span style="color: ${isFinished ? '#28a745' : '#ffc107'}">${match.status.toUpperCase()}</span></small>
+                <small>Status: <span style="color: ${isFinished ? '#28a745' : hasStarted ? '#dc3545' : '#ffc107'}">${isFinished ? 'FINISHED' : hasStarted ? 'LOCKED' : match.status.toUpperCase()}</span></small>
+                ${hasStarted && !isFinished ? `<br><small>Predictions frozen until admin enters the final score.</small>` : ''}
                 ${isFinished && match.finalScore ? `<br><small>Final Score: ${match.finalScore.home} - ${match.finalScore.away}</small>` : ''}
             </div>
             <div>
                 ${!isFinished ? `
                     <button onclick="enterMatchResult(${match.id})" class="btn-primary" style="padding: 5px 15px;">
-                        Enter Result
+                        ${hasStarted ? 'Enter Result' : 'Set Result Early'}
                     </button>
                 ` : `
                     <button onclick="editMatchResult(${match.id})" class="btn-secondary" style="padding: 5px 15px;">
@@ -1519,7 +1638,16 @@ async function loadUsersTab() {
                 <tbody>
                     ${sortedUsers.map(user => `
                         <tr>
-                            <td><strong>${user.nickname}</strong>${user.nickname === ADMIN_NICKNAME ? ' 👑' : ''}</td>
+                            <td>
+                                <strong>${user.nickname}</strong>${user.isAdmin ? ' 👑' : ''}
+                                <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                                    ${(currentUser && currentUser.nickname === ADMIN_NICKNAME) || user.isAdmin ? `
+                                        <button onclick="toggleAdminStatus('${user.id}')" class="btn-secondary" style="padding: 4px 10px; background: ${user.isAdmin ? '#6c757d' : '#1e3c72'}; font-size: 12px;">
+                                            ${user.isAdmin ? 'Remove Admin' : 'Make Admin'}
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </td>
                             <td>${user.email}</td>
                             <td>${user.coins} 🪙</td>
                             <td>${user.totalPredictions || 0}</td>
