@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.7.3"; // Prediction edit bet-difference activity correction
+const APP_VERSION = "v1.8.0"; // Prediction edit amount display correction
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1046,7 +1046,7 @@ function submitPrediction() {
 
             currentUser.coins -= betDifference;
 
-            addUserActivity(currentUser.id, 'prediction_edit', -betDifference, {
+            addUserActivity(currentUser.id, 'prediction_edit', currentUser.coins - (currentUser.coins + betDifference), {
                 reason: 'Prediction updated before kickoff',
                 matchId: currentMatchId,
                 predictionScore: `${homeScore} - ${awayScore}`,
