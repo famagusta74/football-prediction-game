@@ -1,6 +1,6 @@
 # Football Prediction Game - Technical Specification Document
 
-**Version:** 1.6.2
+**Version:** 1.7.1
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 
@@ -9,31 +9,31 @@
 ### 1.1 Overview
 The application follows a client-side architecture with cloud database synchronization:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
-│                     Client Browser                           │
+│                     Client Browser                          │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
 │  │   HTML5      │  │    CSS3      │  │  JavaScript  │      │
 │  │  (Structure) │  │   (Styling)  │  │   (Logic)    │      │
 │  └──────────────┘  └──────────────┘  └──────────────┘      │
-│         │                  │                  │              │
-│         └──────────────────┴──────────────────┘              │
-│                            │                                 │
-│                            ▼                                 │
-│                  ┌──────────────────┐                        │
-│                  │  localStorage    │                        │
-│                  │  (Fallback)      │                        │
-│                  └──────────────────┘                        │
+│         │                  │                  │             │
+│         └──────────────────┴──────────────────┘             │
+│                            │                                │
+│                            ▼                                │
+│                  ┌──────────────────┐                       │
+│                  │  localStorage    │                       │
+│                  │  (Fallback)      │                       │
+│                  └──────────────────┘                       │
 └─────────────────────────────────────────────────────────────┘
-                            │
-                            │ HTTPS
-                            ▼
+                             │
+                             │ HTTPS
+                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Firebase Realtime Database                      │
-│                  (Cloud Storage)                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │  Users   │  │  Pools   │  │Predictions│  │ Matches  │   │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+│              Firebase Realtime Database                     │
+│                  (Cloud Storage)                            │
+│  ┌──────────┐  ┌──────────┐  ┌────────────┐  ┌──────────┐  │
+│  │  Users   │  │  Pools   │  │ Predictions│  │ Matches  │  │
+│  └──────────┘  └──────────┘  └────────────┘  └──────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,18 +59,20 @@ The application follows a client-side architecture with cloud database synchroni
 
 ## 2. File Structure
 
-```
+```text
 football-prediction-game/
-├── index.html              # Main HTML file
-├── app.js                  # Application logic
-├── styles.css              # Styling
-├── firebase-config.js      # Firebase configuration
-├── README.md              # Project overview
-├── FIREBASE_SETUP.md      # Firebase setup guide
+├── index.html
+├── app.js
+├── styles.css
+├── firebase-config.js
+├── README.md
+├── FIREBASE_SETUP.md
 └── docs/
     ├── APPLICATION_DEFINITION.md
+    ├── GAME_SUMMARY.md
     ├── TECHNICAL_SPECIFICATION.md
-    └── SOURCE_CODE_DOCUMENTATION.md
+    ├── SOURCE_CODE_DOCUMENTATION.md
+    └── index.html
 ```
 
 ---
@@ -79,18 +81,18 @@ football-prediction-game/
 
 ### 3.1 Authentication Module
 
-**File:** `app.js` (Lines 399-503)
+**File:** [`app.js`](../app.js)
 
 **Functions:**
-- `login()` - Authenticates user with nickname and PIN
-- `register()` - Creates new user account
-- `logout()` - Clears session and returns to login
-- `showLogin()` - Displays login screen
-- `showRegister()` - Displays registration screen
+- [`login()`](../app.js)
+- [`register()`](../app.js)
+- [`logout()`](../app.js)
+- [`showLogin()`](../app.js)
+- [`showRegister()`](../app.js)
 
 **Flow:**
-```javascript
-User Input → Validation → Firebase/localStorage Check → 
+```text
+User Input → Validation → Firebase/localStorage Check →
 Session Creation → Dashboard Display
 ```
 
@@ -102,90 +104,120 @@ Session Creation → Dashboard Display
 
 ### 3.2 Prediction Module
 
-**File:** `app.js` (Lines 592-780)
+**File:** [`app.js`](../app.js)
 
 **Functions:**
-- `loadMatches()` - Displays match list
-- `openPredictionModal()` - Opens prediction form
-- `submitPrediction()` - Saves user prediction
-- `calculatePayout()` - Computes winnings
+- [`loadMatches()`](../app.js)
+- [`openPredictionModal()`](../app.js)
+- [`submitPrediction()`](../app.js)
+- [`calculatePayout()`](../app.js)
+- [`hasMatchStarted()`](../app.js)
+- [`isMatchLocked()`](../app.js)
 
 **Validation Rules:**
-```javascript
+```text
 - Bet amount >= 10 coins
-- Bet amount <= user's balance
+- Bet amount <= 500 coins
 - Scores must be non-negative integers
-- Prediction before kickoff time
+- Prediction before kickoff
+- Prediction locked after kickoff
 ```
 
-**Payout Calculation:**
-```javascript
-if (predicted.home === actual.home && predicted.away === actual.away) {
-    return betAmount * 5; // Exact score
-} else if (predictedResult === actualResult) {
-    return betAmount * 2; // Correct result
-} else {
-    return 0; // Incorrect
-}
-```
+**Behavior:**
+- Matches become unavailable for prediction once kickoff passes
+- Locked matches remain frozen until admin enters the final result
+- Users can edit predictions only before kickoff
+- Prediction deductions and edits are recorded in activity history
 
-### 3.3 Pool Management Module
+### 3.3 Activity History Module
 
-**File:** `app.js` (Lines 781-1000)
+**File:** [`app.js`](../app.js)
 
 **Functions:**
-- `createPool()` - Creates new pool with unique code
-- `joinPool()` - Adds user to existing pool
-- `leavePool()` - Removes user from pool
-- `generatePoolCode()` - Creates 6-character code
-- `loadPools()` - Displays user's pools
+- [`ensureUserActivityLog()`](../app.js)
+- [`addUserActivity()`](../app.js)
+- [`buildActivitySummary()`](../app.js)
+- [`buildActivityEntriesHtml()`](../app.js)
+- [`renderCurrentUserActivity()`](../app.js)
+- [`renderAdminActivityViewer()`](../app.js)
+- [`showUserActivity()`](../app.js)
 
-**Pool Code Generation:**
-```javascript
-function generatePoolCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
-}
+**Tracked Activity Types:**
+```text
+- daily_bonus
+- prediction_bet
+- prediction_edit
+- payout
+- admin_reset
+- admin_grant
+- admin_remove
 ```
 
-### 3.4 Leaderboard Module
+**Behavior:**
+- Users can view their own activity in the HTML [`Activity`](../index.html) tab
+- Admins can inspect any user's activity in the HTML users area
+- Each entry stores amount, timestamp, balance after change, and optional match/admin context
 
-**File:** `app.js` (Lines 1001-1060)
+### 3.4 Pool Management Module
+
+**File:** [`app.js`](../app.js)
 
 **Functions:**
-- `updateLeaderboard()` - Calculates and displays rankings
-- `calculateAccuracy()` - Computes prediction accuracy
-- `sortByCoins()` - Ranks users by coin balance
+- [`createPool()`](../app.js)
+- [`joinPool()`](../app.js)
+- [`leavePool()`](../app.js)
+- [`generatePoolCode()`](../app.js)
+- [`loadPools()`](../app.js)
+
+### 3.5 Leaderboard Module
+
+**File:** [`app.js`](../app.js)
+
+**Functions:**
+- [`updateLeaderboard()`](../app.js)
+- [`getUserNickname()`](../app.js)
 
 **Ranking Algorithm:**
-```javascript
-1. Filter users by pool membership (or all for global)
-2. Calculate accuracy = (correctPredictions / totalPredictions) * 100
-3. Sort by coins (descending)
-4. Display top users with stats
+```text
+1. Filter users by pool membership or global scope
+2. Calculate accuracy from correct predictions and total predictions
+3. Sort by coins descending
+4. Render rankings and stats
 ```
 
-### 3.5 Admin Module
+### 3.6 Admin Module
 
-**File:** `app.js` (Lines 1240-1371)
+**File:** [`app.js`](../app.js)
 
 **Functions:**
-- `loadAdminMatches()` - Lists all matches for admin
-- `enterMatchResult()` - Records match final score
-- `editMatchResult()` - Modifies existing result
-- `processFinishedMatches()` - Distributes payouts
-- `loadUsersTab()` - Displays all users
+- [`loadAdminMatches()`](../app.js)
+- [`enterMatchResult()`](../app.js)
+- [`editMatchResult()`](../app.js)
+- [`processFinishedMatches()`](../app.js)
+- [`loadUsersTab()`](../app.js)
+- [`toggleAdminStatus()`](../app.js)
+- [`resetUserCoins()`](../app.js)
+- [`deleteUser()`](../app.js)
 
-**Admin Check:**
+**Admin Model:**
 ```javascript
+const ADMIN_NICKNAME = "Menicos";
+const DEFAULT_ADMIN_NICKNAMES = [ADMIN_NICKNAME];
+
+function isAdminUser(user) {
+    return !!(user && user.isAdmin);
+}
+
 function isAdmin() {
-    return currentUser && currentUser.nickname === "Menicos";
+    return isAdminUser(currentUser);
 }
 ```
+
+**Rules:**
+- Menicos remains the protected primary admin
+- Only Menicos can promote regular users to admin
+- Admins can remove admin access from other users
+- Primary admin cannot be demoted or deleted
 
 ---
 
@@ -193,7 +225,7 @@ function isAdmin() {
 
 ### 4.1 Configuration
 
-**File:** `firebase-config.js`
+**File:** [`firebase-config.js`](../firebase-config.js)
 
 ```javascript
 const firebaseConfig = {
@@ -209,7 +241,7 @@ const firebaseConfig = {
 
 ### 4.2 Database Structure
 
-```
+```text
 firebase-database/
 ├── users/
 │   └── {userId}/
@@ -223,7 +255,9 @@ firebase-database/
 │       ├── exactScores
 │       ├── winStreak
 │       ├── createdAt
-│       └── lastLogin
+│       ├── lastLogin
+│       ├── isAdmin
+│       └── activityLog[]
 ├── pools/
 │   └── {poolId}/
 │       ├── id
@@ -241,7 +275,8 @@ firebase-database/
 │       ├── homeScore
 │       ├── awayScore
 │       ├── betAmount
-│       ├── timestamp
+│       ├── createdAt
+│       ├── modifiedAt
 │       ├── processed
 │       └── payout
 ├── matches/
@@ -269,49 +304,30 @@ firebase-database/
 
 **Read Operations:**
 ```javascript
-// Get all users
 const users = await FirebaseDB.getUsers();
-
-// Get all pools
 const pools = await FirebaseDB.getPools();
-
-// Get all predictions
 const predictions = await FirebaseDB.getPredictions();
-
-// Get all matches
 const matches = await FirebaseDB.getMatches();
 ```
 
 **Write Operations:**
 ```javascript
-// Save user
 await FirebaseDB.saveUser(userObject);
-
-// Save pool
 await FirebaseDB.savePool(poolObject);
-
-// Save prediction
 await FirebaseDB.savePrediction(predictionObject);
-
-// Save match
-await FirebaseDB.saveMatch(matchObject);
-
-// Save all matches
 await FirebaseDB.saveAllMatches(matchesArray);
 ```
 
 ### 4.4 Data Migration
 
 **One-time Migration from localStorage to Firebase:**
-
 ```javascript
 async function migrateLocalStorageToFirebase() {
-    // Get data from localStorage
     const localUsers = JSON.parse(localStorage.getItem('users')) || [];
     const localPools = JSON.parse(localStorage.getItem('pools')) || [];
     const localPredictions = JSON.parse(localStorage.getItem('predictions')) || [];
-    
-    // Migrate to Firebase
+    const localNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
+
     for (const user of localUsers) {
         await FirebaseDB.saveUser(user);
     }
@@ -321,12 +337,10 @@ async function migrateLocalStorageToFirebase() {
     for (const prediction of localPredictions) {
         await FirebaseDB.savePrediction(prediction);
     }
-    
-    // Mark migration complete
-    localStorage.setItem('firebaseMigrationDone', 'true');
-    
-    // Clear old data
-    localStorage.clear();
+    for (const notification of localNotifications) {
+        await FirebaseDB.saveNotification(notification);
+    }
+
     localStorage.setItem('firebaseMigrationDone', 'true');
 }
 ```
@@ -337,198 +351,25 @@ async function migrateLocalStorageToFirebase() {
 
 ### 5.1 User Registration Flow
 
-```
-┌─────────────┐
-│ User clicks │
-│"Create      │
-│ Account"    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────┐
-│ Enter nickname, │
-│ email, PIN      │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐      ┌──────────────┐
-│ Validate input  │─────▶│ Show error   │
-│ - Unique nick   │      │ if invalid   │
-│ - Unique email  │      └──────────────┘
-│ - PIN format    │
-└──────┬──────────┘
-       │ Valid
-       ▼
-┌─────────────────┐
-│ Create user     │
-│ object with     │
-│ 1000 coins      │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Save to         │
-│ Firebase        │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Notify admin    │
-│ (if Firebase)   │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Show success    │
-│ & redirect to   │
-│ login           │
-└─────────────────┘
+```text
+Create Account → Validate Input → Create User Object →
+Save User → Notify Admin → Redirect to Login
 ```
 
 ### 5.2 Prediction Submission Flow
 
-```
-┌─────────────┐
-│ User clicks │
-│ on match    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────┐
-│ Open prediction │
-│ modal           │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Enter scores &  │
-│ bet amount      │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐      ┌──────────────┐
-│ Validate:       │─────▶│ Show error   │
-│ - Bet >= 10     │      │ if invalid   │
-│ - Bet <= balance│      └──────────────┘
-│ - Before kickoff│
-└──────┬──────────┘
-       │ Valid
-       ▼
-┌─────────────────┐
-│ Deduct coins    │
-│ from balance    │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Create          │
-│ prediction      │
-│ object          │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Save to         │
-│ Firebase        │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Update user     │
-│ coins in        │
-│ Firebase        │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Close modal &   │
-│ refresh display │
-└─────────────────┘
+```text
+Open Match → Validate Scores and Bet → Check Match Lock →
+Create or Edit Prediction → Deduct Coins if Needed →
+Add Activity Entry → Save Prediction → Refresh HTML Views
 ```
 
 ### 5.3 Admin Result Processing Flow
 
-```
-┌─────────────┐
-│ Admin enters│
-│ match result│
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────┐
-│ Update match    │
-│ status &        │
-│ finalScore      │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Save match to   │
-│ Firebase        │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Admin clicks    │
-│"Process Results"│
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ For each        │
-│ finished match: │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Find all        │
-│ predictions     │
-│ for match       │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ For each        │
-│ prediction:     │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Calculate       │
-│ payout based    │
-│ on accuracy     │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Add payout to   │
-│ user's coins    │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Update user     │
-│ statistics      │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Mark prediction │
-│ as processed    │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Save all        │
-│ changes to      │
-│ Firebase        │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│ Show summary    │
-│ message         │
-└─────────────────┘
+```text
+Enter Final Result → Save Match → Process Results →
+Calculate Payouts → Update Coins and Stats →
+Add Activity Entries → Save Changes → Refresh Displays
 ```
 
 ---
@@ -537,270 +378,106 @@ async function migrateLocalStorageToFirebase() {
 
 ### 6.1 Firebase Helper Functions
 
-**FirebaseDB.saveUser(user)**
-- **Purpose:** Save or update user in Firebase
-- **Parameters:** user object
-- **Returns:** Promise<boolean>
-- **Example:**
-```javascript
-const user = {
-    id: 123456,
-    nickname: "Player1",
-    email: "player@example.com",
-    pin: "1234",
-    coins: 1000
-};
-await FirebaseDB.saveUser(user);
-```
+**[`FirebaseDB.saveUser(user)`](../firebase-config.js)**
+- Purpose: Save or update user in Firebase
+- Returns: Promise<boolean>
 
-**FirebaseDB.getUsers()**
-- **Purpose:** Retrieve all users from Firebase
-- **Parameters:** None
-- **Returns:** Promise<Array<User>>
-- **Example:**
-```javascript
-const users = await FirebaseDB.getUsers();
-console.log(`Total users: ${users.length}`);
-```
+**[`FirebaseDB.getUsers()`](../firebase-config.js)**
+- Purpose: Retrieve all users from Firebase
+- Returns: Promise<Array<User>>
 
-**FirebaseDB.savePool(pool)**
-- **Purpose:** Save or update pool in Firebase
-- **Parameters:** pool object
-- **Returns:** Promise<boolean>
+**[`FirebaseDB.savePool(pool)`](../firebase-config.js)**
+- Purpose: Save or update pool in Firebase
+- Returns: Promise<boolean>
 
-**FirebaseDB.getPools()**
-- **Purpose:** Retrieve all pools from Firebase
-- **Parameters:** None
-- **Returns:** Promise<Array<Pool>>
+**[`FirebaseDB.getPools()`](../firebase-config.js)**
+- Purpose: Retrieve all pools from Firebase
+- Returns: Promise<Array<Pool>>
 
-**FirebaseDB.savePrediction(prediction)**
-- **Purpose:** Save prediction in Firebase
-- **Parameters:** prediction object
-- **Returns:** Promise<boolean>
+**[`FirebaseDB.savePrediction(prediction)`](../firebase-config.js)**
+- Purpose: Save prediction in Firebase
+- Returns: Promise<boolean>
 
-**FirebaseDB.getPredictions()**
-- **Purpose:** Retrieve all predictions from Firebase
-- **Parameters:** None
-- **Returns:** Promise<Array<Prediction>>
+**[`FirebaseDB.getPredictions()`](../firebase-config.js)**
+- Purpose: Retrieve all predictions from Firebase
+- Returns: Promise<Array<Prediction>>
 
-**FirebaseDB.saveMatch(match)**
-- **Purpose:** Save single match in Firebase
-- **Parameters:** match object
-- **Returns:** Promise<boolean>
+**[`FirebaseDB.saveAllMatches(matches)`](../firebase-config.js)**
+- Purpose: Save all matches in Firebase
+- Returns: Promise<boolean>
 
-**FirebaseDB.saveAllMatches(matches)**
-- **Purpose:** Save all matches in Firebase
-- **Parameters:** array of match objects
-- **Returns:** Promise<boolean>
-
-**FirebaseDB.getMatches()**
-- **Purpose:** Retrieve all matches from Firebase
-- **Parameters:** None
-- **Returns:** Promise<Array<Match>>
+**[`FirebaseDB.getMatches()`](../firebase-config.js)**
+- Purpose: Retrieve all matches from Firebase
+- Returns: Promise<Array<Match>>
 
 ### 6.2 Core Application Functions
 
-**login()**
-- **Purpose:** Authenticate user
-- **Async:** Yes
-- **Validation:** Nickname and PIN required
-- **Side Effects:** Sets currentUser, updates localStorage
+**[`login()`](../app.js)**
+- Purpose: Authenticate user
+- Async: Yes
+- Side Effects: Sets current user, applies daily bonus when eligible, records activity
 
-**register()**
-- **Purpose:** Create new user account
-- **Async:** Yes
-- **Validation:** Unique nickname/email, valid PIN
-- **Side Effects:** Adds user to database, notifies admin
+**[`register()`](../app.js)**
+- Purpose: Create new user account
+- Async: Yes
+- Side Effects: Adds user to database, notifies admin
 
-**submitPrediction()**
-- **Purpose:** Save user's match prediction
-- **Async:** Yes
-- **Validation:** Valid scores, sufficient coins
-- **Side Effects:** Deducts coins, saves prediction
+**[`submitPrediction()`](../app.js)**
+- Purpose: Save or edit user's match prediction
+- Validation: Valid scores, sufficient coins, unlocked match
+- Side Effects: Deducts coins when needed, records activity, refreshes activity views
 
-**processFinishedMatches()**
-- **Purpose:** Calculate and distribute payouts
-- **Async:** Yes
-- **Admin Only:** Yes
-- **Side Effects:** Updates user coins and stats
+**[`processFinishedMatches()`](../app.js)**
+- Purpose: Process payouts for finished matches
+- Side Effects: Updates balances, stats, and activity logs
 
-**createPool()**
-- **Purpose:** Create new prediction pool
-- **Async:** Yes
-- **Returns:** Pool code and invite link
-- **Side Effects:** Saves pool to database
+**[`showUserActivity()`](../app.js)**
+- Purpose: Open selected user's activity in the admin HTML area
+- Side Effects: Selects user and renders activity viewer
 
 ---
 
-## 7. Performance Optimization
+## 7. Operational Rules
 
-### 7.1 Loading Strategy
-- Lazy load match data
-- Cache user session in localStorage
-- Minimize Firebase reads with local state
-- Batch Firebase writes when possible
+### 7.1 Versioning
+Every change should update:
+- [`APP_VERSION`](../app.js)
+- Visible version labels in [`index.html`](../index.html)
+- Documentation portal version in [`docs/index.html`](index.html)
+- Relevant documentation files in [`docs/`](.)
 
-### 7.2 Rendering Optimization
-- Use document fragments for list rendering
-- Minimize DOM manipulations
-- CSS animations over JavaScript
-- Debounce input handlers
+### 7.2 Coin Rules
+- Starting balance: 1000
+- Daily bonus: 100
+- Maximum balance: 2000
+- Prediction bet range: 10 to 500
+- All coin mutations should be logged in activity history
 
-### 7.3 Network Optimization
-- Firebase SDK uses WebSocket for real-time updates
-- Automatic retry on connection failure
-- Offline support with localStorage fallback
-- Compressed data transfer
-
----
-
-## 8. Error Handling
-
-### 8.1 Firebase Errors
-```javascript
-try {
-    await FirebaseDB.saveUser(user);
-} catch (error) {
-    console.error('Firebase error:', error);
-    // Fallback to localStorage
-    localStorage.setItem('users', JSON.stringify(users));
-}
-```
-
-### 8.2 Validation Errors
-```javascript
-if (!nickname || !pin) {
-    alert('Please enter both nickname and PIN');
-    return;
-}
-
-if (pin.length !== 4 || !/^\d+$/.test(pin)) {
-    alert('PIN must be exactly 4 digits');
-    return;
-}
-```
-
-### 8.3 Network Errors
-- Automatic fallback to localStorage
-- User notification of offline mode
-- Retry mechanism for failed operations
-- Queue operations for when online
+### 7.3 Match Rules
+- Predictions allowed only before kickoff
+- Started matches are locked automatically
+- Locked matches remain frozen until admin enters result
+- Finished matches require admin processing for payouts
 
 ---
 
-## 9. Testing Strategy
+## 8. Maintenance Notes
 
-### 9.1 Manual Testing Checklist
-- [ ] User registration with valid/invalid data
-- [ ] Login with correct/incorrect credentials
-- [ ] Make predictions before/after kickoff
-- [ ] Create and join pools
-- [ ] Admin enter/edit match results
-- [ ] Process results and verify payouts
-- [ ] Cross-device synchronization
-- [ ] Offline mode functionality
-
-### 9.2 Browser Testing
-- [ ] Chrome (latest)
-- [ ] Firefox (latest)
-- [ ] Safari (latest)
-- [ ] Edge (latest)
-- [ ] Mobile browsers
-
-### 9.3 Performance Testing
-- [ ] Page load time < 2 seconds
-- [ ] Prediction submission < 1 second
-- [ ] Firebase sync < 3 seconds
-- [ ] Smooth animations (60fps)
+- Keep documentation synchronized with behavior changes
+- Preserve Menicos as the protected primary admin
+- Prefer HTML-based activity rendering over popup-based history views
+- Refresh user-facing activity after prediction, payout, and admin changes
+- Commit releases with explicit version numbers in commit messages
 
 ---
 
-## 10. Deployment
-
-### 10.1 GitHub Pages Setup
-1. Push code to GitHub repository
-2. Enable GitHub Pages in repository settings
-3. Select main branch as source
-4. Access via: `https://username.github.io/repository-name/`
-
-### 10.2 Firebase Setup
-1. Create Firebase project
-2. Enable Realtime Database
-3. Configure database rules
-4. Copy configuration to firebase-config.js
-5. Deploy and test
-
-### 10.3 Environment Variables
-- Firebase API key (public, safe to expose)
-- Database URL
-- Project ID
-- No sensitive data in client code
-
----
-
-## 11. Maintenance
-
-### 11.1 Regular Tasks
-- Monitor Firebase usage
-- Review user feedback
-- Update match data for new tournaments
-- Backup database periodically
-- Update documentation
-
-### 11.2 Version Control
-- Semantic versioning (MAJOR.MINOR.PATCH)
-- Git tags for releases
-- Changelog in commits
-- Feature branches for development
-
-### 11.3 Monitoring
-- Firebase console for database metrics
-- Browser console for client errors
-- User reports for bugs
-- Performance metrics
-
----
-
-## 12. Security Considerations
-
-### 12.1 Client-Side Security
-- No sensitive data in client code
-- PIN validation (not encryption)
-- XSS prevention through input sanitization
-- CSRF not applicable (no server-side sessions)
-
-### 12.2 Firebase Security Rules
-```json
-{
-  "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null",
-    "users": {
-      "$uid": {
-        ".write": "$uid === auth.uid"
-      }
-    }
-  }
-}
-```
-
-### 12.3 Data Validation
-- Client-side validation for UX
-- Server-side validation in Firebase rules
-- Type checking for all inputs
-- Range validation for numeric values
-
----
-
-**Document Version:** 1.6.2
+**Document Version:** 1.7.1
 **Created:** June 2026
 **Author:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Last Updated:** June 2026
-**Current Features:**
-- Firebase Realtime Database integration
-- Admin match management interface
-- Comprehensive documentation portal
-- Cross-device data synchronization
-- IBM Bob branding throughout application
-</content>
-<line_count>798</line_count>
+**Status:** Active
+**Latest Features:**
+- HTML activity history screens for users and admins
+- Match locking after kickoff
+- Multi-admin support with protected primary admin
+- Daily bonus reduced to 100 coins
+- Activity logging for predictions, payouts, bonuses, and admin actions
