@@ -311,7 +311,12 @@ function renderCurrentUserActivity() {
 
 function showUserActivity(userId) {
     selectedUserActivityId = userId;
-    renderAdminActivityViewer();
+
+    if (activeTabName !== 'users') {
+        showTab('users');
+    } else {
+        renderAdminActivityViewer();
+    }
 }
 
 function renderAdminActivityViewer() {
@@ -1035,6 +1040,7 @@ function submitPrediction() {
             });
             
             savePredictions();
+            renderCurrentUserActivity();
             
             document.getElementById('userCoins').textContent = currentUser.coins;
             closePredictionModal();
@@ -1075,6 +1081,7 @@ function submitPrediction() {
 
     updateUserInStorage();
     savePredictions();
+    renderCurrentUserActivity();
     
     document.getElementById('userCoins').textContent = currentUser.coins;
     
