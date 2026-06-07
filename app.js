@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.6.6"; // User activity log and coin audit trail
+const APP_VERSION = "v1.6.7"; // Activity view fix and documentation portal update
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
