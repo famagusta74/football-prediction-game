@@ -14,7 +14,7 @@ Players use virtual coins to predict the outcomes of scheduled World Cup matches
 - Exact score predictions return 5x the bet.
 - Correct match result predictions return 2x the bet.
 - Incorrect predictions lose the bet amount.
-- A daily bonus can replenish coins by 100, up to a maximum balance of 2000.
+- Every new eligible login day awards 100 bonus coins with no maximum balance cap.
 
 ## Social Features
 - Users can create private pools.
@@ -87,6 +87,7 @@ The game now includes an admin-facing coin activity history for each user.
 - The activity log shows when payouts were added after result processing
 - The activity log also records daily bonuses and admin coin resets
 - Each entry includes the amount, timestamp, resulting balance, and related match context when available
+- Daily bonus entries now store the post-award balance explicitly so the activity history always shows the awarded 100 coins correctly
 
 This makes it easier to investigate unexpected balance changes and understand exactly how a user's coin total was built over time.
 
@@ -98,7 +99,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.9.0:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.9.1:
 - Application constant in [`app.js:2`](../app.js:2)
 - Login screen version label in [`index.html:21`](../index.html:21)
 - Dashboard version badge in [`index.html:146`](../index.html:146)
@@ -122,10 +123,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.9.0 includes the latest prediction-visibility and daily-login experience improvements:
+Version v1.9.1 includes the latest prediction-detection and daily-bonus corrections:
 
-- Match cards now use different color palettes so predicted matches are visually distinct from matches that still need a prediction
-- The predictions screen now explains the meaning of the green and blue-grey match cards
-- Daily login bonuses now trigger a thank-you notification showing the awarded coin amount
-- Daily bonus activity entries now use a per-day key so duplicate entries are prevented while valid bonus history remains visible
+- Predicted matches are now detected from the current user's saved prediction list before rendering cards, so already predicted games reliably use the green palette
+- Unpredicted matches continue to use the blue-grey palette for quick scanning
+- Daily login bonuses now always award 100 coins on each eligible new day with no maximum balance cap
+- Daily bonus activity entries now store the correct post-award balance so the activity history shows the allocation clearly
 - Match locking, admin promotion controls, and coin audit history remain part of the current release baseline

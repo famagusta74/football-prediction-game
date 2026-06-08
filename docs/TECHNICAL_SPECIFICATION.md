@@ -1,6 +1,6 @@
 # Football Prediction Game - Technical Specification Document
 
-**Version:** 1.9.0
+**Version:** 1.9.1
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 
@@ -131,7 +131,8 @@ Dashboard Display → Optional Browser Notification
 - Locked matches remain frozen until admin enters the final result
 - Users can edit predictions only before kickoff
 - Prediction deductions and edits are recorded in activity history
-- Match cards are visually marked as predicted or unpredicted
+- Match cards are visually marked by checking the current user's saved predictions before rendering
+- Predicted cards use a stronger green palette and unpredicted cards use a blue-grey palette
 
 ### 3.3 Activity History Module
 
@@ -162,6 +163,7 @@ Dashboard Display → Optional Browser Notification
 - Admins can inspect any user's activity in the HTML users area
 - Each entry stores amount, timestamp, balance after change, and optional match/admin context
 - Daily bonus entries support an `activityKey` for same-day deduplication
+- Activity entries can store an explicit `balanceAfter` override so the rendered history reflects the true post-update balance
 
 ### 3.4 Pool Management Module
 
@@ -239,6 +241,7 @@ function isAdmin() {
 - localStorage is used as fallback
 - Activity history is persisted as part of the user object
 - Daily bonus activity keys are stored inside activity entry details
+- Daily bonus awards always add 100 coins on each eligible new day without a balance cap
 
 ### 4.2 Prediction Persistence
 
@@ -278,10 +281,10 @@ function isAdmin() {
 - Hover states
 
 **Behavior:**
-- Predicted cards use a green palette
+- Predicted cards use a stronger green palette
 - Unpredicted cards use a blue-grey palette
 - Hover styling remains active for both states
-- Prediction state is assigned dynamically in [`loadMatches()`](../app.js)
+- Prediction state is assigned dynamically in [`loadMatches()`](../app.js) from the current user's saved predictions
 
 ### 5.2 Version Labels
 
@@ -336,12 +339,13 @@ For every code change:
 
 ---
 
-## 8. Version 1.9.0 Technical Notes
+## 8. Version 1.9.1 Technical Notes
 
-Version 1.9.0 introduces:
-- Predicted versus unpredicted match card styling in [`styles.css`](../styles.css) and [`loadMatches()`](../app.js)
-- Daily login thank-you notifications through [`showDailyBonusNotification()`](../app.js)
-- Same-day daily bonus activity deduplication using `activityKey` values in [`addUserActivity()`](../app.js)
-- Updated UI messaging in [`index.html`](../index.html) to explain match card colors
+Version 1.9.1 introduces:
+- Reliable predicted versus unpredicted match detection in [`loadMatches()`](../app.js) by pre-filtering the current user's saved predictions
+- Stronger predicted card styling in [`styles.css`](../styles.css) so saved picks are visibly different
+- Uncapped daily login bonus awards of 100 coins in [`login()`](../app.js)
+- Correct daily bonus activity balance rendering through explicit `balanceAfter` values in [`addUserActivity()`](../app.js)
+- Updated UI messaging in [`index.html`](../index.html) to explain match card colors and the daily bonus rule
 
-This document reflects the version 1.9.0 implementation baseline.
+This document reflects the version 1.9.1 implementation baseline.

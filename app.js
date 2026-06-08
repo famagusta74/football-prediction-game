@@ -192,7 +192,7 @@ function addUserActivity(userId, type, amount, details = {}) {
         id: Date.now() + Math.floor(Math.random() * 1000),
         type,
         amount,
-        balanceAfter: user.coins,
+        balanceAfter: details.balanceAfter ?? user.coins,
         timestamp: new Date().toISOString(),
         details
     });
@@ -698,28 +698,26 @@ async function login() {
         
         if (hoursSinceLastLogin >= 24) {
             const previousCoins = user.coins;
-            user.coins = Math.min(user.coins + 100, 2000); // Daily bonus, max 2000
+            const loginDayKey = now.toISOString().slice(0, 10);
+            const activityKey = `daily_bonus_${loginDayKey}`;
+            const hasDailyBonusEntry = ensureUserActivityLog(user).some(entry =>
+                entry.type === 'daily_bonus' &&
+                entry.details &&
+                entry.details.activityKey === activityKey
+            );
+
+            user.coins += 100;
             user.lastLogin = now.toISOString();
 
-            const bonusAwarded = user.coins - previousCoins;
-            if (bonusAwarded > 0) {
-                addUserActivity(user.id, 'daily_bonus', bonusAwarded, {
+            if (!hasDailyBonusEntry) {
+                addUserActivity(user.id, 'daily_bonus', 100, {
                     reason: 'Daily login bonus applied',
-                    activityKey: `daily_bonus_${user.lastLogin.slice(0, 10)}`
+                    activityKey,
+                    balanceAfter: user.coins
                 });
-                dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received ${bonusAwarded} coins for logging in today.`;
             }
-        }
 
-        const loginDayKey = now.toISOString().slice(0, 10);
-        const hasDailyBonusEntry = ensureUserActivityLog(user).some(entry =>
-            entry.type === 'daily_bonus' &&
-            entry.details &&
-            entry.details.activityKey === `daily_bonus_${loginDayKey}`
-        );
-
-        if (hoursSinceLastLogin < 24 && hasDailyBonusEntry) {
-            user.lastLogin = user.lastLogin || now.toISOString();
+            dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received 100 coins for logging in today.`;
         }
 
         await saveUsers();
@@ -906,10 +904,10 @@ function loadMatches() {
     const matchesList = document.getElementById('matchesList');
     matchesList.innerHTML = '';
     
+    const currentUserPredictions = predictions.filter(p => p.userId === currentUser.id);
+
     matches.forEach(match => {
-        const userPrediction = predictions.find(p => 
-            p.userId === currentUser.id && p.matchId === match.id
-        );
+        const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
         
         const matchCard = document.createElement('div');
         const matchLocked = isMatchLocked(match);
@@ -1105,9 +1103,11 @@ function submitPrediction() {
                 predictionScore: `${homeScore} - ${awayScore}`,
                 previousPredictionScore,
                 previousBetAmount,
-                updatedBetAmount: betAmount
+                updatedBetAmount: betAmount,
+                balanceAfter: currentUser.coins
             });
             
+            updateUserInStorage();
             savePredictions();
             renderCurrentUserActivity();
             
@@ -1145,7 +1145,8 @@ function submitPrediction() {
     addUserActivity(currentUser.id, 'prediction_bet', -betAmount, {
         reason: 'Coins deducted for new prediction',
         matchId: currentMatchId,
-        predictionScore: `${homeScore} - ${awayScore}`
+        predictionScore: `${homeScore} - ${awayScore}`,
+        balanceAfter: currentUser.coins
     });
 
     updateUserInStorage();

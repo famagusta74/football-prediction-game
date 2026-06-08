@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.9.0
+**Version:** 1.9.1
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -38,12 +38,13 @@ Enable football fans to:
    - Place coin bets on predictions
    - View prediction history and results
    - Automatic prediction locking after kickoff
-   - Visual distinction between predicted and unpredicted match cards
+   - Visual distinction between predicted and unpredicted match cards based on saved user predictions
 
 3. **Reward System**
    - 5x payout for exact score predictions
    - 2x payout for correct result (win/draw/loss)
-   - Daily coin replenishment (100 coins, max 2000)
+   - Daily coin replenishment of 100 coins on each eligible new day
+   - No maximum balance cap on daily bonus allocation
    - Daily thank-you notification when bonus coins are awarded
    - Starting balance: 1000 coins
 
@@ -58,6 +59,7 @@ Enable football fans to:
    - Admins can inspect any user's full coin history in HTML
    - Activity includes prediction deductions, edits, payouts, daily bonuses, and admin changes
    - Daily bonus entries are keyed per day to avoid duplicate records while preserving valid history
+   - Daily bonus entries store the correct post-award balance for clearer audit visibility
 
 6. **Admin Features**
    - Match result management
@@ -121,13 +123,14 @@ The original primary admin remains Menicos.
 1. User logs in
 2. Views upcoming matches
 3. Uses match card colors to identify predicted versus still-open matches
-4. Clicks on a match before kickoff
-5. Enters predicted home and away scores
-6. Sets bet amount (minimum 10 coins)
-7. Views potential payouts (5x exact, 2x result)
-8. Submits prediction
-9. Coins deducted from balance
-10. Activity history records the deduction
+4. System checks the current user's saved predictions before rendering each card
+5. Clicks on a match before kickoff
+6. Enters predicted home and away scores
+7. Sets bet amount (minimum 10 coins)
+8. Views potential payouts (5x exact, 2x result)
+9. Submits prediction
+10. Coins deducted from balance
+11. Activity history records the deduction
 
 ### 4.3 Editing a Prediction
 1. User opens a match that already has a prediction
@@ -138,10 +141,11 @@ The original primary admin remains Menicos.
 
 ### 4.4 Daily Login Bonus
 1. User logs in after at least 24 hours
-2. System calculates the daily bonus up to the 2000-coin cap
-3. Bonus coins are added to the user balance
+2. System awards 100 coins for the new eligible day
+3. No maximum balance cap blocks the daily allocation
 4. A daily bonus activity entry is recorded once for that calendar day
-5. The user receives a thank-you notification showing the awarded amount
+5. The activity entry stores the correct balance after the award
+6. The user receives a thank-you notification showing the awarded amount
 
 ### 4.5 Creating a Pool
 1. User clicks "Create New Pool"
@@ -186,6 +190,7 @@ For admins:
 - Locked matches remain frozen until admin enters the final result
 - Users can edit predictions only before kickoff
 - One active prediction record per match per user, with controlled edit behavior
+- Match card color state is derived from whether the current user already has a saved prediction for that match
 
 ### 5.2 Payout Rules
 - **Exact Score Match:** Bet amount × 5
@@ -196,12 +201,13 @@ For admins:
 
 ### 5.3 Coin Management
 - Starting balance: 1000 coins
-- Daily bonus: 100 coins (if logged in after 24 hours)
-- Maximum balance: 2000 coins
+- Daily bonus: 100 coins on each eligible new day
+- No maximum balance cap applies to the daily bonus
 - Coins are virtual (no real money value)
 - Coin changes are recorded in activity history
 - Daily bonus activity uses a per-day key to prevent duplicate entries
 - Daily bonus awards can trigger a browser notification or fallback alert
+- Activity entries can store an explicit `balanceAfter` value for accurate audit rendering
 
 ### 5.4 Pool Rules
 - Pool creator becomes pool admin
@@ -251,7 +257,8 @@ For admins:
         updatedBetAmount: Number,
         finalScore: String,
         changedBy: String,
-        activityKey: String
+        activityKey: String,
+        balanceAfter: Number
       }
     }
   ]
@@ -307,7 +314,7 @@ For admins:
 
 ### 7.2 Prediction Screen Behavior
 - Upcoming matches are shown as cards
-- Predicted matches use a green palette
+- Predicted matches use a stronger green palette
 - Unpredicted matches use a blue-grey palette
 - Locked matches remain unavailable after kickoff
 - Existing predictions display score and bet details directly on the card
@@ -316,6 +323,7 @@ For admins:
 - Users see a personal summary of balance, total in, total out, and entry count
 - Users see detailed transaction history in HTML
 - Admins can inspect the same style of history for any user
+- Daily bonus entries show the awarded amount and the correct resulting balance
 
 ---
 
@@ -326,10 +334,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.9.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.9.1, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.9.0 strengthens usability by making prediction status easier to scan visually, improves the daily login experience with a thank-you notification, and keeps daily bonus activity history more reliable for both users and admins.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.9.1 strengthens usability by making saved predictions render with reliable visual distinction, removes the daily bonus balance cap, and improves daily bonus activity visibility for both users and admins.

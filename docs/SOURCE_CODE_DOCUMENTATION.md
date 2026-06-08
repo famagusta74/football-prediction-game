@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 1.9.0
+**Version:** 1.9.1
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~2,700
@@ -20,7 +20,7 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game  
-**Version:** 1.9.0  
+**Version:** 1.9.1  
 **Built by:** IBM Bob AI Assistant  
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase  
 **Lines of Code:** ~1,800 (JavaScript), ~800 (CSS), ~300 (HTML)
@@ -100,7 +100,7 @@ football-prediction-game/
 ```html
 <div id="loginScreen" class="screen active">
     <div class="container">
-        <div class="version-header">v1.9.0 - Predicted Match Styling & Daily Bonus Notifications</div>
+        <div class="version-header">v1.9.1 - Predicted Match Detection & Uncapped Daily Bonus</div>
         <div class="logo">⚽</div>
         <h1>Football Prediction Game</h1>
         <div class="auth-form">
@@ -123,7 +123,7 @@ football-prediction-game/
                 <span class="coin-icon">🪙</span>
                 <span id="userCoins">1000</span>
             </div>
-            <div class="version-badge">v1.9.0</div>
+            <div class="version-badge">v1.9.1</div>
         </div>
         <button onclick="logout()" class="btn-logout">Logout</button>
     </div>
@@ -145,7 +145,7 @@ football-prediction-game/
     <div class="container">
         <h2>Upcoming Matches</h2>
         <p>Login every day to win coins</p>
-        <p>✅ Green cards already have your prediction. Blue-grey cards are still open for a new pick.</p>
+        <p>✅ Green cards already have your saved prediction. Blue-grey cards are still open for a new pick, and daily login always awards 100 coins.</p>
         <div id="matchesList" class="matches-list"></div>
     </div>
 </div>
@@ -235,9 +235,9 @@ football-prediction-game/
 }
 
 .match-card.predicted {
-    background: linear-gradient(135deg, #eefaf2 0%, #dff5e7 100%);
-    border-color: #28a745;
-    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.12);
+    background: linear-gradient(135deg, #dff8e7 0%, #c8f0d5 100%);
+    border-color: #1f8a39;
+    box-shadow: 0 10px 24px rgba(31, 138, 57, 0.18);
 }
 ```
 
@@ -282,7 +282,7 @@ football-prediction-game/
 **Flow:**
 ```text
 User Input → Validation → Firebase/localStorage Check →
-Daily Bonus Evaluation → Activity Logging → Session Creation →
+Daily Bonus Evaluation → Activity Logging → Save User State →
 Dashboard Display → Optional Notification
 ```
 
@@ -318,7 +318,8 @@ Dashboard Display → Optional Notification
 - Locked matches remain frozen until admin enters the final result
 - Users can edit predictions only before kickoff
 - Prediction deductions and edits are recorded in activity history
-- Match cards visually distinguish predicted and unpredicted states
+- Match cards are derived from the current user's saved prediction list before rendering
+- Predicted and unpredicted cards use different visual states
 
 ### 5.3 Activity History Module
 
@@ -349,6 +350,7 @@ Dashboard Display → Optional Notification
 - Admins can inspect any user's activity in the HTML users area
 - Each entry stores amount, timestamp, balance after change, and optional match/admin context
 - Daily bonus entries can include an `activityKey` to prevent duplicate same-day records
+- Activity entries can override `balanceAfter` explicitly for accurate rendering after coin mutations
 
 ### 5.4 Pool Management Module
 
@@ -462,20 +464,26 @@ firebase-database/
 
 ### 7.1 Version Constant
 ```javascript
-const APP_VERSION = "v1.9.0";
+const APP_VERSION = "v1.9.1";
 ```
 
-### 7.2 Predicted Match Styling Assignment
+### 7.2 Predicted Match Detection
 ```javascript
-const predictionStateClass = userPrediction ? ' predicted' : ' unpredicted';
-matchCard.className = `match-card${matchLocked ? ' locked' : ''}${predictionStateClass}`;
+const currentUserPredictions = predictions.filter(p => p.userId === currentUser.id);
+
+matches.forEach(match => {
+    const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
+});
 ```
 
-### 7.3 Daily Bonus Activity Deduplication
+### 7.3 Daily Bonus Activity Logging
 ```javascript
-addUserActivity(user.id, 'daily_bonus', bonusAwarded, {
+user.coins += 100;
+
+addUserActivity(user.id, 'daily_bonus', 100, {
     reason: 'Daily login bonus applied',
-    activityKey: `daily_bonus_${user.lastLogin.slice(0, 10)}`
+    activityKey,
+    balanceAfter: user.coins
 });
 ```
 
@@ -504,6 +512,7 @@ function showDailyBonusNotification(message) {
 - Preserve admin protections for the Menicos account
 - Keep prediction locking tied to kickoff time
 - Use activity keys for idempotent daily bonus logging
+- Store explicit `balanceAfter` values when an activity entry must reflect a post-update balance exactly
 - Create a local git commit for each release so GitHub Desktop can push it
 
-This documentation reflects the version 1.9.0 codebase and release workflow.
+This documentation reflects the version 1.9.1 codebase and release workflow.

@@ -473,9 +473,22 @@ input:focus, textarea:focus, select:focus {
 }
 
 .match-card.predicted {
-    background: linear-gradient(135deg, #eefaf2 0%, #dff5e7 100%);
-    border-color: #28a745;
-    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.12);
+    background: linear-gradient(135deg, #dff8e7 0%, #c8f0d5 100%);
+    border-color: #1f8a39;
+    box-shadow: 0 10px 24px rgba(31, 138, 57, 0.18);
+}
+
+.match-card.predicted .match-time,
+.match-card.predicted .team,
+.match-card.predicted .vs {
+    color: #14532d;
+}
+
+.match-card.predicted .match-header,
+.match-card.predicted .match-teams,
+.match-card.predicted .match-prediction {
+    position: relative;
+    z-index: 1;
 }
 
 .match-card:hover {
@@ -492,6 +505,18 @@ input:focus, textarea:focus, select:focus {
 .match-card.unpredicted:hover {
     border-color: #4f6f91;
     box-shadow: 0 10px 24px rgba(30, 60, 114, 0.12);
+}
+
+.match-card.predicted .prediction-bet {
+    background: rgba(31, 138, 57, 0.12);
+    color: #14532d;
+    border-radius: 999px;
+    padding: 6px 12px;
+}
+
+.match-card.predicted .prediction-info {
+    color: #14532d;
+    font-weight: 700;
 }
 
 .match-header {
