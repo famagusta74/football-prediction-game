@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.9.0"; // Predicted match styling and daily bonus notifications
+const APP_VERSION = "v1.9.2"; // Daily bonus login visibility fix
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -697,7 +697,6 @@ async function login() {
         let dailyBonusMessage = '';
         
         if (hoursSinceLastLogin >= 24) {
-            const previousCoins = user.coins;
             const loginDayKey = now.toISOString().slice(0, 10);
             const activityKey = `daily_bonus_${loginDayKey}`;
             const hasDailyBonusEntry = ensureUserActivityLog(user).some(entry =>
@@ -706,28 +705,35 @@ async function login() {
                 entry.details.activityKey === activityKey
             );
 
-            user.coins += 100;
-            user.lastLogin = now.toISOString();
-
             if (!hasDailyBonusEntry) {
+                user.coins += 100;
                 addUserActivity(user.id, 'daily_bonus', 100, {
                     reason: 'Daily login bonus applied',
                     activityKey,
                     balanceAfter: user.coins
                 });
+                dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received 100 coins for logging in today.`;
             }
 
-            dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received 100 coins for logging in today.`;
+            user.lastLogin = now.toISOString();
         }
 
         await saveUsers();
-        currentUser = user;
+
+        if (useFirebase) {
+            users = await FirebaseDB.getUsers();
+        } else {
+            users = JSON.parse(localStorage.getItem('users')) || [];
+        }
+
+        currentUser = users.find(u => u.id === user.id) || user;
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
         
         showDashboard();
 
         if (dailyBonusMessage) {
             showDailyBonusNotification(dailyBonusMessage);
+            renderCurrentUserActivity();
         }
         
         // Check for pending pool invitation

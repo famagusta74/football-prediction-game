@@ -1,6 +1,6 @@
 # Football Prediction Game - Technical Specification Document
 
-**Version:** 1.9.1
+**Version:** 1.9.2
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 
@@ -96,7 +96,7 @@ football-prediction-game/
 ```text
 User Input → Validation → Firebase/localStorage Check →
 Daily Bonus Evaluation → Activity Logging → Save User State →
-Dashboard Display → Optional Browser Notification
+Reload Persisted User → Dashboard Display → Optional Browser Notification
 ```
 
 **Security:**
@@ -164,6 +164,7 @@ Dashboard Display → Optional Browser Notification
 - Each entry stores amount, timestamp, balance after change, and optional match/admin context
 - Daily bonus entries support an `activityKey` for same-day deduplication
 - Activity entries can store an explicit `balanceAfter` override so the rendered history reflects the true post-update balance
+- After login, the refreshed persisted user record is used so normal users immediately see the new daily bonus entry
 
 ### 3.4 Pool Management Module
 
@@ -242,6 +243,7 @@ function isAdmin() {
 - Activity history is persisted as part of the user object
 - Daily bonus activity keys are stored inside activity entry details
 - Daily bonus awards always add 100 coins on each eligible new day without a balance cap
+- After saving a login-side bonus, the app reloads the persisted user list before rendering the dashboard
 
 ### 4.2 Prediction Persistence
 
@@ -339,13 +341,13 @@ For every code change:
 
 ---
 
-## 8. Version 1.9.1 Technical Notes
+## 8. Version 1.9.2 Technical Notes
 
-Version 1.9.1 introduces:
-- Reliable predicted versus unpredicted match detection in [`loadMatches()`](../app.js) by pre-filtering the current user's saved predictions
-- Stronger predicted card styling in [`styles.css`](../styles.css) so saved picks are visibly different
-- Uncapped daily login bonus awards of 100 coins in [`login()`](../app.js)
+Version 1.9.2 introduces:
+- A login refresh fix in [`login()`](../app.js) so normal users immediately see the saved daily bonus activity entry after authentication
+- Continued uncapped daily login bonus awards of 100 coins in [`login()`](../app.js)
 - Correct daily bonus activity balance rendering through explicit `balanceAfter` values in [`addUserActivity()`](../app.js)
-- Updated UI messaging in [`index.html`](../index.html) to explain match card colors and the daily bonus rule
+- Preserved predicted versus unpredicted match rendering in [`loadMatches()`](../app.js) and [`styles.css`](../styles.css)
+- Updated UI and documentation version labels for the release
 
-This document reflects the version 1.9.1 implementation baseline.
+This document reflects the version 1.9.2 implementation baseline.

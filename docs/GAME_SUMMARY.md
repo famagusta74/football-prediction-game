@@ -88,6 +88,7 @@ The game now includes an admin-facing coin activity history for each user.
 - The activity log also records daily bonuses and admin coin resets
 - Each entry includes the amount, timestamp, resulting balance, and related match context when available
 - Daily bonus entries now store the post-award balance explicitly so the activity history always shows the awarded 100 coins correctly
+- After login, the app reloads the saved user record before rendering the dashboard so normal users immediately see the bonus entry in their activity history
 
 This makes it easier to investigate unexpected balance changes and understand exactly how a user's coin total was built over time.
 
@@ -99,7 +100,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.9.1:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.9.2:
 - Application constant in [`app.js:2`](../app.js:2)
 - Login screen version label in [`index.html:21`](../index.html:21)
 - Dashboard version badge in [`index.html:146`](../index.html:146)
@@ -123,10 +124,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.9.1 includes the latest prediction-detection and daily-bonus corrections:
+Version v1.9.2 includes the latest daily-bonus visibility correction:
 
-- Predicted matches are now detected from the current user's saved prediction list before rendering cards, so already predicted games reliably use the green palette
-- Unpredicted matches continue to use the blue-grey palette for quick scanning
-- Daily login bonuses now always award 100 coins on each eligible new day with no maximum balance cap
-- Daily bonus activity entries now store the correct post-award balance so the activity history shows the allocation clearly
+- Normal-user login now reloads the saved user record after the daily bonus is written, so the awarded 100 coins appear immediately in the activity history
+- The daily login thank-you message is shown after the refreshed user state is loaded into the dashboard
+- Predicted matches continue to render with the green palette and unpredicted matches continue to use the blue-grey palette
+- Daily login bonuses still award 100 coins on each eligible new day with no maximum balance cap
 - Match locking, admin promotion controls, and coin audit history remain part of the current release baseline

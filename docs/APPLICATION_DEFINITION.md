@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.9.1
+**Version:** 1.9.2
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -60,6 +60,7 @@ Enable football fans to:
    - Activity includes prediction deductions, edits, payouts, daily bonuses, and admin changes
    - Daily bonus entries are keyed per day to avoid duplicate records while preserving valid history
    - Daily bonus entries store the correct post-award balance for clearer audit visibility
+   - Login refreshes the saved user record before rendering the dashboard so normal users immediately see the bonus entry
 
 6. **Admin Features**
    - Match result management
@@ -145,7 +146,8 @@ The original primary admin remains Menicos.
 3. No maximum balance cap blocks the daily allocation
 4. A daily bonus activity entry is recorded once for that calendar day
 5. The activity entry stores the correct balance after the award
-6. The user receives a thank-you notification showing the awarded amount
+6. The saved user record is reloaded before the dashboard is rendered
+7. The user receives a thank-you notification showing the awarded amount
 
 ### 4.5 Creating a Pool
 1. User clicks "Create New Pool"
@@ -208,6 +210,7 @@ For admins:
 - Daily bonus activity uses a per-day key to prevent duplicate entries
 - Daily bonus awards can trigger a browser notification or fallback alert
 - Activity entries can store an explicit `balanceAfter` value for accurate audit rendering
+- After saving the daily bonus, the app reloads the persisted user record so normal users see the updated balance and activity immediately
 
 ### 5.4 Pool Rules
 - Pool creator becomes pool admin
@@ -324,6 +327,7 @@ For admins:
 - Users see detailed transaction history in HTML
 - Admins can inspect the same style of history for any user
 - Daily bonus entries show the awarded amount and the correct resulting balance
+- Normal users see the daily bonus entry immediately after login when a new eligible-day bonus is awarded
 
 ---
 
@@ -334,10 +338,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.9.1, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.9.2, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.9.1 strengthens usability by making saved predictions render with reliable visual distinction, removes the daily bonus balance cap, and improves daily bonus activity visibility for both users and admins.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.9.2 fixes daily bonus visibility for normal users by reloading the saved user state before rendering the dashboard, while preserving the uncapped 100-coin daily bonus rule and the improved prediction card styling.

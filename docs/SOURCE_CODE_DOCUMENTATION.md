@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 1.9.1
+**Version:** 1.9.2
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~2,700
@@ -20,7 +20,7 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game  
-**Version:** 1.9.1  
+**Version:** 1.9.2  
 **Built by:** IBM Bob AI Assistant  
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase  
 **Lines of Code:** ~1,800 (JavaScript), ~800 (CSS), ~300 (HTML)
@@ -100,7 +100,7 @@ football-prediction-game/
 ```html
 <div id="loginScreen" class="screen active">
     <div class="container">
-        <div class="version-header">v1.9.1 - Predicted Match Detection & Uncapped Daily Bonus</div>
+        <div class="version-header">v1.9.2 - Daily Bonus Login Visibility Fix</div>
         <div class="logo">⚽</div>
         <h1>Football Prediction Game</h1>
         <div class="auth-form">
@@ -123,7 +123,7 @@ football-prediction-game/
                 <span class="coin-icon">🪙</span>
                 <span id="userCoins">1000</span>
             </div>
-            <div class="version-badge">v1.9.1</div>
+            <div class="version-badge">v1.9.2</div>
         </div>
         <button onclick="logout()" class="btn-logout">Logout</button>
     </div>
@@ -283,7 +283,7 @@ football-prediction-game/
 ```text
 User Input → Validation → Firebase/localStorage Check →
 Daily Bonus Evaluation → Activity Logging → Save User State →
-Dashboard Display → Optional Notification
+Reload Persisted User → Dashboard Display → Optional Notification
 ```
 
 **Security and Session Rules:**
@@ -351,6 +351,7 @@ Dashboard Display → Optional Notification
 - Each entry stores amount, timestamp, balance after change, and optional match/admin context
 - Daily bonus entries can include an `activityKey` to prevent duplicate same-day records
 - Activity entries can override `balanceAfter` explicitly for accurate rendering after coin mutations
+- After login, the refreshed persisted user record is used so normal users immediately see the new daily bonus entry
 
 ### 5.4 Pool Management Module
 
@@ -464,7 +465,7 @@ firebase-database/
 
 ### 7.1 Version Constant
 ```javascript
-const APP_VERSION = "v1.9.1";
+const APP_VERSION = "v1.9.2";
 ```
 
 ### 7.2 Predicted Match Detection
@@ -478,28 +479,27 @@ matches.forEach(match => {
 
 ### 7.3 Daily Bonus Activity Logging
 ```javascript
-user.coins += 100;
-
-addUserActivity(user.id, 'daily_bonus', 100, {
-    reason: 'Daily login bonus applied',
-    activityKey,
-    balanceAfter: user.coins
-});
+if (!hasDailyBonusEntry) {
+    user.coins += 100;
+    addUserActivity(user.id, 'daily_bonus', 100, {
+        reason: 'Daily login bonus applied',
+        activityKey,
+        balanceAfter: user.coins
+    });
+}
 ```
 
-### 7.4 Daily Bonus Notification
+### 7.4 Reload Persisted User After Bonus Save
 ```javascript
-function showDailyBonusNotification(message) {
-    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-        new Notification('Football Prediction Game', {
-            body: message,
-            icon: 'bobimage.jpeg'
-        });
-        return;
-    }
+await saveUsers();
 
-    alert(message);
+if (useFirebase) {
+    users = await FirebaseDB.getUsers();
+} else {
+    users = JSON.parse(localStorage.getItem('users')) || [];
 }
+
+currentUser = users.find(u => u.id === user.id) || user;
 ```
 
 ---
@@ -513,6 +513,7 @@ function showDailyBonusNotification(message) {
 - Keep prediction locking tied to kickoff time
 - Use activity keys for idempotent daily bonus logging
 - Store explicit `balanceAfter` values when an activity entry must reflect a post-update balance exactly
+- Reload the persisted user record after login-side bonus writes so the UI reflects the saved state immediately
 - Create a local git commit for each release so GitHub Desktop can push it
 
-This documentation reflects the version 1.9.1 codebase and release workflow.
+This documentation reflects the version 1.9.2 codebase and release workflow.
