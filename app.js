@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.8.0"; // Prediction edit amount display correction
+const APP_VERSION = "v1.9.0"; // Predicted match styling and daily bonus notifications
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -179,9 +179,15 @@ function ensureUserActivityLog(user) {
 
 function addUserActivity(userId, type, amount, details = {}) {
     const user = users.find(u => u.id === userId);
-    if (!user) return;
+    if (!user) return false;
 
     const activityLog = ensureUserActivityLog(user);
+    const activityKey = details.activityKey || null;
+
+    if (activityKey && activityLog.some(entry => entry.details && entry.details.activityKey === activityKey)) {
+        return false;
+    }
+
     activityLog.unshift({
         id: Date.now() + Math.floor(Math.random() * 1000),
         type,
@@ -197,6 +203,32 @@ function addUserActivity(userId, type, amount, details = {}) {
 
     if (currentUser && currentUser.id === userId) {
         currentUser.activityLog = activityLog;
+    }
+
+    return true;
+}
+
+function showDailyBonusNotification(message) {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        new Notification('Football Prediction Game', {
+            body: message,
+            icon: 'bobimage.jpeg'
+        });
+        return;
+    }
+
+    alert(message);
+}
+
+async function requestNotificationPermission() {
+    if (typeof Notification === 'undefined' || Notification.permission !== 'default') {
+        return;
+    }
+
+    try {
+        await Notification.requestPermission();
+    } catch (error) {
+        console.warn('Notification permission request failed:', error);
     }
 }
 
@@ -662,6 +694,7 @@ async function login() {
         const lastLogin = new Date(user.lastLogin || 0);
         const now = new Date();
         const hoursSinceLastLogin = (now - lastLogin) / (1000 * 60 * 60);
+        let dailyBonusMessage = '';
         
         if (hoursSinceLastLogin >= 24) {
             const previousCoins = user.coins;
@@ -671,14 +704,33 @@ async function login() {
             const bonusAwarded = user.coins - previousCoins;
             if (bonusAwarded > 0) {
                 addUserActivity(user.id, 'daily_bonus', bonusAwarded, {
-                    reason: 'Daily login bonus applied'
+                    reason: 'Daily login bonus applied',
+                    activityKey: `daily_bonus_${user.lastLogin.slice(0, 10)}`
                 });
+                dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received ${bonusAwarded} coins for logging in today.`;
             }
-
-            await saveUsers();
         }
+
+        const loginDayKey = now.toISOString().slice(0, 10);
+        const hasDailyBonusEntry = ensureUserActivityLog(user).some(entry =>
+            entry.type === 'daily_bonus' &&
+            entry.details &&
+            entry.details.activityKey === `daily_bonus_${loginDayKey}`
+        );
+
+        if (hoursSinceLastLogin < 24 && hasDailyBonusEntry) {
+            user.lastLogin = user.lastLogin || now.toISOString();
+        }
+
+        await saveUsers();
+        currentUser = user;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
         
         showDashboard();
+
+        if (dailyBonusMessage) {
+            showDailyBonusNotification(dailyBonusMessage);
+        }
         
         // Check for pending pool invitation
         const pendingPoolCode = localStorage.getItem('pendingPoolCode');
@@ -861,7 +913,8 @@ function loadMatches() {
         
         const matchCard = document.createElement('div');
         const matchLocked = isMatchLocked(match);
-        matchCard.className = `match-card${matchLocked ? ' locked' : ''}`;
+        const predictionStateClass = userPrediction ? ' predicted' : ' unpredicted';
+        matchCard.className = `match-card${matchLocked ? ' locked' : ''}${predictionStateClass}`;
         matchCard.onclick = () => openPredictionModal(match);
         
         const kickoffDate = new Date(match.kickoff);

@@ -1,6 +1,6 @@
 # Football Prediction Game - Technical Specification Document
 
-**Version:** 1.7.1
+**Version:** 1.9.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 
@@ -89,11 +89,14 @@ football-prediction-game/
 - [`logout()`](../app.js)
 - [`showLogin()`](../app.js)
 - [`showRegister()`](../app.js)
+- [`requestNotificationPermission()`](../app.js)
+- [`showDailyBonusNotification()`](../app.js)
 
 **Flow:**
 ```text
 User Input → Validation → Firebase/localStorage Check →
-Session Creation → Dashboard Display
+Daily Bonus Evaluation → Activity Logging → Save User State →
+Dashboard Display → Optional Browser Notification
 ```
 
 **Security:**
@@ -128,6 +131,7 @@ Session Creation → Dashboard Display
 - Locked matches remain frozen until admin enters the final result
 - Users can edit predictions only before kickoff
 - Prediction deductions and edits are recorded in activity history
+- Match cards are visually marked as predicted or unpredicted
 
 ### 3.3 Activity History Module
 
@@ -157,6 +161,7 @@ Session Creation → Dashboard Display
 - Users can view their own activity in the HTML [`Activity`](../index.html) tab
 - Admins can inspect any user's activity in the HTML users area
 - Each entry stores amount, timestamp, balance after change, and optional match/admin context
+- Daily bonus entries support an `activityKey` for same-day deduplication
 
 ### 3.4 Pool Management Module
 
@@ -221,25 +226,79 @@ function isAdmin() {
 
 ---
 
-## 4. Firebase Integration
+## 4. Data Persistence
 
-### 4.1 Configuration
+### 4.1 User Persistence
 
-**File:** [`firebase-config.js`](../firebase-config.js)
+**Functions:**
+- [`saveUsers()`](../app.js)
+- [`loadDataFromFirebase()`](../app.js)
 
-```javascript
-const firebaseConfig = {
-    apiKey: "AIzaSyATsmrz6NlM1bgootQFhIrZAmT-vui_chI",
-    authDomain: "football-prediction-game-ca155.firebaseapp.com",
-    databaseURL: "https://football-prediction-game-ca155-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "football-prediction-game-ca155",
-    storageBucket: "football-prediction-game-ca155.firebasestorage.app",
-    messagingSenderId: "266847662424",
-    appId: "1:266847662424:web:fc24bb439d3015e02cf52d"
-};
-```
+**Behavior:**
+- Users are stored in Firebase when available
+- localStorage is used as fallback
+- Activity history is persisted as part of the user object
+- Daily bonus activity keys are stored inside activity entry details
 
-### 4.2 Database Structure
+### 4.2 Prediction Persistence
+
+**Functions:**
+- [`savePredictions()`](../app.js)
+- [`FirebaseDB.savePrediction()`](../firebase-config.js)
+
+**Behavior:**
+- Predictions are stored separately from users
+- Each prediction is linked by `userId` and `matchId`
+- Processed state prevents duplicate payout handling
+
+### 4.3 Notification Persistence
+
+**Functions:**
+- [`notifyAdminNewUser()`](../app.js)
+- [`FirebaseDB.saveNotification()`](../firebase-config.js)
+- [`FirebaseDB.getNotifications()`](../firebase-config.js)
+
+**Behavior:**
+- Admin registration notifications are stored in Firebase or localStorage
+- Daily bonus user notifications are browser-side only and are not persisted as admin notifications
+
+---
+
+## 5. UI and Styling Rules
+
+### 5.1 Match Card Styling
+
+**File:** [`styles.css`](../styles.css)
+
+**States:**
+- Default card
+- Predicted card
+- Unpredicted card
+- Locked card
+- Hover states
+
+**Behavior:**
+- Predicted cards use a green palette
+- Unpredicted cards use a blue-grey palette
+- Hover styling remains active for both states
+- Prediction state is assigned dynamically in [`loadMatches()`](../app.js)
+
+### 5.2 Version Labels
+
+**Files:**
+- [`app.js:2`](../app.js:2)
+- [`index.html:21`](../index.html:21)
+- [`index.html:114`](../index.html:114)
+- [`index.html:132`](../index.html:132)
+- [`index.html:146`](../index.html:146)
+- [`docs/index.html:190`](index.html:190)
+
+**Rule:**
+Every release must update all visible version labels and the internal version constant together.
+
+---
+
+## 6. Database Structure
 
 ```text
 firebase-database/
@@ -259,225 +318,30 @@ firebase-database/
 │       ├── isAdmin
 │       └── activityLog[]
 ├── pools/
-│   └── {poolId}/
-│       ├── id
-│       ├── name
-│       ├── description
-│       ├── code
-│       ├── adminId
-│       ├── members[]
-│       └── createdAt
 ├── predictions/
-│   └── {predictionId}/
-│       ├── id
-│       ├── userId
-│       ├── matchId
-│       ├── homeScore
-│       ├── awayScore
-│       ├── betAmount
-│       ├── createdAt
-│       ├── modifiedAt
-│       ├── processed
-│       └── payout
 ├── matches/
-│   └── {matchId}/
-│       ├── id
-│       ├── homeTeam
-│       ├── awayTeam
-│       ├── kickoff
-│       ├── status
-│       ├── league
-│       ├── stage
-│       ├── venue
-│       └── finalScore/
-│           ├── home
-│           └── away
 └── adminNotifications/
-    └── {notificationId}/
-        ├── type
-        ├── user/
-        ├── timestamp
-        └── read
-```
-
-### 4.3 Database Operations
-
-**Read Operations:**
-```javascript
-const users = await FirebaseDB.getUsers();
-const pools = await FirebaseDB.getPools();
-const predictions = await FirebaseDB.getPredictions();
-const matches = await FirebaseDB.getMatches();
-```
-
-**Write Operations:**
-```javascript
-await FirebaseDB.saveUser(userObject);
-await FirebaseDB.savePool(poolObject);
-await FirebaseDB.savePrediction(predictionObject);
-await FirebaseDB.saveAllMatches(matchesArray);
-```
-
-### 4.4 Data Migration
-
-**One-time Migration from localStorage to Firebase:**
-```javascript
-async function migrateLocalStorageToFirebase() {
-    const localUsers = JSON.parse(localStorage.getItem('users')) || [];
-    const localPools = JSON.parse(localStorage.getItem('pools')) || [];
-    const localPredictions = JSON.parse(localStorage.getItem('predictions')) || [];
-    const localNotifications = JSON.parse(localStorage.getItem('adminNotifications')) || [];
-
-    for (const user of localUsers) {
-        await FirebaseDB.saveUser(user);
-    }
-    for (const pool of localPools) {
-        await FirebaseDB.savePool(pool);
-    }
-    for (const prediction of localPredictions) {
-        await FirebaseDB.savePrediction(prediction);
-    }
-    for (const notification of localNotifications) {
-        await FirebaseDB.saveNotification(notification);
-    }
-
-    localStorage.setItem('firebaseMigrationDone', 'true');
-}
 ```
 
 ---
 
-## 5. Data Flow Diagrams
+## 7. Release Procedure
 
-### 5.1 User Registration Flow
-
-```text
-Create Account → Validate Input → Create User Object →
-Save User → Notify Admin → Redirect to Login
-```
-
-### 5.2 Prediction Submission Flow
-
-```text
-Open Match → Validate Scores and Bet → Check Match Lock →
-Create or Edit Prediction → Deduct Coins if Needed →
-Add Activity Entry → Save Prediction → Refresh HTML Views
-```
-
-### 5.3 Admin Result Processing Flow
-
-```text
-Enter Final Result → Save Match → Process Results →
-Calculate Payouts → Update Coins and Stats →
-Add Activity Entries → Save Changes → Refresh Displays
-```
+For every code change:
+1. Update the version constant in [`app.js:2`](../app.js:2)
+2. Update all visible version labels in [`index.html`](../index.html) and [`docs/index.html`](index.html)
+3. Update the documentation set in [`docs/GAME_SUMMARY.md`](GAME_SUMMARY.md), [`docs/APPLICATION_DEFINITION.md`](APPLICATION_DEFINITION.md), [`docs/SOURCE_CODE_DOCUMENTATION.md`](SOURCE_CODE_DOCUMENTATION.md), and [`docs/TECHNICAL_SPECIFICATION.md`](TECHNICAL_SPECIFICATION.md)
+4. Create a local git commit for the Mac GitHub Desktop workflow
+5. Push from GitHub Desktop and verify deployment
 
 ---
 
-## 6. API Reference
+## 8. Version 1.9.0 Technical Notes
 
-### 6.1 Firebase Helper Functions
+Version 1.9.0 introduces:
+- Predicted versus unpredicted match card styling in [`styles.css`](../styles.css) and [`loadMatches()`](../app.js)
+- Daily login thank-you notifications through [`showDailyBonusNotification()`](../app.js)
+- Same-day daily bonus activity deduplication using `activityKey` values in [`addUserActivity()`](../app.js)
+- Updated UI messaging in [`index.html`](../index.html) to explain match card colors
 
-**[`FirebaseDB.saveUser(user)`](../firebase-config.js)**
-- Purpose: Save or update user in Firebase
-- Returns: Promise<boolean>
-
-**[`FirebaseDB.getUsers()`](../firebase-config.js)**
-- Purpose: Retrieve all users from Firebase
-- Returns: Promise<Array<User>>
-
-**[`FirebaseDB.savePool(pool)`](../firebase-config.js)**
-- Purpose: Save or update pool in Firebase
-- Returns: Promise<boolean>
-
-**[`FirebaseDB.getPools()`](../firebase-config.js)**
-- Purpose: Retrieve all pools from Firebase
-- Returns: Promise<Array<Pool>>
-
-**[`FirebaseDB.savePrediction(prediction)`](../firebase-config.js)**
-- Purpose: Save prediction in Firebase
-- Returns: Promise<boolean>
-
-**[`FirebaseDB.getPredictions()`](../firebase-config.js)**
-- Purpose: Retrieve all predictions from Firebase
-- Returns: Promise<Array<Prediction>>
-
-**[`FirebaseDB.saveAllMatches(matches)`](../firebase-config.js)**
-- Purpose: Save all matches in Firebase
-- Returns: Promise<boolean>
-
-**[`FirebaseDB.getMatches()`](../firebase-config.js)**
-- Purpose: Retrieve all matches from Firebase
-- Returns: Promise<Array<Match>>
-
-### 6.2 Core Application Functions
-
-**[`login()`](../app.js)**
-- Purpose: Authenticate user
-- Async: Yes
-- Side Effects: Sets current user, applies daily bonus when eligible, records activity
-
-**[`register()`](../app.js)**
-- Purpose: Create new user account
-- Async: Yes
-- Side Effects: Adds user to database, notifies admin
-
-**[`submitPrediction()`](../app.js)**
-- Purpose: Save or edit user's match prediction
-- Validation: Valid scores, sufficient coins, unlocked match
-- Side Effects: Deducts coins when needed, records activity, refreshes activity views
-
-**[`processFinishedMatches()`](../app.js)**
-- Purpose: Process payouts for finished matches
-- Side Effects: Updates balances, stats, and activity logs
-
-**[`showUserActivity()`](../app.js)**
-- Purpose: Open selected user's activity in the admin HTML area
-- Side Effects: Selects user and renders activity viewer
-
----
-
-## 7. Operational Rules
-
-### 7.1 Versioning
-Every change should update:
-- [`APP_VERSION`](../app.js)
-- Visible version labels in [`index.html`](../index.html)
-- Documentation portal version in [`docs/index.html`](index.html)
-- Relevant documentation files in [`docs/`](.)
-
-### 7.2 Coin Rules
-- Starting balance: 1000
-- Daily bonus: 100
-- Maximum balance: 2000
-- Prediction bet range: 10 to 500
-- All coin mutations should be logged in activity history
-
-### 7.3 Match Rules
-- Predictions allowed only before kickoff
-- Started matches are locked automatically
-- Locked matches remain frozen until admin enters result
-- Finished matches require admin processing for payouts
-
----
-
-## 8. Maintenance Notes
-
-- Keep documentation synchronized with behavior changes
-- Preserve Menicos as the protected primary admin
-- Prefer HTML-based activity rendering over popup-based history views
-- Refresh user-facing activity after prediction, payout, and admin changes
-- Commit releases with explicit version numbers in commit messages
-
----
-
-**Document Version:** 1.7.1
-**Created:** June 2026
-**Author:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Status:** Active
-**Latest Features:**
-- HTML activity history screens for users and admins
-- Match locking after kickoff
-- Multi-admin support with protected primary admin
-- Daily bonus reduced to 100 coins
-- Activity logging for predictions, payouts, bonuses, and admin actions
+This document reflects the version 1.9.0 implementation baseline.

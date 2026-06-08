@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.7.1
+**Version:** 1.9.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -38,11 +38,13 @@ Enable football fans to:
    - Place coin bets on predictions
    - View prediction history and results
    - Automatic prediction locking after kickoff
+   - Visual distinction between predicted and unpredicted match cards
 
 3. **Reward System**
    - 5x payout for exact score predictions
    - 2x payout for correct result (win/draw/loss)
    - Daily coin replenishment (100 coins, max 2000)
+   - Daily thank-you notification when bonus coins are awarded
    - Starting balance: 1000 coins
 
 4. **Private Pools**
@@ -55,6 +57,7 @@ Enable football fans to:
    - Users can view their own coin activity in the Activity tab
    - Admins can inspect any user's full coin history in HTML
    - Activity includes prediction deductions, edits, payouts, daily bonuses, and admin changes
+   - Daily bonus entries are keyed per day to avoid duplicate records while preserving valid history
 
 6. **Admin Features**
    - Match result management
@@ -75,6 +78,7 @@ Enable football fans to:
 - View leaderboards
 - Track personal statistics
 - View personal activity history
+- Receive a daily bonus notification when eligible
 
 **Limitations:**
 - Cannot enter match results
@@ -116,13 +120,14 @@ The original primary admin remains Menicos.
 ### 4.2 Making a Prediction
 1. User logs in
 2. Views upcoming matches
-3. Clicks on a match before kickoff
-4. Enters predicted home and away scores
-5. Sets bet amount (minimum 10 coins)
-6. Views potential payouts (5x exact, 2x result)
-7. Submits prediction
-8. Coins deducted from balance
-9. Activity history records the deduction
+3. Uses match card colors to identify predicted versus still-open matches
+4. Clicks on a match before kickoff
+5. Enters predicted home and away scores
+6. Sets bet amount (minimum 10 coins)
+7. Views potential payouts (5x exact, 2x result)
+8. Submits prediction
+9. Coins deducted from balance
+10. Activity history records the deduction
 
 ### 4.3 Editing a Prediction
 1. User opens a match that already has a prediction
@@ -131,7 +136,14 @@ The original primary admin remains Menicos.
 4. Activity history records the edit
 5. Match remains locked after kickoff
 
-### 4.4 Creating a Pool
+### 4.4 Daily Login Bonus
+1. User logs in after at least 24 hours
+2. System calculates the daily bonus up to the 2000-coin cap
+3. Bonus coins are added to the user balance
+4. A daily bonus activity entry is recorded once for that calendar day
+5. The user receives a thank-you notification showing the awarded amount
+
+### 4.5 Creating a Pool
 1. User clicks "Create New Pool"
 2. Enters pool name and description
 3. System generates unique pool code
@@ -139,7 +151,7 @@ The original primary admin remains Menicos.
 5. User can copy and share link
 6. Friends join using code or link
 
-### 4.5 Admin Processing Results
+### 4.6 Admin Processing Results
 1. Admin logs in
 2. Navigates to "Matches" tab
 3. Clicks "Enter Result" for completed match
@@ -152,7 +164,7 @@ The original primary admin remains Menicos.
 10. Predictions marked as processed
 11. Activity history records payouts
 
-### 4.6 Viewing Activity History
+### 4.7 Viewing Activity History
 1. User opens the "Activity" tab
 2. System shows balance summary and transaction history
 3. Entries include timestamps, amounts, balances, and match context when available
@@ -188,6 +200,8 @@ For admins:
 - Maximum balance: 2000 coins
 - Coins are virtual (no real money value)
 - Coin changes are recorded in activity history
+- Daily bonus activity uses a per-day key to prevent duplicate entries
+- Daily bonus awards can trigger a browser notification or fallback alert
 
 ### 5.4 Pool Rules
 - Pool creator becomes pool admin
@@ -228,31 +242,23 @@ For admins:
       amount: Number,
       balanceAfter: Number,
       timestamp: String,
-      details: Object
+      details: {
+        reason: String,
+        matchId: Number,
+        predictionScore: String,
+        previousPredictionScore: String,
+        previousBetAmount: Number,
+        updatedBetAmount: Number,
+        finalScore: String,
+        changedBy: String,
+        activityKey: String
+      }
     }
   ]
 }
 ```
 
-### 6.2 Match Object
-```javascript
-{
-  id: Number,
-  homeTeam: String,
-  awayTeam: String,
-  kickoff: String,
-  status: String,
-  league: String,
-  stage: String,
-  venue: String,
-  finalScore: {
-    home: Number,
-    away: Number
-  }
-}
-```
-
-### 6.3 Prediction Object
+### 6.2 Prediction Object
 ```javascript
 {
   id: Number,
@@ -263,140 +269,67 @@ For admins:
   betAmount: Number,
   createdAt: String,
   modifiedAt: String,
-  processed: Boolean,
-  payout: Number
+  processed: Boolean
 }
 ```
 
-### 6.4 Pool Object
+### 6.3 Match Object
 ```javascript
 {
   id: Number,
-  name: String,
-  description: String,
-  code: String,
-  adminId: Number,
-  members: Array<Number>,
-  createdAt: String
+  homeTeam: String,
+  awayTeam: String,
+  kickoff: String,
+  venue: String,
+  stage: String,
+  status: String,
+  finalScore: {
+    home: Number,
+    away: Number
+  }
 }
 ```
 
 ---
 
-## 7. Technical Requirements
+## 7. User Interface Summary
 
-### 7.1 Browser Compatibility
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-- Mobile browsers (iOS Safari, Chrome Mobile)
+### 7.1 Main Screens
+- Login screen
+- Registration screen
+- Dashboard
+- Predictions tab
+- Pools tab
+- Leaderboard tab
+- Activity tab
+- Admin Matches tab
+- Admin Users tab
 
-### 7.2 Internet Connection
-- Required for Firebase synchronization
-- Fallback to localStorage when offline
-- Automatic sync when connection restored
+### 7.2 Prediction Screen Behavior
+- Upcoming matches are shown as cards
+- Predicted matches use a green palette
+- Unpredicted matches use a blue-grey palette
+- Locked matches remain unavailable after kickoff
+- Existing predictions display score and bet details directly on the card
 
-### 7.3 Device Support
-- Desktop computers
-- Tablets
-- Smartphones
-- Responsive design (320px - 2560px width)
-
-### 7.4 Performance
-- Page load: < 2 seconds
-- Prediction submission: < 1 second
-- Firebase sync: < 3 seconds
-- Supports 1000+ concurrent users
-
----
-
-## 8. Security & Privacy
-
-### 8.1 Authentication
-- 4-digit PIN (not encrypted - suitable for casual use)
-- No password recovery (by design)
-- Session stored in localStorage
-- No third-party authentication
-
-### 8.2 Data Privacy
-- Email addresses stored but not displayed publicly
-- Nicknames are public within pools
-- No personal data collection beyond registration
-- No analytics or tracking
-
-### 8.3 Firebase Security
-- Database rules restrict write access
-- Read access for authenticated users
-- Admin operations validated in application logic
-- No real-money financial data stored
+### 7.3 Activity Screen Behavior
+- Users see a personal summary of balance, total in, total out, and entry count
+- Users see detailed transaction history in HTML
+- Admins can inspect the same style of history for any user
 
 ---
 
-## 9. Future Enhancements
+## 8. Release Management Rule
 
-### 9.1 Planned Features
-- Email notifications for match results
-- Push notifications for upcoming matches
-- Achievement badges and trophies
-- Historical statistics and graphs
-- Export predictions to CSV
-- Mobile app (iOS/Android)
+Every change to the application must follow this release process:
+1. Update the version number everywhere it appears in the application and documentation
+2. Update the documentation set to reflect the new behavior
+3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-### 9.2 Potential Improvements
-- Password recovery system
-- Two-factor authentication
-- Real-time match updates
-- Live chat in pools
-- Prediction insights and tips
-- Integration with sports APIs
+For version 1.9.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
-## 10. Support & Maintenance
+## 9. Conclusion
 
-### 10.1 Known Limitations
-- No password recovery mechanism
-- Manual match result entry required
-- No automated match data updates
-- Limited to FIFA World Cup 2026 matches
-
-### 10.2 Troubleshooting
-- Clear browser cache if login issues occur
-- Check internet connection for Firebase sync
-- Contact admin for account issues
-- Refresh page if data doesn't update
-
-### 10.3 Contact
-- Primary Admin: Menicos
-- Built by: IBM Bob AI Assistant
-- GitHub: [Repository URL]
-- Documentation: Available in-app
-
----
-
-## 11. Glossary
-
-**Coins:** Virtual currency used for predictions  
-**Pool:** Private group for competing with friends  
-**Payout:** Coins earned from correct predictions  
-**Exact Score:** Predicting both team scores correctly  
-**Correct Result:** Predicting winner/draw correctly  
-**Admin:** User with special privileges  
-**Primary Admin:** Protected first admin account (Menicos)  
-**Activity History:** Coin transaction log for users and admins  
-**Firebase:** Cloud database for data synchronization  
-**PIN:** 4-digit Personal Identification Number  
-
----
-
-**Document Version:** 1.7.1
-**Created:** June 2026
-**Author:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Status:** Active
-**Latest Features:**
-- HTML activity history for users and admins
-- Match locking after kickoff
-- Multi-admin support with protected primary admin
-- Daily bonus reduced to 100 coins
-- Cross-device Firebase synchronization
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.9.0 strengthens usability by making prediction status easier to scan visually, improves the daily login experience with a thank-you notification, and keeps daily bonus activity history more reliable for both users and admins.

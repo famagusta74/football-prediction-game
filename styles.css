@@ -467,10 +467,31 @@ input:focus, textarea:focus, select:focus {
     cursor: pointer;
 }
 
+.match-card.unpredicted {
+    background: linear-gradient(135deg, #f8f9fa 0%, #eef3f8 100%);
+    border-color: #d6dde6;
+}
+
+.match-card.predicted {
+    background: linear-gradient(135deg, #eefaf2 0%, #dff5e7 100%);
+    border-color: #28a745;
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.12);
+}
+
 .match-card:hover {
     border-color: #1e3c72;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.match-card.predicted:hover {
+    border-color: #1f8a39;
+    box-shadow: 0 10px 24px rgba(40, 167, 69, 0.18);
+}
+
+.match-card.unpredicted:hover {
+    border-color: #4f6f91;
+    box-shadow: 0 10px 24px rgba(30, 60, 114, 0.12);
 }
 
 .match-header {

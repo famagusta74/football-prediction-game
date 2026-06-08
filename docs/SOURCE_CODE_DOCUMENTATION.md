@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 1.7.1
+**Version:** 1.9.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~2,700
@@ -20,7 +20,7 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game  
-**Version:** 1.7.1  
+**Version:** 1.9.0  
 **Built by:** IBM Bob AI Assistant  
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase  
 **Lines of Code:** ~1,800 (JavaScript), ~800 (CSS), ~300 (HTML)
@@ -45,6 +45,7 @@ football-prediction-game/
 │   ├── Global Styles
 │   ├── Screen Layouts
 │   ├── Component Styles
+│   ├── Match Card States
 │   ├── Animations
 │   └── Responsive Design
 │
@@ -99,7 +100,7 @@ football-prediction-game/
 ```html
 <div id="loginScreen" class="screen active">
     <div class="container">
-        <div class="version-header">v1.7.1 - HTML Activity History Screens</div>
+        <div class="version-header">v1.9.0 - Predicted Match Styling & Daily Bonus Notifications</div>
         <div class="logo">⚽</div>
         <h1>Football Prediction Game</h1>
         <div class="auth-form">
@@ -122,7 +123,7 @@ football-prediction-game/
                 <span class="coin-icon">🪙</span>
                 <span id="userCoins">1000</span>
             </div>
-            <div class="version-badge">v1.7.1</div>
+            <div class="version-badge">v1.9.0</div>
         </div>
         <button onclick="logout()" class="btn-logout">Logout</button>
     </div>
@@ -138,7 +139,19 @@ football-prediction-game/
 </div>
 ```
 
-### 3.4 Activity Screens
+### 3.4 Predictions Screen Messaging
+```html
+<div id="predictionsTab" class="tab-content active">
+    <div class="container">
+        <h2>Upcoming Matches</h2>
+        <p>Login every day to win coins</p>
+        <p>✅ Green cards already have your prediction. Blue-grey cards are still open for a new pick.</p>
+        <div id="matchesList" class="matches-list"></div>
+    </div>
+</div>
+```
+
+### 3.5 Activity Screens
 ```html
 <div id="activityTab" class="tab-content">
     <div class="container">
@@ -157,7 +170,7 @@ football-prediction-game/
 </div>
 ```
 
-### 3.5 Prediction Modal
+### 3.6 Prediction Modal
 ```html
 <div id="predictionModal" class="modal">
     <div class="modal-content">
@@ -189,100 +202,63 @@ football-prediction-game/
 
 ## 4. CSS Architecture
 
-### 4.1 CSS Variables
-```css
-:root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --success-color: #27ae60;
-    --danger-color: #e74c3c;
-    --warning-color: #f39c12;
-    --background: #ecf0f1;
-    --card-background: white;
-    --text-color: #2c3e50;
-    --border-radius: 10px;
-    --box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    --transition: all 0.3s ease;
-}
-```
-
-### 4.2 Layout System
+### 4.1 Layout System
 ```css
 .screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: none;
     min-height: 100vh;
     padding: 20px;
 }
 
 .matches-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
 }
 ```
 
-### 4.3 Component Styles
+### 4.2 Match Card States
 ```css
 .match-card {
-    background: var(--card-background);
-    border-radius: var(--border-radius);
+    background: #f8f9fa;
     padding: 20px;
-    box-shadow: var(--box-shadow);
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    transition: all 0.3s;
     cursor: pointer;
-    transition: var(--transition);
+}
+
+.match-card.unpredicted {
+    background: linear-gradient(135deg, #f8f9fa 0%, #eef3f8 100%);
+    border-color: #d6dde6;
+}
+
+.match-card.predicted {
+    background: linear-gradient(135deg, #eefaf2 0%, #dff5e7 100%);
+    border-color: #28a745;
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.12);
+}
+```
+
+### 4.3 Buttons and Interaction
+```css
+.btn-primary {
+    background: #1e3c72;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
 .match-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: var(--secondary-color);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 16px;
-    transition: var(--transition);
-}
-```
-
-### 4.4 Animations
-```css
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.screen.active {
-    animation: fadeIn 0.5s ease;
-}
-```
-
-### 4.5 Responsive Design
-```css
-@media (max-width: 768px) {
-    .matches-list {
-        grid-template-columns: 1fr;
-    }
-
-    .tabs {
-        flex-wrap: wrap;
-    }
-
-    .tab {
-        flex: 1 1 45%;
-    }
+    border-color: #1e3c72;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 ```
 
@@ -290,141 +266,136 @@ football-prediction-game/
 
 ## 5. JavaScript Modules
 
-### 5.1 Constants and Global Variables
-```javascript
-const APP_VERSION = "v1.7.1";
+### 5.1 Authentication Module
 
-let currentUser = null;
-let users = [];
-let pools = [];
-let predictions = [];
-let matches = [];
-let currentMatchId = null;
-let useFirebase = false;
-let selectedUserActivityId = null;
-let activeTabName = 'predictions';
+**File:** [`app.js`](../app.js)
 
-const ADMIN_NICKNAME = "Menicos";
-const DEFAULT_ADMIN_NICKNAMES = [ADMIN_NICKNAME];
+**Functions:**
+- [`login()`](../app.js)
+- [`register()`](../app.js)
+- [`logout()`](../app.js)
+- [`showLogin()`](../app.js)
+- [`showRegister()`](../app.js)
+- [`requestNotificationPermission()`](../app.js)
+- [`showDailyBonusNotification()`](../app.js)
+
+**Flow:**
+```text
+User Input → Validation → Firebase/localStorage Check →
+Daily Bonus Evaluation → Activity Logging → Session Creation →
+Dashboard Display → Optional Notification
 ```
 
-### 5.2 Initialization Module
-```javascript
-async function initializeApp() {
-    console.log(`Football Prediction Game ${APP_VERSION}`);
-    useFirebase = initializeFirebase();
+**Security and Session Rules:**
+- 4-digit PIN validation
+- Case-insensitive nickname matching
+- Duplicate email/nickname prevention
+- Session stored in localStorage
 
-    if (useFirebase) {
-        await loadDataFromFirebase();
-        if (matches.length === 0) {
-            matches = [...sampleMatches];
-            await FirebaseDB.saveAllMatches(matches);
-        }
-    } else {
-        users = JSON.parse(localStorage.getItem('users')) || [];
-        pools = JSON.parse(localStorage.getItem('pools')) || [];
-        predictions = JSON.parse(localStorage.getItem('predictions')) || [];
-    }
-}
+### 5.2 Prediction Module
+
+**File:** [`app.js`](../app.js)
+
+**Functions:**
+- [`loadMatches()`](../app.js)
+- [`openPredictionModal()`](../app.js)
+- [`submitPrediction()`](../app.js)
+- [`calculatePayout()`](../app.js)
+- [`hasMatchStarted()`](../app.js)
+- [`isMatchLocked()`](../app.js)
+
+**Validation Rules:**
+```text
+- Bet amount >= 10 coins
+- Bet amount <= 500 coins
+- Scores must be non-negative integers
+- Prediction before kickoff
+- Prediction locked after kickoff
 ```
 
-### 5.3 Authentication Module
-```javascript
-async function login() {
-    const nickname = document.getElementById('nickname').value.trim();
-    const pin = document.getElementById('pin').value;
+**Behavior:**
+- Matches become unavailable for prediction once kickoff passes
+- Locked matches remain frozen until admin enters the final result
+- Users can edit predictions only before kickoff
+- Prediction deductions and edits are recorded in activity history
+- Match cards visually distinguish predicted and unpredicted states
 
-    if (!nickname || !pin) {
-        alert('Please enter both nickname and PIN');
-        return;
-    }
+### 5.3 Activity History Module
 
-    const user = users.find(u =>
-        u.nickname.toLowerCase() === nickname.toLowerCase() &&
-        u.pin === pin
-    );
+**File:** [`app.js`](../app.js)
 
-    if (user) {
-        const lastLogin = new Date(user.lastLogin || 0);
-        const now = new Date();
-        const hoursSinceLastLogin = (now - lastLogin) / (1000 * 60 * 60);
+**Functions:**
+- [`ensureUserActivityLog()`](../app.js)
+- [`addUserActivity()`](../app.js)
+- [`buildActivitySummary()`](../app.js)
+- [`buildActivityEntriesHtml()`](../app.js)
+- [`renderCurrentUserActivity()`](../app.js)
+- [`renderAdminActivityViewer()`](../app.js)
+- [`showUserActivity()`](../app.js)
 
-        if (hoursSinceLastLogin >= 24) {
-            const previousCoins = user.coins;
-            user.coins = Math.min(user.coins + 100, 2000);
-            const bonusAwarded = user.coins - previousCoins;
-
-            if (bonusAwarded > 0) {
-                addUserActivity(user.id, 'daily_bonus', bonusAwarded, {
-                    reason: 'Daily login bonus applied'
-                });
-            }
-        }
-    }
-}
+**Tracked Activity Types:**
+```text
+- daily_bonus
+- prediction_bet
+- prediction_edit
+- payout
+- admin_reset
+- admin_grant
+- admin_remove
 ```
 
-### 5.4 Prediction Module
-```javascript
-function hasMatchStarted(match) {
-    return new Date(match.kickoff) <= new Date();
-}
+**Behavior:**
+- Users can view their own activity in the HTML [`Activity`](../index.html) tab
+- Admins can inspect any user's activity in the HTML users area
+- Each entry stores amount, timestamp, balance after change, and optional match/admin context
+- Daily bonus entries can include an `activityKey` to prevent duplicate same-day records
 
-function isMatchLocked(match) {
-    return hasMatchStarted(match) || match.status === 'finished';
-}
+### 5.4 Pool Management Module
 
-function submitPrediction() {
-    const match = matches.find(m => m.id === currentMatchId);
+**File:** [`app.js`](../app.js)
 
-    if (isMatchLocked(match)) {
-        alert('This match is locked. Predictions cannot be created or changed after kickoff.');
-        return;
-    }
+**Functions:**
+- [`createPool()`](../app.js)
+- [`joinPool()`](../app.js)
+- [`leavePool()`](../app.js)
+- [`generatePoolCode()`](../app.js)
+- [`loadPools()`](../app.js)
 
-    addUserActivity(currentUser.id, 'prediction_bet', -betAmount, {
-        reason: 'Coins deducted for new prediction',
-        matchId: currentMatchId,
-        predictionScore: `${homeScore} - ${awayScore}`
-    });
+### 5.5 Leaderboard Module
 
-    renderCurrentUserActivity();
-}
-```
+**File:** [`app.js`](../app.js)
 
-### 5.5 Activity History Module
-```javascript
-function ensureUserActivityLog(user) {
-    if (!Array.isArray(user.activityLog)) {
-        user.activityLog = [];
-    }
-    return user.activityLog;
-}
+**Functions:**
+- [`updateLeaderboard()`](../app.js)
+- [`getUserNickname()`](../app.js)
 
-function addUserActivity(userId, type, amount, details = {}) {
-    const user = users.find(u => u.id === userId);
-    if (!user) return;
-
-    const activityLog = ensureUserActivityLog(user);
-    activityLog.unshift({
-        id: Date.now() + Math.floor(Math.random() * 1000),
-        type,
-        amount,
-        balanceAfter: user.coins,
-        timestamp: new Date().toISOString(),
-        details
-    });
-}
-
-function renderCurrentUserActivity() {
-    const summaryContainer = document.getElementById('myActivitySummary');
-    const listContainer = document.getElementById('myActivityList');
-    if (!summaryContainer || !listContainer || !currentUser) return;
-}
+**Ranking Algorithm:**
+```text
+1. Filter users by pool membership or global scope
+2. Calculate accuracy from correct predictions and total predictions
+3. Sort by coins descending
+4. Render rankings and stats
 ```
 
 ### 5.6 Admin Module
+
+**File:** [`app.js`](../app.js)
+
+**Functions:**
+- [`loadAdminMatches()`](../app.js)
+- [`enterMatchResult()`](../app.js)
+- [`editMatchResult()`](../app.js)
+- [`processFinishedMatches()`](../app.js)
+- [`loadUsersTab()`](../app.js)
+- [`toggleAdminStatus()`](../app.js)
+- [`resetUserCoins()`](../app.js)
+- [`deleteUser()`](../app.js)
+
+**Admin Model:**
 ```javascript
+const ADMIN_NICKNAME = "Menicos";
+const DEFAULT_ADMIN_NICKNAMES = [ADMIN_NICKNAME];
+
 function isAdminUser(user) {
     return !!(user && user.isAdmin);
 }
@@ -432,64 +403,36 @@ function isAdminUser(user) {
 function isAdmin() {
     return isAdminUser(currentUser);
 }
-
-async function toggleAdminStatus(userId) {
-    const currentUserIsPrimaryAdmin = currentUser && currentUser.nickname === ADMIN_NICKNAME;
-    const willBecomeAdmin = !user.isAdmin;
-
-    if (willBecomeAdmin && !currentUserIsPrimaryAdmin) {
-        alert('Only Menicos can promote users to admin.');
-        return;
-    }
-}
-
-function showUserActivity(userId) {
-    selectedUserActivityId = userId;
-
-    if (activeTabName !== 'users') {
-        showTab('users');
-    } else {
-        renderAdminActivityViewer();
-    }
-}
 ```
 
-### 5.7 Leaderboard Module
-```javascript
-function updateLeaderboard() {
-    const poolSelect = document.getElementById('poolSelect');
-    const poolId = poolSelect.value;
-    const leaderboardList = document.getElementById('leaderboardList');
-
-    let usersToRank = poolId === 'global'
-        ? users
-        : users.filter(u => {
-            const pool = pools.find(p => p.id === parseInt(poolId));
-            return pool && pool.members.includes(u.id);
-        });
-
-    usersToRank.sort((a, b) => b.coins - a.coins);
-}
-```
+**Rules:**
+- Menicos remains the protected primary admin
+- Only Menicos can promote regular users to admin
+- Admins can remove admin access from other users
+- Primary admin cannot be demoted or deleted
 
 ---
 
 ## 6. Firebase Integration
 
 ### 6.1 Configuration
+
+**File:** [`firebase-config.js`](../firebase-config.js)
+
 ```javascript
 const firebaseConfig = {
-    apiKey: "...",
-    authDomain: "...",
-    databaseURL: "...",
-    projectId: "...",
-    storageBucket: "...",
-    messagingSenderId: "...",
-    appId: "..."
+    apiKey: "AIzaSyATsmrz6NlM1bgootQFhIrZAmT-vui_chI",
+    authDomain: "football-prediction-game-ca155.firebaseapp.com",
+    databaseURL: "https://football-prediction-game-ca155-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "football-prediction-game-ca155",
+    storageBucket: "football-prediction-game-ca155.firebasestorage.app",
+    messagingSenderId: "266847662424",
+    appId: "1:266847662424:web:fc24bb439d3015e02cf52d"
 };
 ```
 
 ### 6.2 Database Structure
+
 ```text
 firebase-database/
 ├── users/
@@ -513,58 +456,41 @@ firebase-database/
 └── adminNotifications/
 ```
 
-### 6.3 Database Operations
-```javascript
-const users = await FirebaseDB.getUsers();
-const pools = await FirebaseDB.getPools();
-const predictions = await FirebaseDB.getPredictions();
-const matches = await FirebaseDB.getMatches();
-
-await FirebaseDB.saveUser(userObject);
-await FirebaseDB.savePool(poolObject);
-await FirebaseDB.savePrediction(predictionObject);
-await FirebaseDB.saveAllMatches(matchesArray);
-```
-
 ---
 
 ## 7. Code Examples
 
-### 7.1 Activity Entry Example
+### 7.1 Version Constant
 ```javascript
-addUserActivity(currentUser.id, 'prediction_bet', -betAmount, {
-    reason: 'Coins deducted for new prediction',
-    matchId: currentMatchId,
-    predictionScore: `${homeScore} - ${awayScore}`
+const APP_VERSION = "v1.9.0";
+```
+
+### 7.2 Predicted Match Styling Assignment
+```javascript
+const predictionStateClass = userPrediction ? ' predicted' : ' unpredicted';
+matchCard.className = `match-card${matchLocked ? ' locked' : ''}${predictionStateClass}`;
+```
+
+### 7.3 Daily Bonus Activity Deduplication
+```javascript
+addUserActivity(user.id, 'daily_bonus', bonusAwarded, {
+    reason: 'Daily login bonus applied',
+    activityKey: `daily_bonus_${user.lastLogin.slice(0, 10)}`
 });
 ```
 
-### 7.2 Admin Activity Rendering Example
+### 7.4 Daily Bonus Notification
 ```javascript
-function renderAdminActivityViewer() {
-    const container = document.getElementById('adminActivityViewer');
-    if (!container || !isAdmin()) return;
+function showDailyBonusNotification(message) {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        new Notification('Football Prediction Game', {
+            body: message,
+            icon: 'bobimage.jpeg'
+        });
+        return;
+    }
 
-    const user = users.find(u => String(u.id) === String(selectedUserActivityId));
-    if (!user) return;
-
-    container.innerHTML = `
-        <div>
-            <h3>Coin Activity: ${user.nickname}</h3>
-            ${buildActivitySummary(user)}
-            ${buildActivityEntriesHtml(user, 'No activity recorded yet.')}
-        </div>
-    `;
-}
-```
-
-### 7.3 Match Locking Example
-```javascript
-if (isMatchLocked(match)) {
-    alert('This match is locked. Predictions cannot be created or changed after kickoff.');
-    closePredictionModal();
-    loadMatches();
-    return;
+    alert(message);
 }
 ```
 
@@ -572,23 +498,12 @@ if (isMatchLocked(match)) {
 
 ## 8. Best Practices
 
-- Keep all visible version labels synchronized with [`APP_VERSION`](../app.js)
-- Update documentation whenever behavior changes
-- Record coin mutations through [`addUserActivity()`](../app.js)
-- Keep admin-only actions protected through [`isAdmin()`](../app.js)
-- Refresh HTML activity views after prediction, payout, or admin changes
-- Preserve Menicos as the protected primary admin
-- Commit each release with the version number in the commit message
+- Keep version labels synchronized across [`app.js`](../app.js), [`index.html`](../index.html), and [`docs/index.html`](index.html)
+- Update all documentation files for every release
+- Prefer HTML-rendered activity history over popup-only diagnostics
+- Preserve admin protections for the Menicos account
+- Keep prediction locking tied to kickoff time
+- Use activity keys for idempotent daily bonus logging
+- Create a local git commit for each release so GitHub Desktop can push it
 
----
-
-**Document Version:** 1.7.1
-**Created:** June 2026
-**Author:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Status:** Active
-**Latest Features:**
-- HTML activity history screens for users and admins
-- Match locking after kickoff
-- Multi-admin support with protected primary admin
-- Daily bonus reduced to 100 coins
-- Activity logging for predictions, payouts, bonuses, and admin actions
+This documentation reflects the version 1.9.0 codebase and release workflow.

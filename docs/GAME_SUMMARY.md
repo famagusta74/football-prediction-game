@@ -94,40 +94,38 @@ This makes it easier to investigate unexpected balance changes and understand ex
 The current project documentation only partially covers release workflow.
 
 ### What is already documented
-- GitHub Pages deployment and push steps are documented in [`README.md`](README.md) under the deployment section.
-- The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md).
+- GitHub Pages deployment and push steps are documented in [`README.md`](../README.md) under the deployment section.
+- The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.8.0:
-- Application constant in [`app.js:2`](app.js:2)
-- Login screen version label in [`index.html:21`](index.html:21)
-- Dashboard version badge in [`index.html:146`](index.html:146)
-- Documentation portal version badge in [`docs/index.html:190`](docs/index.html:190)
-- There are also older visible version labels in [`index.html:114`](index.html:114) and [`index.html:132`](index.html:132) that still show an outdated version string.
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.9.0:
+- Application constant in [`app.js:2`](../app.js:2)
+- Login screen version label in [`index.html:21`](../index.html:21)
+- Dashboard version badge in [`index.html:146`](../index.html:146)
+- Documentation portal version badge in [`docs/index.html:190`](index.html:190)
+- Additional visible version labels in [`index.html:114`](../index.html:114) and [`index.html:132`](../index.html:132)
 
-### What is not clearly documented yet
-The following process is not yet explicitly documented as a formal maintenance rule:
-- Every change to the game should include a version number update
+### Formal maintenance rule
+The following process should be treated as a standing maintenance rule:
+- Every change to the game must include a version number update
 - Every visible version label in the interface should be updated together
-- Changes should then be committed and pushed from the Mac desktop GitHub workflow
+- Documentation must be updated to reflect the release
+- Changes should then be committed for the Mac desktop GitHub workflow
 
 ### Recommended release checklist
 For each change made to the game:
-1. Update the internal app version in [`app.js:2`](app.js:2)
-2. Update all visible version labels in [`index.html:21`](index.html:21), [`index.html:146`](index.html:146), [`index.html:114`](index.html:114), [`index.html:132`](index.html:132), and [`docs/index.html:190`](docs/index.html:190)
-3. Commit the change with the version in the commit message
-4. Push the latest code to GitHub using the Mac desktop Git workflow already used for the project
-5. Verify the GitHub Pages deployment after push
-
-This should ideally be added as a dedicated maintenance or release procedure in the main project documentation.
+1. Update the internal app version in [`app.js:2`](../app.js:2)
+2. Update all visible version labels in [`index.html:21`](../index.html:21), [`index.html:146`](../index.html:146), [`index.html:114`](../index.html:114), [`index.html:132`](../index.html:132), and [`docs/index.html:190`](index.html:190)
+3. Update the documentation set in [`docs/GAME_SUMMARY.md`](GAME_SUMMARY.md), [`docs/APPLICATION_DEFINITION.md`](APPLICATION_DEFINITION.md), [`docs/SOURCE_CODE_DOCUMENTATION.md`](SOURCE_CODE_DOCUMENTATION.md), and [`docs/TECHNICAL_SPECIFICATION.md`](TECHNICAL_SPECIFICATION.md)
+4. Commit the change with the version in the commit message
+5. Push the latest code to GitHub using the Mac desktop Git workflow already used for the project
+6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.8.0 includes the latest prediction-edit amount display correction and coin-audit improvements:
+Version v1.9.0 includes the latest prediction-visibility and daily-login experience improvements:
 
-- The admin user activity viewer now renders directly in HTML inside the admin area instead of opening in a popup
-- A new [`Activity`](index.html) tab lets each user review their own coin history in HTML
-- Prediction edit history now shows the updated score together with the previous score and bet values for clearer audit tracking
-- Prediction edits now also apply the real bet difference to coin totals, so summary totals match the actual updated wager
-- Daily login bonus has been reduced to 100 coins
-- The prediction page includes a reminder that users can log in every day to win coins
+- Match cards now use different color palettes so predicted matches are visually distinct from matches that still need a prediction
+- The predictions screen now explains the meaning of the green and blue-grey match cards
+- Daily login bonuses now trigger a thank-you notification showing the awarded coin amount
+- Daily bonus activity entries now use a per-day key so duplicate entries are prevented while valid bonus history remains visible
 - Match locking, admin promotion controls, and coin audit history remain part of the current release baseline
