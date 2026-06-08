@@ -1,6 +1,6 @@
 # Football Prediction Game - Technical Specification Document
 
-**Version:** 1.9.2
+**Version:** 1.10.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 
@@ -341,13 +341,13 @@ For every code change:
 
 ---
 
-## 8. Version 1.9.2 Technical Notes
+## 8. Version 1.10.0 Technical Notes
 
-Version 1.9.2 introduces:
-- A login refresh fix in [`login()`](../app.js) so normal users immediately see the saved daily bonus activity entry after authentication
-- Continued uncapped daily login bonus awards of 100 coins in [`login()`](../app.js)
-- Correct daily bonus activity balance rendering through explicit `balanceAfter` values in [`addUserActivity()`](../app.js)
-- Preserved predicted versus unpredicted match rendering in [`loadMatches()`](../app.js) and [`styles.css`](../styles.css)
+Version 1.10.0 introduces:
+- A football-first World Cup hero section in [`index.html:21`](../index.html:21) with tournament messaging and participating-country flags
+- A greener pitch-inspired visual system with gold accents across [`styles.css`](../styles.css)
+- Country flag rendering for teams in [`loadMatches()`](../app.js:909) using [`getCountryFlag()`](../app.js:994)
+- Enhanced match presentation with flag-supported team labels in [`loadMatches()`](../app.js:909)
 - Updated UI and documentation version labels for the release
 
-This document reflects the version 1.9.2 implementation baseline.
+This document reflects the version 1.10.0 implementation baseline.

@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.9.2"; // Daily bonus login visibility fix
+const APP_VERSION = "v1.10.0"; // World Cup theme refresh
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -962,15 +962,18 @@ function loadMatches() {
             `;
         }
 
+        const homeFlag = getCountryFlag(match.homeTeam);
+        const awayFlag = getCountryFlag(match.awayTeam);
+
         matchCard.innerHTML = `
             <div class="match-header">
                 <span class="match-time">${formattedDate} - ${match.venue}</span>
                 <span class="match-status status-${match.status}">${match.status.toUpperCase()}</span>
             </div>
             <div class="match-teams">
-                <span class="team">${match.homeTeam}</span>
+                <span class="team"><span class="team-flag">${homeFlag}</span>${match.homeTeam}</span>
                 <span class="vs">${match.status === 'finished' && match.finalScore ? `${match.finalScore.home} - ${match.finalScore.away}` : 'VS'}</span>
-                <span class="team">${match.awayTeam}</span>
+                <span class="team">${match.awayTeam}<span class="team-flag">${awayFlag}</span></span>
             </div>
             <div style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
                 ${match.stage}
@@ -989,6 +992,44 @@ function loadMatches() {
         
         matchesList.appendChild(matchCard);
     });
+}
+
+function getCountryFlag(teamName) {
+    const countryFlags = {
+        "Argentina": "🇦🇷",
+        "Australia": "🇦🇺",
+        "Austria": "🇦🇹",
+        "Belgium": "🇧🇪",
+        "Brazil": "🇧🇷",
+        "Canada": "🇨🇦",
+        "Colombia": "🇨🇴",
+        "Congo DR": "🇨🇩",
+        "Croatia": "🇭🇷",
+        "Denmark": "🇩🇰",
+        "Ecuador": "🇪🇨",
+        "Egypt": "🇪🇬",
+        "England": "🏴",
+        "France": "🇫🇷",
+        "Germany": "🇩🇪",
+        "IR Iran": "🇮🇷",
+        "Italy": "🇮🇹",
+        "Japan": "🇯🇵",
+        "Jordan": "🇯🇴",
+        "Korea Republic": "🇰🇷",
+        "Mexico": "🇲🇽",
+        "Morocco": "🇲🇦",
+        "Netherlands": "🇳🇱",
+        "New Zealand": "🇳🇿",
+        "Portugal": "🇵🇹",
+        "Saudi Arabia": "🇸🇦",
+        "Senegal": "🇸🇳",
+        "Spain": "🇪🇸",
+        "Tunisia": "🇹🇳",
+        "Uruguay": "🇺🇾",
+        "USA": "🇺🇸"
+    };
+
+    return countryFlags[teamName] || "🏳️";
 }
 
 function openPredictionModal(match) {
