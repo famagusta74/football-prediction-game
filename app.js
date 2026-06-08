@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.10.0"; // World Cup theme refresh
+const APP_VERSION = "v1.10.1"; // Bob-inspired blue palette refresh
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;

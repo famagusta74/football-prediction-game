@@ -1,6 +1,6 @@
 # ⚽ Football Prediction Game - FIFA World Cup 2026
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins, now with a richer football-themed World Cup interface.
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins, now with a richer football-themed World Cup interface and a Bob-inspired blue palette.
 
 ## 🎮 Features
 
@@ -22,7 +22,7 @@ A social football prediction game where friends compete by predicting FIFA World
 - Country flag presentation on match cards for a stronger tournament feel
 
 ### World Cup Theme Refresh
-- Football-pitch-inspired green and gold visual palette
+- Bob-inspired blue visual palette influenced by [`bob.ibm.com`](https://bob.ibm.com/)
 - Hero banner with tournament-style presentation
 - Participating-country flags highlighted on the login experience
 - Match cards enhanced with team flags and improved event styling
@@ -201,4 +201,4 @@ Free to use for personal and educational purposes.
 
 **Enjoy predicting and may the best predictor win!** ⚽🏆
 
-_Current release theme: v1.10.0 - World Cup Theme Refresh_
+_Current release theme: v1.10.1 - Bob Blue Palette Refresh_

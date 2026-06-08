@@ -100,7 +100,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.10.0:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.10.1:
 - Application constant in [`app.js:2`](../app.js:2)
 - Login screen version label in [`index.html:21`](../index.html:21)
 - Dashboard version badge in [`index.html:146`](../index.html:146)
@@ -124,10 +124,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.10.0 includes the World Cup theme refresh:
+Version v1.10.1 includes the Bob blue palette refresh:
 
-- The login screen now features a football-themed hero banner with a tournament-style presentation
-- Participating-country flags are displayed in the hero area and beside teams on match cards
-- The overall interface now uses a greener football-pitch-inspired palette with gold highlight accents
-- Matchday sections and dashboard surfaces have been refreshed to feel more like a World Cup event experience
+- The football-themed World Cup layout remains in place with the hero banner and participating-country flags
+- The overall interface palette now uses Bob-inspired blue tones influenced by [`bob.ibm.com`](https://bob.ibm.com/)
+- Buttons, tabs, headers, cards, and form accents have been updated from green to blue
+- Matchday sections and dashboard surfaces now feel closer to the IBM Bob visual identity while preserving the tournament presentation
 - Daily login bonuses, match locking, admin promotion controls, and coin audit history remain part of the current release baseline

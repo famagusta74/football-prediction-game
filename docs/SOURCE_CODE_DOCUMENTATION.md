@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 1.10.0
+**Version:** 1.10.1
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~2,700
@@ -20,7 +20,7 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game  
-**Version:** 1.10.0
+**Version:** 1.10.1
 **Built by:** IBM Bob AI Assistant  
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase  
 **Lines of Code:** ~1,800 (JavaScript), ~800 (CSS), ~300 (HTML)
@@ -100,7 +100,7 @@ football-prediction-game/
 ```html
 <div id="loginScreen" class="screen active">
     <div class="container">
-        <div class="version-header">v1.10.0 - World Cup Theme Refresh</div>
+        <div class="version-header">v1.10.1 - Bob Blue Palette Refresh</div>
         <div class="hero-banner">
             <div class="hero-content">
                 <div class="logo">⚽</div>
@@ -131,7 +131,7 @@ football-prediction-game/
                 <span class="coin-icon">🪙</span>
                 <span id="userCoins">1000</span>
             </div>
-            <div class="version-badge">v1.10.0</div>
+            <div class="version-badge">v1.10.1</div>
         </div>
         <button onclick="logout()" class="btn-logout">Logout</button>
     </div>
@@ -473,7 +473,7 @@ firebase-database/
 
 ### 7.1 Version Constant
 ```javascript
-const APP_VERSION = "v1.10.0";
+const APP_VERSION = "v1.10.1";
 ```
 
 ### 7.2 Predicted Match Detection
@@ -524,4 +524,4 @@ currentUser = users.find(u => u.id === user.id) || user;
 - Reload the persisted user record after login-side bonus writes so the UI reflects the saved state immediately
 - Create a local git commit for each release so GitHub Desktop can push it
 
-This documentation reflects the version 1.10.0 codebase and release workflow.
+This documentation reflects the version 1.10.1 codebase and release workflow.

@@ -341,13 +341,13 @@ For every code change:
 
 ---
 
-## 8. Version 1.10.0 Technical Notes
+## 8. Version 1.10.1 Technical Notes
 
-Version 1.10.0 introduces:
-- A football-first World Cup hero section in [`index.html:21`](../index.html:21) with tournament messaging and participating-country flags
-- A greener pitch-inspired visual system with gold accents across [`styles.css`](../styles.css)
+Version 1.10.1 introduces:
+- A Bob-inspired blue palette refresh across the football-themed interface in [`styles.css`](../styles.css)
+- Continued World Cup hero presentation in [`index.html:21`](../index.html:21) with tournament messaging and participating-country flags
 - Country flag rendering for teams in [`loadMatches()`](../app.js:909) using [`getCountryFlag()`](../app.js:994)
-- Enhanced match presentation with flag-supported team labels in [`loadMatches()`](../app.js:909)
+- Blue-accented buttons, tabs, cards, and form states aligned more closely with the visual direction of [`bob.ibm.com`](https://bob.ibm.com/)
 - Updated UI and documentation version labels for the release
 
-This document reflects the version 1.10.0 implementation baseline.
+This document reflects the version 1.10.1 implementation baseline.

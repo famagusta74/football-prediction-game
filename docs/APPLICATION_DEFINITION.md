@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.10.0
+**Version:** 1.10.1
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -318,8 +318,9 @@ For admins:
 ### 7.2 Prediction Screen Behavior
 - Upcoming matches are shown as cards
 - The login experience now uses a football-themed hero banner with World Cup styling and participating-country flags
-- Predicted matches use a stronger green palette
-- Unpredicted matches use a blue-grey palette
+- The overall palette now follows a Bob-inspired blue visual direction
+- Predicted matches use a stronger blue-highlighted palette
+- Unpredicted matches use a lighter blue-grey palette
 - Match cards display country flags beside team names for a more tournament-focused presentation
 - Locked matches remain unavailable after kickoff
 - Existing predictions display score and bet details directly on the card
@@ -340,10 +341,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.10.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.10.1, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.10.0 introduces a football-first World Cup visual refresh with a themed hero banner, participating-country flags, and enhanced match presentation while preserving the existing daily bonus, prediction locking, and activity-history behavior.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.10.1 keeps the football-first World Cup visual refresh while shifting the core interface to a Bob-inspired blue palette, preserving the existing daily bonus, prediction locking, and activity-history behavior.
