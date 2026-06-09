@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.10.3"; // Leaderboard note for prediction-only ranking
+const APP_VERSION = "v1.11.0"; // Pool leaderboard ranks by prediction winnings
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1415,6 +1415,7 @@ function updateLeaderboard() {
     const poolSelect = document.getElementById('poolSelect');
     const poolId = poolSelect.value;
     const leaderboardList = document.getElementById('leaderboardList');
+    const poolLeaderboardList = document.getElementById('poolLeaderboardList');
     
     let usersToRank = [];
     
@@ -1478,6 +1479,60 @@ function updateLeaderboard() {
         `;
         
         leaderboardList.appendChild(item);
+    });
+
+    if (!poolLeaderboardList) {
+        return;
+    }
+
+    const rankedPools = pools.map(pool => {
+        const poolMembers = users.filter(user => pool.members.includes(user.id));
+        const totalPredictionEarnedCoins = poolMembers.reduce((total, user) => total + getPredictionEarnedCoins(user), 0);
+        const totalCurrentCoins = poolMembers.reduce((total, user) => total + (user.coins || 0), 0);
+
+        return {
+            ...pool,
+            totalPredictionEarnedCoins,
+            totalCurrentCoins,
+            memberCount: poolMembers.length
+        };
+    }).sort((a, b) => {
+        if (b.totalPredictionEarnedCoins !== a.totalPredictionEarnedCoins) {
+            return b.totalPredictionEarnedCoins - a.totalPredictionEarnedCoins;
+        }
+
+        return b.memberCount - a.memberCount;
+    });
+
+    poolLeaderboardList.innerHTML = '';
+
+    rankedPools.forEach((pool, index) => {
+        const rank = index + 1;
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+
+        const rankClass = rank <= 3 ? `rank-${rank}` : '';
+
+        item.innerHTML = `
+            <span class="leaderboard-rank ${rankClass}">#${rank}</span>
+            <span class="leaderboard-player">${pool.name}</span>
+            <div class="leaderboard-stats">
+                <div class="stat">
+                    <div class="stat-label">Pool Prediction Winnings</div>
+                    <div class="stat-value">${pool.totalPredictionEarnedCoins} 🪙</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Members</div>
+                    <div class="stat-value">${pool.memberCount}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Pool Coins</div>
+                    <div class="stat-value">${pool.totalCurrentCoins} 🪙</div>
+                </div>
+            </div>
+        `;
+
+        poolLeaderboardList.appendChild(item);
     });
 }
 

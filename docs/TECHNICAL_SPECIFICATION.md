@@ -182,16 +182,19 @@ Reload Persisted User → Dashboard Display → Optional Browser Notification
 **File:** [`app.js`](../app.js)
 
 **Functions:**
-- [`updateLeaderboard()`](../app.js)
+- [`getPredictionEarnedCoins()`](../app.js:1404)
+- [`updateLeaderboard()`](../app.js:1414)
 - [`getUserNickname()`](../app.js)
 
 **Ranking Algorithm:**
 ```text
 1. Filter users by pool membership or global scope
 2. Calculate total coins won from positive prediction payout activity only
-3. Sort by prediction-earned coins descending
+3. Sort users by prediction-earned coins descending
 4. Use accuracy and correct predictions as tie-breakers
-5. Render rankings and stats
+5. Aggregate pool totals from member prediction winnings
+6. Sort pools by total prediction winnings descending, then by member count
+7. Render both user and pool rankings with supporting stats
 ```
 
 ### 3.6 Admin Module
@@ -342,13 +345,13 @@ For every code change:
 
 ---
 
-## 8. Version 1.10.3 Technical Notes
+## 8. Version 1.11.0 Technical Notes
 
-Version 1.10.3 introduces:
-- A visible leaderboard note in [`index.html`](../index.html) explaining that ranking is based only on prediction winnings
-- Continued leaderboard ranking based on coins won from prediction payouts only in [`updateLeaderboard()`](../app.js:1404)
+Version 1.11.0 introduces:
+- A new pool leaderboard in [`index.html`](../index.html) that ranks pools by total prediction winnings earned by all members
+- Continued user leaderboard ranking based on coins won from positive prediction payouts only in [`updateLeaderboard()`](../app.js:1414)
 - Prediction-earned coin aggregation through [`getPredictionEarnedCoins()`](../app.js:1404)
-- Tie-breaking by accuracy and correct predictions after prediction-earned coins are compared
+- Pool-level aggregation and sorting by total prediction winnings, with member count as the tie-breaker
 - Updated UI and documentation version labels for the release
 
-This document reflects the version 1.10.3 implementation baseline.
+This document reflects the version 1.11.0 implementation baseline.

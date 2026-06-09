@@ -327,6 +327,7 @@ For admins:
 - Existing predictions display score and bet details directly on the card
 - The leaderboard ranks users by coins won from prediction payouts, with current balance shown as a secondary reference
 - The leaderboard screen includes an explicit note that starting coins and daily bonus coins do not improve ranking
+- A pool leaderboard also ranks pools by the total prediction winnings earned by all members in each pool
 
 ### 7.3 Activity Screen Behavior
 - Users see a personal summary of balance, total in, total out, and entry count
@@ -344,7 +345,7 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.10.3, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.11.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 

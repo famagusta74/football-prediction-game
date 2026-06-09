@@ -201,4 +201,4 @@ Free to use for personal and educational purposes.
 
 **Enjoy predicting and may the best predictor win!** ⚽🏆
 
-_Current release theme: v1.10.3 - Leaderboard Ranking Note_
+_Current release theme: v1.11.0 - Pool Leaderboard by Prediction Winnings_

@@ -124,10 +124,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.10.3 includes the leaderboard ranking note update:
+Version v1.11.0 includes the pool leaderboard update:
 
-- The leaderboard now shows an explicit note explaining that ranking is based only on prediction winnings
-- Leaderboard ranking still uses coins won from prediction payouts only
-- Starting coins and daily login bonuses do not improve leaderboard position
-- Current balance is still shown in the leaderboard, but only as secondary information
-- Accuracy and correct predictions are used only as tie-breakers after prediction-earned coins
+- A new pool leaderboard now ranks pools by the total prediction winnings earned by all members
+- The user leaderboard continues to rank players only by coins won from prediction payouts
+- Starting coins and daily login bonuses do not improve either user or pool leaderboard position
+- Current balance is still shown as supporting information, but ranking is based on prediction winnings
+- Accuracy and correct predictions remain user leaderboard tie-breakers after prediction-earned coins
