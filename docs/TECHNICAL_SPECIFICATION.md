@@ -188,9 +188,10 @@ Reload Persisted User → Dashboard Display → Optional Browser Notification
 **Ranking Algorithm:**
 ```text
 1. Filter users by pool membership or global scope
-2. Calculate accuracy from correct predictions and total predictions
-3. Sort by coins descending
-4. Render rankings and stats
+2. Calculate total coins won from positive prediction payout activity only
+3. Sort by prediction-earned coins descending
+4. Use accuracy and correct predictions as tie-breakers
+5. Render rankings and stats
 ```
 
 ### 3.6 Admin Module
@@ -341,13 +342,13 @@ For every code change:
 
 ---
 
-## 8. Version 1.10.1 Technical Notes
+## 8. Version 1.10.3 Technical Notes
 
-Version 1.10.1 introduces:
-- A Bob-inspired blue palette refresh across the football-themed interface in [`styles.css`](../styles.css)
-- Continued World Cup hero presentation in [`index.html:21`](../index.html:21) with tournament messaging and participating-country flags
-- Country flag rendering for teams in [`loadMatches()`](../app.js:909) using [`getCountryFlag()`](../app.js:994)
-- Blue-accented buttons, tabs, cards, and form states aligned more closely with the visual direction of [`bob.ibm.com`](https://bob.ibm.com/)
+Version 1.10.3 introduces:
+- A visible leaderboard note in [`index.html`](../index.html) explaining that ranking is based only on prediction winnings
+- Continued leaderboard ranking based on coins won from prediction payouts only in [`updateLeaderboard()`](../app.js:1404)
+- Prediction-earned coin aggregation through [`getPredictionEarnedCoins()`](../app.js:1404)
+- Tie-breaking by accuracy and correct predictions after prediction-earned coins are compared
 - Updated UI and documentation version labels for the release
 
-This document reflects the version 1.10.1 implementation baseline.
+This document reflects the version 1.10.3 implementation baseline.

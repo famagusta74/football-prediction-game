@@ -200,6 +200,7 @@ For admins:
 - **Incorrect Prediction:** Lose bet amount
 - Payouts processed only by admin
 - Each prediction processed only once unless admin edits the final result and resets processing
+- Leaderboard ranking is based on coins won from prediction payouts only, not starting coins or daily login bonuses
 
 ### 5.3 Coin Management
 - Starting balance: 1000 coins
@@ -324,6 +325,8 @@ For admins:
 - Match cards display country flags beside team names for a more tournament-focused presentation
 - Locked matches remain unavailable after kickoff
 - Existing predictions display score and bet details directly on the card
+- The leaderboard ranks users by coins won from prediction payouts, with current balance shown as a secondary reference
+- The leaderboard screen includes an explicit note that starting coins and daily bonus coins do not improve ranking
 
 ### 7.3 Activity Screen Behavior
 - Users see a personal summary of balance, total in, total out, and entry count
@@ -341,7 +344,7 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.10.1, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.10.3, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 

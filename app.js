@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.10.1"; // Bob-inspired blue palette refresh
+const APP_VERSION = "v1.10.3"; // Leaderboard note for prediction-only ranking
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1401,6 +1401,16 @@ function generatePoolCode() {
 }
 
 // Leaderboard Functions
+function getPredictionEarnedCoins(user) {
+    const activityLog = ensureUserActivityLog(user);
+    return activityLog.reduce((total, entry) => {
+        if (entry.type === 'payout' && entry.amount > 0) {
+            return total + entry.amount;
+        }
+        return total;
+    }, 0);
+}
+
 function updateLeaderboard() {
     const poolSelect = document.getElementById('poolSelect');
     const poolId = poolSelect.value;
@@ -1418,13 +1428,30 @@ function updateLeaderboard() {
             usersToRank = users.filter(u => pool.members.includes(u.id));
         }
     }
+
+    const rankedUsers = usersToRank.map(user => ({
+        ...user,
+        predictionEarnedCoins: getPredictionEarnedCoins(user)
+    }));
     
-    // Sort by coins (descending)
-    usersToRank.sort((a, b) => b.coins - a.coins);
+    // Sort by prediction-earned coins only, then accuracy, then total correct predictions
+    rankedUsers.sort((a, b) => {
+        if (b.predictionEarnedCoins !== a.predictionEarnedCoins) {
+            return b.predictionEarnedCoins - a.predictionEarnedCoins;
+        }
+
+        const accuracyA = a.totalPredictions ? (a.correctPredictions / a.totalPredictions) : 0;
+        const accuracyB = b.totalPredictions ? (b.correctPredictions / b.totalPredictions) : 0;
+        if (accuracyB !== accuracyA) {
+            return accuracyB - accuracyA;
+        }
+
+        return (b.correctPredictions || 0) - (a.correctPredictions || 0);
+    });
     
     leaderboardList.innerHTML = '';
     
-    usersToRank.forEach((user, index) => {
+    rankedUsers.forEach((user, index) => {
         const rank = index + 1;
         const item = document.createElement('div');
         item.className = 'leaderboard-item';
@@ -1436,12 +1463,12 @@ function updateLeaderboard() {
             <span class="leaderboard-player">${user.nickname}</span>
             <div class="leaderboard-stats">
                 <div class="stat">
-                    <div class="stat-label">Coins</div>
-                    <div class="stat-value">${user.coins} 🪙</div>
+                    <div class="stat-label">Won on Predictions</div>
+                    <div class="stat-value">${user.predictionEarnedCoins} 🪙</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-label">Predictions</div>
-                    <div class="stat-value">${user.totalPredictions || 0}</div>
+                    <div class="stat-label">Current Coins</div>
+                    <div class="stat-value">${user.coins} 🪙</div>
                 </div>
                 <div class="stat">
                     <div class="stat-label">Accuracy</div>
