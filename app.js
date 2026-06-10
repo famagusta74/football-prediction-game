@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.13.0"; // Optional match prediction suggestions added to each fixture
+const APP_VERSION = "v1.14.0"; // Bob suggestions are persisted, scored against results, and summarized with KPI tracking
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -909,6 +909,7 @@ function showTab(tabName) {
 function loadMatches() {
     const matchesList = document.getElementById('matchesList');
     matchesList.innerHTML = '';
+    renderBobSuggestionKpi();
     
     const currentUserPredictions = predictions.filter(p => p.userId === currentUser.id);
 
@@ -922,9 +923,9 @@ function loadMatches() {
         matchCard.onclick = () => openPredictionModal(match);
         
         const kickoffDate = new Date(match.kickoff);
-        const formattedDate = kickoffDate.toLocaleDateString('en-US', { 
-            weekday: 'short', 
-            month: 'short', 
+        const formattedDate = kickoffDate.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
@@ -965,7 +966,8 @@ function loadMatches() {
         const homeFlag = getCountryFlag(match.homeTeam);
         const awayFlag = getCountryFlag(match.awayTeam);
 
-        const suggestion = getMatchSuggestion(match);
+        const suggestion = ensureMatchSuggestion(match);
+        const suggestionOutcome = getSuggestionOutcome(match);
 
         matchCard.innerHTML = `
             <div class="match-header">
@@ -989,6 +991,12 @@ function loadMatches() {
                 <div class="match-suggestion-result">Suggested result: ${suggestion.resultLabel}</div>
                 <p class="match-suggestion-text">${suggestion.rationale}</p>
                 <div class="match-suggestion-note">${suggestion.sourceNote}</div>
+                ${suggestionOutcome ? `
+                    <div class="match-suggestion-outcome ${suggestionOutcome.resultHit ? 'success' : 'miss'}">
+                        <strong>${suggestionOutcome.summary}</strong>
+                        <span>${suggestionOutcome.detail}</span>
+                    </div>
+                ` : ''}
             </div>
             ${userPrediction ? `
                 <div class="match-prediction">
@@ -1098,45 +1106,213 @@ function getMatchSuggestion(match) {
     const homeAdvantage = ["Mexico", "Canada", "USA"].includes(match.homeTeam) ? 4 : 0;
     const adjustedGap = strengthGap + homeAdvantage;
 
-    let suggestedScore;
+    let suggestedHomeScore;
+    let suggestedAwayScore;
     let resultLabel;
     let confidenceLabel;
     let rationale;
 
     if (adjustedGap >= 12) {
-        suggestedScore = "2-0";
+        suggestedHomeScore = 2;
+        suggestedAwayScore = 0;
         resultLabel = `${match.homeTeam} win`;
         confidenceLabel = "High confidence";
         rationale = `${match.homeTeam} look stronger on paper and should control most phases of the match.`;
     } else if (adjustedGap >= 6) {
-        suggestedScore = "2-1";
+        suggestedHomeScore = 2;
+        suggestedAwayScore = 1;
         resultLabel = `${match.homeTeam} win`;
         confidenceLabel = "Solid confidence";
         rationale = `${match.homeTeam} have the stronger squad profile, but ${match.awayTeam} should still create moments.`;
     } else if (adjustedGap <= -12) {
-        suggestedScore = "0-2";
+        suggestedHomeScore = 0;
+        suggestedAwayScore = 2;
         resultLabel = `${match.awayTeam} win`;
         confidenceLabel = "High confidence";
         rationale = `${match.awayTeam} appear significantly stronger and are the more likely side to convert chances.`;
     } else if (adjustedGap <= -6) {
-        suggestedScore = "1-2";
+        suggestedHomeScore = 1;
+        suggestedAwayScore = 2;
         resultLabel = `${match.awayTeam} win`;
         confidenceLabel = "Solid confidence";
         rationale = `${match.awayTeam} have the edge overall, although ${match.homeTeam} could still get on the scoresheet.`;
     } else {
-        suggestedScore = "1-1";
+        suggestedHomeScore = 1;
+        suggestedAwayScore = 1;
         resultLabel = "Draw";
         confidenceLabel = "Balanced matchup";
         rationale = `The teams look closely matched, so a draw is the safest suggestion for result-based play.`;
     }
 
     return {
-        suggestedScore,
+        suggestedHomeScore,
+        suggestedAwayScore,
+        suggestedScore: `${suggestedHomeScore}-${suggestedAwayScore}`,
         resultLabel,
         confidenceLabel,
         rationale,
         sourceNote: "Based on Bob's own football-strength model using public team reputation and tournament context."
     };
+}
+
+function ensureMatchSuggestion(match) {
+    if (!match.bobSuggestion) {
+        const suggestion = getMatchSuggestion(match);
+        match.bobSuggestion = {
+            suggestedHomeScore: suggestion.suggestedHomeScore,
+            suggestedAwayScore: suggestion.suggestedAwayScore,
+            suggestedScore: suggestion.suggestedScore,
+            resultLabel: suggestion.resultLabel,
+            confidenceLabel: suggestion.confidenceLabel,
+            rationale: suggestion.rationale,
+            sourceNote: suggestion.sourceNote,
+            createdAt: new Date().toISOString()
+        };
+    }
+
+    return match.bobSuggestion;
+}
+
+function getActualResultLabel(finalScore) {
+    if (!finalScore) {
+        return '';
+    }
+
+    if (finalScore.home > finalScore.away) {
+        return 'home';
+    }
+
+    if (finalScore.home < finalScore.away) {
+        return 'away';
+    }
+
+    return 'draw';
+}
+
+function getSuggestedResultKey(suggestion, match) {
+    if (!suggestion) {
+        return '';
+    }
+
+    if (suggestion.resultLabel === 'Draw') {
+        return 'draw';
+    }
+
+    if (suggestion.resultLabel === `${match.homeTeam} win`) {
+        return 'home';
+    }
+
+    if (suggestion.resultLabel === `${match.awayTeam} win`) {
+        return 'away';
+    }
+
+    return '';
+}
+
+function evaluateBobSuggestion(match) {
+    const suggestion = ensureMatchSuggestion(match);
+
+    if (!match.finalScore) {
+        delete suggestion.evaluation;
+        return suggestion;
+    }
+
+    const exactHit = suggestion.suggestedHomeScore === match.finalScore.home &&
+        suggestion.suggestedAwayScore === match.finalScore.away;
+    const resultHit = getSuggestedResultKey(suggestion, match) === getActualResultLabel(match.finalScore);
+
+    suggestion.evaluation = {
+        exactHit,
+        resultHit,
+        actualScore: `${match.finalScore.home}-${match.finalScore.away}`,
+        evaluatedAt: new Date().toISOString()
+    };
+
+    return suggestion;
+}
+
+function getSuggestionOutcome(match) {
+    const suggestion = match.bobSuggestion;
+    if (!suggestion || !suggestion.evaluation) {
+        return null;
+    }
+
+    if (suggestion.evaluation.exactHit) {
+        return {
+            resultHit: true,
+            summary: '✅ Bob nailed the exact score',
+            detail: `Actual score: ${suggestion.evaluation.actualScore}`
+        };
+    }
+
+    if (suggestion.evaluation.resultHit) {
+        return {
+            resultHit: true,
+            summary: '🟦 Bob got the result right',
+            detail: `Suggested ${suggestion.resultLabel} • Actual score: ${suggestion.evaluation.actualScore}`
+        };
+    }
+
+    return {
+        resultHit: false,
+        summary: '❌ Bob missed this one',
+        detail: `Suggested ${suggestion.suggestedScore} (${suggestion.resultLabel}) • Actual score: ${suggestion.evaluation.actualScore}`
+    };
+}
+
+function getBobSuggestionKpi() {
+    const evaluatedMatches = matches.filter(match => match.bobSuggestion && match.bobSuggestion.evaluation);
+    const exactHits = evaluatedMatches.filter(match => match.bobSuggestion.evaluation.exactHit).length;
+    const resultHits = evaluatedMatches.filter(match => match.bobSuggestion.evaluation.resultHit).length;
+    const total = evaluatedMatches.length;
+
+    return {
+        total,
+        exactHits,
+        resultHits,
+        exactRate: total ? Math.round((exactHits / total) * 100) : 0,
+        resultRate: total ? Math.round((resultHits / total) * 100) : 0
+    };
+}
+
+function renderBobSuggestionKpi() {
+    const kpiContainer = document.getElementById('bobSuggestionKpi');
+    if (!kpiContainer) {
+        return;
+    }
+
+    const kpi = getBobSuggestionKpi();
+
+    kpiContainer.innerHTML = `
+        <div class="bob-kpi-card">
+            <div class="bob-kpi-header">
+                <div>
+                    <div class="bob-kpi-eyebrow">🤖 Bob Suggestion KPI</div>
+                    <h3>How Bob is performing so far</h3>
+                    <p>Each match keeps Bob's original suggestion, then scores it once the final result is entered.</p>
+                </div>
+                <div class="bob-kpi-highlight">${kpi.resultRate}%</div>
+            </div>
+            <div class="bob-kpi-grid">
+                <div class="bob-kpi-stat">
+                    <span class="bob-kpi-label">Finished matches scored</span>
+                    <strong>${kpi.total}</strong>
+                </div>
+                <div class="bob-kpi-stat">
+                    <span class="bob-kpi-label">Correct result calls</span>
+                    <strong>${kpi.resultHits}</strong>
+                </div>
+                <div class="bob-kpi-stat">
+                    <span class="bob-kpi-label">Exact score hits</span>
+                    <strong>${kpi.exactHits}</strong>
+                </div>
+                <div class="bob-kpi-stat">
+                    <span class="bob-kpi-label">Exact score rate</span>
+                    <strong>${kpi.exactRate}%</strong>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function openPredictionModal(match) {
@@ -1147,7 +1323,7 @@ function openPredictionModal(match) {
 
     currentMatchId = match.id;
     
-    const suggestion = getMatchSuggestion(match);
+    const suggestion = ensureMatchSuggestion(match);
 
     document.getElementById('modalMatchTitle').textContent =
         `${match.homeTeam} vs ${match.awayTeam}`;
@@ -1692,8 +1868,12 @@ function processFinishedMatches() {
     let processedCount = 0;
     let totalPayout = 0;
     
+    let matchesUpdated = false;
+
     matches.forEach(match => {
         if (match.status === 'finished' && match.finalScore) {
+            evaluateBobSuggestion(match);
+            matchesUpdated = true;
             // Find all predictions for this match
             const matchPredictions = predictions.filter(p => p.matchId === match.id);
             
@@ -1737,6 +1917,9 @@ function processFinishedMatches() {
     // Save all changes
     saveUsers();
     savePredictions();
+    if (matchesUpdated) {
+        saveMatches();
+    }
     
     // Update current user if they got payouts
     const updatedCurrentUser = users.find(u => u.id === currentUser.id);

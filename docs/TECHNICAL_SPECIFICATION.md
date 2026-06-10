@@ -345,13 +345,14 @@ For every code change:
 
 ---
 
-## 8. Version 1.13.0 Technical Notes
+## 8. Version 1.14.0 Technical Notes
 
-Version 1.13.0 introduces:
-- Optional Bob match suggestions rendered on each fixture card in [`loadMatches()`](../app.js:909)
-- A reusable suggestion model through [`getTeamStrength()`](../app.js:1035) and [`getMatchSuggestion()`](../app.js:1078)
-- Matching suggestion guidance inside the prediction modal in [`openPredictionModal()`](../app.js:1116)
-- New suggestion presentation styles in [`styles.css`](../styles.css)
-- No gameplay logic changes to prediction scoring, payout calculation, leaderboard aggregation, or pool behavior in [`app.js`](../app.js)
+Version 1.14.0 introduces:
+- Persistent Bob suggestions stored on each match through [`ensureMatchSuggestion()`](../app.js:1142)
+- Suggestion evaluation against final scores through [`evaluateBobSuggestion()`](../app.js:1188)
+- A reusable KPI aggregation layer through [`getBobSuggestionKpi()`](../app.js:1237) and [`renderBobSuggestionKpi()`](../app.js:1252)
+- Finished-match suggestion outcome messaging rendered in [`loadMatches()`](../app.js:909)
+- A new Predictions-page KPI panel in [`index.html`](../index.html) with supporting styles in [`styles.css`](../styles.css)
+- No gameplay logic changes to user prediction scoring, payout calculation, leaderboard aggregation, or pool behavior in [`app.js`](../app.js)
 
-This document reflects the version 1.13.0 implementation baseline.
+This document reflects the version 1.14.0 implementation baseline.

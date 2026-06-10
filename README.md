@@ -202,4 +202,4 @@ Free to use for personal and educational purposes.
 
 **Enjoy predicting and may the best predictor win!** ⚽🏆
 
-_Current release theme: v1.13.0 - Optional Match Prediction Suggestions_
+_Current release theme: v1.14.0 - Bob Suggestion KPI Tracking_

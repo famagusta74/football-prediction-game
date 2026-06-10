@@ -349,10 +349,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.13.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.14.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.13.0 keeps the existing functionality intact while adding optional Bob-generated match suggestions that help users think through each fixture without taking control away from their own predictions.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.14.0 keeps the existing functionality intact while extending Bob's optional match suggestions into a tracked performance feature, so every suggestion is preserved, compared against the final score, and summarized with a KPI panel on the Predictions page.

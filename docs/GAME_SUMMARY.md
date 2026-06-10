@@ -124,10 +124,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.13.0 includes optional Bob prediction suggestions:
+Version v1.14.0 adds Bob suggestion KPI tracking:
 
-- Each match card now shows an optional Bob suggestion with a recommended score, likely result, and short rationale
-- The prediction modal also shows the same optional suggestion so users can consider it before submitting
-- Suggestions are guidance only and do not change the user's freedom to enter any score they want
-- Core gameplay, payouts, leaderboard rules, and pool competition remain unchanged
-- The guided football UX now helps users understand both how to play and how they might approach each fixture
+- Each match now keeps Bob's original suggestion on the match record instead of recalculating it only for display
+- When an admin enters a final score and processes results, Bob's suggestion is evaluated for exact-score accuracy and correct-result accuracy
+- The top of the Predictions page now shows a Bob KPI summary with finished matches scored, correct result calls, exact hits, and hit rates
+- Finished match cards now show whether Bob nailed the exact score, got only the result right, or missed the fixture
+- Core gameplay for user predictions, payouts, leaderboard rules, and pool competition remains unchanged
