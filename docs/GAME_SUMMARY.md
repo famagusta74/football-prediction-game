@@ -124,10 +124,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.12.0 includes the prediction-first UX revamp:
+Version v1.13.0 includes optional Bob prediction suggestions:
 
-- The login and dashboard experience now explain more clearly that exact score predictions earn the biggest payout
-- The interface now makes it easier to understand that correct match results still earn coins even without the exact score
-- Player-versus-player and pool-versus-pool competition is highlighted more clearly across the main screens
-- Leaderboard and prediction modal messaging were redesigned for easier understanding without changing game functionality
-- The Bob-inspired football theme remains in place while the UX is now more guided and easier to use
+- Each match card now shows an optional Bob suggestion with a recommended score, likely result, and short rationale
+- The prediction modal also shows the same optional suggestion so users can consider it before submitting
+- Suggestions are guidance only and do not change the user's freedom to enter any score they want
+- Core gameplay, payouts, leaderboard rules, and pool competition remain unchanged
+- The guided football UX now helps users understand both how to play and how they might approach each fixture

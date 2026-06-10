@@ -324,8 +324,10 @@ For admins:
 - Predicted matches use a stronger blue-highlighted palette
 - Unpredicted matches use a lighter blue-grey palette
 - Match cards display country flags beside team names for a more tournament-focused presentation
+- Each match card now includes an optional Bob suggestion with a recommended score, likely result, and short rationale
 - Locked matches remain unavailable after kickoff
 - Existing predictions display score and bet details directly on the card
+- The prediction modal includes the same optional Bob suggestion so users can review it before submitting
 - The predictions tab includes a quick guide that explains how to choose matches, bet coins, and help both player and pool rankings
 - The leaderboard ranks users by coins won from prediction payouts, with current balance shown as a secondary reference
 - The leaderboard screen includes clearer explanation cards for both player and pool ranking rules
@@ -347,10 +349,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.12.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.13.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.12.0 keeps the existing functionality intact while redesigning the interface to explain prediction rewards, leaderboard rules, and pool competition more clearly through a guided Bob-inspired football UX.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.13.0 keeps the existing functionality intact while adding optional Bob-generated match suggestions that help users think through each fixture without taking control away from their own predictions.

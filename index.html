@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v1.12.0 - Prediction-First UX Revamp</div>
+            <div class="version-header">v1.13.0 - Optional Match Prediction Suggestions</div>
             <div class="landing-shell">
                 <div class="hero-banner hero-banner--revamp">
                     <div class="hero-overlay"></div>
@@ -183,7 +183,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.12.0 - Prediction-First UX Revamp
+                Version 1.13.0 - Optional Match Prediction Suggestions
             </div>
         </div>
     </div>
@@ -207,7 +207,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.12.0 - Prediction-First UX Revamp
+                Version 1.13.0 - Optional Match Prediction Suggestions
             </div>
         </div>
     </div>
@@ -224,7 +224,7 @@
                             <span class="coin-icon">🪙</span>
                             <span id="userCoins">1000</span>
                         </div>
-                        <div class="version-badge">v1.11.0</div>
+                        <div class="version-badge">v1.13.0</div>
                     </div>
                     <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
                 </div>
@@ -296,7 +296,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="prediction-note">✅ Cards with saved predictions already contain your pick. Open cards are ready for a new prediction, and daily login still awards 100 coins.</p>
+                <p class="prediction-note">✅ Cards with saved predictions already contain your pick. Open cards are ready for a new prediction, daily login still awards 100 coins, and Bob suggestions are optional guidance only.</p>
                 <div id="matchesList" class="matches-list"></div>
             </div>
         </div>
@@ -396,6 +396,24 @@
                     <strong>Correct result</strong>
                     <p>If you correctly call win or draw, you still earn coins.</p>
                 </div>
+            </div>
+            <div class="modal-suggestion-box">
+                <div class="modal-suggestion-header">
+                    <strong>🤖 Bob's optional suggestion</strong>
+                    <span id="modalSuggestionConfidence" class="modal-suggestion-confidence">Balanced matchup</span>
+                </div>
+                <div class="modal-suggestion-grid">
+                    <div>
+                        <div class="modal-suggestion-label">Suggested score</div>
+                        <div id="modalSuggestionScore" class="modal-suggestion-value">1-1</div>
+                    </div>
+                    <div>
+                        <div class="modal-suggestion-label">Suggested result</div>
+                        <div id="modalSuggestionResult" class="modal-suggestion-value">Draw</div>
+                    </div>
+                </div>
+                <p id="modalSuggestionReason" class="modal-suggestion-text">Suggestion details appear here for the selected match.</p>
+                <div class="modal-suggestion-note">Use this suggestion only if you want to. Your own prediction remains fully in your control.</div>
             </div>
             <div class="prediction-form">
                 <div class="score-inputs">

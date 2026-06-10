@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.12.0"; // Full UI/UX revamp with clearer prediction-first onboarding
+const APP_VERSION = "v1.13.0"; // Optional match prediction suggestions added to each fixture
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -965,6 +965,8 @@ function loadMatches() {
         const homeFlag = getCountryFlag(match.homeTeam);
         const awayFlag = getCountryFlag(match.awayTeam);
 
+        const suggestion = getMatchSuggestion(match);
+
         matchCard.innerHTML = `
             <div class="match-header">
                 <span class="match-time">${formattedDate} - ${match.venue}</span>
@@ -977,6 +979,16 @@ function loadMatches() {
             </div>
             <div style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
                 ${match.stage}
+            </div>
+            <div class="match-suggestion">
+                <div class="match-suggestion-header">
+                    <span>🤖 Bob Suggestion</span>
+                    <span class="match-suggestion-confidence">${suggestion.confidenceLabel}</span>
+                </div>
+                <div class="match-suggestion-score">Suggested score: ${suggestion.suggestedScore}</div>
+                <div class="match-suggestion-result">Suggested result: ${suggestion.resultLabel}</div>
+                <p class="match-suggestion-text">${suggestion.rationale}</p>
+                <div class="match-suggestion-note">${suggestion.sourceNote}</div>
             </div>
             ${userPrediction ? `
                 <div class="match-prediction">
@@ -1032,6 +1044,101 @@ function getCountryFlag(teamName) {
     return countryFlags[teamName] || "🏳️";
 }
 
+function getTeamStrength(teamName) {
+    const strengthMap = {
+        "Brazil": 95,
+        "France": 94,
+        "England": 92,
+        "Spain": 91,
+        "Germany": 90,
+        "Portugal": 89,
+        "Netherlands": 88,
+        "Belgium": 87,
+        "Croatia": 85,
+        "Uruguay": 84,
+        "Japan": 82,
+        "Morocco": 82,
+        "Mexico": 81,
+        "USA": 81,
+        "Switzerland": 80,
+        "Senegal": 80,
+        "Austria": 79,
+        "Türkiye": 79,
+        "Sweden": 78,
+        "Paraguay": 77,
+        "Ecuador": 77,
+        "Czechia": 76,
+        "Scotland": 76,
+        "IR Iran": 75,
+        "Egypt": 75,
+        "Tunisia": 74,
+        "Australia": 74,
+        "Saudi Arabia": 73,
+        "Qatar": 72,
+        "New Zealand": 71,
+        "Jordan": 70,
+        "South Africa": 70,
+        "Bosnia and Herzegovina": 70,
+        "Congo DR": 69,
+        "Côte d'Ivoire": 78,
+        "Korea Republic": 78,
+        "Canada": 79,
+        "Haiti": 64,
+        "Curaçao": 63,
+        "Cabo Verde": 68
+    };
+
+    return strengthMap[teamName] || 66;
+}
+
+function getMatchSuggestion(match) {
+    const homeStrength = getTeamStrength(match.homeTeam);
+    const awayStrength = getTeamStrength(match.awayTeam);
+    const strengthGap = homeStrength - awayStrength;
+    const homeAdvantage = ["Mexico", "Canada", "USA"].includes(match.homeTeam) ? 4 : 0;
+    const adjustedGap = strengthGap + homeAdvantage;
+
+    let suggestedScore;
+    let resultLabel;
+    let confidenceLabel;
+    let rationale;
+
+    if (adjustedGap >= 12) {
+        suggestedScore = "2-0";
+        resultLabel = `${match.homeTeam} win`;
+        confidenceLabel = "High confidence";
+        rationale = `${match.homeTeam} look stronger on paper and should control most phases of the match.`;
+    } else if (adjustedGap >= 6) {
+        suggestedScore = "2-1";
+        resultLabel = `${match.homeTeam} win`;
+        confidenceLabel = "Solid confidence";
+        rationale = `${match.homeTeam} have the stronger squad profile, but ${match.awayTeam} should still create moments.`;
+    } else if (adjustedGap <= -12) {
+        suggestedScore = "0-2";
+        resultLabel = `${match.awayTeam} win`;
+        confidenceLabel = "High confidence";
+        rationale = `${match.awayTeam} appear significantly stronger and are the more likely side to convert chances.`;
+    } else if (adjustedGap <= -6) {
+        suggestedScore = "1-2";
+        resultLabel = `${match.awayTeam} win`;
+        confidenceLabel = "Solid confidence";
+        rationale = `${match.awayTeam} have the edge overall, although ${match.homeTeam} could still get on the scoresheet.`;
+    } else {
+        suggestedScore = "1-1";
+        resultLabel = "Draw";
+        confidenceLabel = "Balanced matchup";
+        rationale = `The teams look closely matched, so a draw is the safest suggestion for result-based play.`;
+    }
+
+    return {
+        suggestedScore,
+        resultLabel,
+        confidenceLabel,
+        rationale,
+        sourceNote: "Based on Bob's own football-strength model using public team reputation and tournament context."
+    };
+}
+
 function openPredictionModal(match) {
     if (isMatchLocked(match)) {
         alert('This match is locked. Predictions are frozen after kickoff and remain unavailable until an admin enters the final result and processes payouts.');
@@ -1040,10 +1147,16 @@ function openPredictionModal(match) {
 
     currentMatchId = match.id;
     
-    document.getElementById('modalMatchTitle').textContent = 
+    const suggestion = getMatchSuggestion(match);
+
+    document.getElementById('modalMatchTitle').textContent =
         `${match.homeTeam} vs ${match.awayTeam}`;
     document.getElementById('homeTeamLabel').textContent = match.homeTeam;
     document.getElementById('awayTeamLabel').textContent = match.awayTeam;
+    document.getElementById('modalSuggestionScore').textContent = suggestion.suggestedScore;
+    document.getElementById('modalSuggestionResult').textContent = suggestion.resultLabel;
+    document.getElementById('modalSuggestionConfidence').textContent = suggestion.confidenceLabel;
+    document.getElementById('modalSuggestionReason').textContent = suggestion.rationale;
     
     // Check if user already has a prediction
     const existingPrediction = predictions.find(p => 

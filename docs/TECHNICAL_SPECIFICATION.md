@@ -345,12 +345,13 @@ For every code change:
 
 ---
 
-## 8. Version 1.12.0 Technical Notes
+## 8. Version 1.13.0 Technical Notes
 
-Version 1.12.0 introduces:
-- A full prediction-first UI refresh in [`index.html`](../index.html) that explains exact score rewards, correct-result winnings, and pool competition more clearly
-- A redesigned dashboard header, onboarding hero, leaderboard explanation cards, and prediction modal guidance in [`index.html`](../index.html) and [`styles.css`](../styles.css)
+Version 1.13.0 introduces:
+- Optional Bob match suggestions rendered on each fixture card in [`loadMatches()`](../app.js:909)
+- A reusable suggestion model through [`getTeamStrength()`](../app.js:1035) and [`getMatchSuggestion()`](../app.js:1078)
+- Matching suggestion guidance inside the prediction modal in [`openPredictionModal()`](../app.js:1116)
+- New suggestion presentation styles in [`styles.css`](../styles.css)
 - No gameplay logic changes to prediction scoring, payout calculation, leaderboard aggregation, or pool behavior in [`app.js`](../app.js)
-- Updated UI and documentation version labels for the release
 
-This document reflects the version 1.12.0 implementation baseline.
+This document reflects the version 1.13.0 implementation baseline.
