@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.11.0"; // Pool leaderboard ranks by prediction winnings
+const APP_VERSION = "v1.12.0"; // Full UI/UX revamp with clearer prediction-first onboarding
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;

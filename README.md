@@ -1,6 +1,6 @@
 # ⚽ Football Prediction Game - FIFA World Cup 2026
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins, now with a richer football-themed World Cup interface and a Bob-inspired blue palette.
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins, now with a clearer prediction-first interface, a Bob-inspired blue palette, and stronger player-versus-pool competition messaging.
 
 ## 🎮 Features
 
@@ -9,7 +9,7 @@ A social football prediction game where friends compete by predicting FIFA World
 - ✅ **Virtual Coins Economy** - Start with 1000 coins, daily replenishment
 - ✅ **Match Predictions** - Predict exact scores for FIFA World Cup 2026 matches
 - ✅ **Private Pools** - Create and join private prediction pools with friends
-- ✅ **Leaderboard** - Track rankings by coins and prediction accuracy
+- ✅ **Leaderboard** - Track player and pool rankings by prediction winnings
 - ✅ **Scoring System**:
   - Exact score prediction: 5x payout
   - Correct result (winner/draw): 2x payout
@@ -21,11 +21,11 @@ A social football prediction game where friends compete by predicting FIFA World
 - Group stage matches with venue information
 - Country flag presentation on match cards for a stronger tournament feel
 
-### World Cup Theme Refresh
+### Prediction-First UX Revamp
 - Bob-inspired blue visual palette influenced by [`bob.ibm.com`](https://bob.ibm.com/)
-- Hero banner with tournament-style presentation
-- Participating-country flags highlighted on the login experience
-- Match cards enhanced with team flags and improved event styling
+- New onboarding hero that explains exact score rewards, correct-result winnings, and pool competition
+- Simplified dashboard messaging so users immediately understand how to predict and how rankings work
+- Improved leaderboard and modal guidance without changing the underlying game logic
 
 ## 🚀 Quick Start
 
@@ -95,7 +95,7 @@ https://YOUR-USERNAME.github.io/football-prediction-game/
 ### 4. Check Leaderboard
 - Go to "Leaderboard" tab
 - View global rankings or filter by pool
-- See coins, predictions, and accuracy stats
+- See player winnings, pool winnings, and supporting stats
 
 ## 🎯 Game Rules
 
@@ -201,4 +201,4 @@ Free to use for personal and educational purposes.
 
 **Enjoy predicting and may the best predictor win!** ⚽🏆
 
-_Current release theme: v1.11.0 - Pool Leaderboard by Prediction Winnings_
+_Current release theme: v1.12.0 - Prediction-First UX Revamp_

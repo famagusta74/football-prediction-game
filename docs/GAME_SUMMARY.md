@@ -100,7 +100,7 @@ The current project documentation only partially covers release workflow.
 - The technical documentation confirms the app is hosted on GitHub Pages in [`docs/TECHNICAL_SPECIFICATION.md`](TECHNICAL_SPECIFICATION.md).
 
 ### What is visible in the codebase
-When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.10.2:
+When a new version is released, the version number currently appears in multiple places and should be updated consistently. The current release is version v1.12.0:
 - Application constant in [`app.js:2`](../app.js:2)
 - Login screen version label in [`index.html:21`](../index.html:21)
 - Dashboard version badge in [`index.html:146`](../index.html:146)
@@ -124,10 +124,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.11.0 includes the pool leaderboard update:
+Version v1.12.0 includes the prediction-first UX revamp:
 
-- A new pool leaderboard now ranks pools by the total prediction winnings earned by all members
-- The user leaderboard continues to rank players only by coins won from prediction payouts
-- Starting coins and daily login bonuses do not improve either user or pool leaderboard position
-- Current balance is still shown as supporting information, but ranking is based on prediction winnings
-- Accuracy and correct predictions remain user leaderboard tie-breakers after prediction-earned coins
+- The login and dashboard experience now explain more clearly that exact score predictions earn the biggest payout
+- The interface now makes it easier to understand that correct match results still earn coins even without the exact score
+- Player-versus-player and pool-versus-pool competition is highlighted more clearly across the main screens
+- Leaderboard and prediction modal messaging were redesigned for easier understanding without changing game functionality
+- The Bob-inspired football theme remains in place while the UX is now more guided and easier to use

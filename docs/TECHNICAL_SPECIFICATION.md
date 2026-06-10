@@ -345,13 +345,12 @@ For every code change:
 
 ---
 
-## 8. Version 1.11.0 Technical Notes
+## 8. Version 1.12.0 Technical Notes
 
-Version 1.11.0 introduces:
-- A new pool leaderboard in [`index.html`](../index.html) that ranks pools by total prediction winnings earned by all members
-- Continued user leaderboard ranking based on coins won from positive prediction payouts only in [`updateLeaderboard()`](../app.js:1414)
-- Prediction-earned coin aggregation through [`getPredictionEarnedCoins()`](../app.js:1404)
-- Pool-level aggregation and sorting by total prediction winnings, with member count as the tie-breaker
+Version 1.12.0 introduces:
+- A full prediction-first UI refresh in [`index.html`](../index.html) that explains exact score rewards, correct-result winnings, and pool competition more clearly
+- A redesigned dashboard header, onboarding hero, leaderboard explanation cards, and prediction modal guidance in [`index.html`](../index.html) and [`styles.css`](../styles.css)
+- No gameplay logic changes to prediction scoring, payout calculation, leaderboard aggregation, or pool behavior in [`app.js`](../app.js)
 - Updated UI and documentation version labels for the release
 
-This document reflects the version 1.11.0 implementation baseline.
+This document reflects the version 1.12.0 implementation baseline.

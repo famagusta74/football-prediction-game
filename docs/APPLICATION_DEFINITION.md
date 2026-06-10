@@ -318,15 +318,17 @@ For admins:
 
 ### 7.2 Prediction Screen Behavior
 - Upcoming matches are shown as cards
-- The login experience now uses a football-themed hero banner with World Cup styling and participating-country flags
-- The overall palette now follows a Bob-inspired blue visual direction
+- The login experience now uses a prediction-first football hero banner with World Cup styling and participating-country flags
+- The onboarding copy explains exact score rewards, correct-result winnings, and player-versus-pool competition before login
+- The overall palette follows a Bob-inspired blue visual direction
 - Predicted matches use a stronger blue-highlighted palette
 - Unpredicted matches use a lighter blue-grey palette
 - Match cards display country flags beside team names for a more tournament-focused presentation
 - Locked matches remain unavailable after kickoff
 - Existing predictions display score and bet details directly on the card
+- The predictions tab includes a quick guide that explains how to choose matches, bet coins, and help both player and pool rankings
 - The leaderboard ranks users by coins won from prediction payouts, with current balance shown as a secondary reference
-- The leaderboard screen includes an explicit note that starting coins and daily bonus coins do not improve ranking
+- The leaderboard screen includes clearer explanation cards for both player and pool ranking rules
 - A pool leaderboard also ranks pools by the total prediction winnings earned by all members in each pool
 
 ### 7.3 Activity Screen Behavior
@@ -345,10 +347,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.11.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.12.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.10.1 keeps the football-first World Cup visual refresh while shifting the core interface to a Bob-inspired blue palette, preserving the existing daily bonus, prediction locking, and activity-history behavior.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.12.0 keeps the existing functionality intact while redesigning the interface to explain prediction rewards, leaderboard rules, and pool competition more clearly through a guided Bob-inspired football UX.

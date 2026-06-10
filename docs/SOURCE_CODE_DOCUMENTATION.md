@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 1.11.0
+**Version:** 1.12.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~2,700
@@ -20,7 +20,7 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game  
-**Version:** 1.11.0
+**Version:** 1.12.0
 **Built by:** IBM Bob AI Assistant  
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase  
 **Lines of Code:** ~1,800 (JavaScript), ~800 (CSS), ~300 (HTML)
@@ -525,4 +525,4 @@ currentUser = users.find(u => u.id === user.id) || user;
 - Reload the persisted user record after login-side bonus writes so the UI reflects the saved state immediately
 - Create a local git commit for each release so GitHub Desktop can push it
 
-This documentation reflects the version 1.11.0 codebase and release workflow.
+This documentation reflects the version 1.12.0 codebase and release workflow.
