@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.15.2
+**Version:** 1.15.3
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -361,10 +361,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.15.2, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.15.3, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.15.2 fixes the daily bonus to use the user's local timezone instead of UTC, ensuring users receive their daily bonus correctly regardless of their timezone.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.15.3 adds missing country flags for all teams in the tournament (South Africa, Czechia, Bosnia and Herzegovina, Paraguay, Qatar, Switzerland, Haiti, Scotland, Türkiye, Curaçao, Côte d'Ivoire, Sweden, Cabo Verde).

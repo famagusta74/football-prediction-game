@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.15.2"; // Fixed daily bonus to use local timezone instead of UTC
+const APP_VERSION = "v1.15.3"; // Added missing country flags for all teams
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1242,17 +1242,23 @@ function getCountryFlag(teamName) {
         "Australia": "🇦🇺",
         "Austria": "🇦🇹",
         "Belgium": "🇧🇪",
+        "Bosnia and Herzegovina": "🇧🇦",
         "Brazil": "🇧🇷",
+        "Cabo Verde": "🇨🇻",
         "Canada": "🇨🇦",
         "Colombia": "🇨🇴",
         "Congo DR": "🇨🇩",
         "Croatia": "🇭🇷",
+        "Curaçao": "🇨🇼",
+        "Czechia": "🇨🇿",
+        "Côte d'Ivoire": "🇨🇮",
         "Denmark": "🇩🇰",
         "Ecuador": "🇪🇨",
         "Egypt": "🇪🇬",
         "England": "🏴",
         "France": "🇫🇷",
         "Germany": "🇩🇪",
+        "Haiti": "🇭🇹",
         "IR Iran": "🇮🇷",
         "Italy": "🇮🇹",
         "Japan": "🇯🇵",
@@ -1262,11 +1268,18 @@ function getCountryFlag(teamName) {
         "Morocco": "🇲🇦",
         "Netherlands": "🇳🇱",
         "New Zealand": "🇳🇿",
+        "Paraguay": "🇵🇾",
         "Portugal": "🇵🇹",
+        "Qatar": "🇶🇦",
         "Saudi Arabia": "🇸🇦",
+        "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
         "Senegal": "🇸🇳",
+        "South Africa": "🇿🇦",
         "Spain": "🇪🇸",
+        "Sweden": "🇸🇪",
+        "Switzerland": "🇨🇭",
         "Tunisia": "🇹🇳",
+        "Türkiye": "🇹🇷",
         "Uruguay": "🇺🇾",
         "USA": "🇺🇸"
     };
