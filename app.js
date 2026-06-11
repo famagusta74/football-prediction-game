@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.15.0"; // History tab for processed matches and Today's Games section
+const APP_VERSION = "v1.15.1"; // Fixed daily bonus to be once per calendar day (not 24-hour interval)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -690,33 +690,30 @@ async function login() {
         currentUser = user;
         localStorage.setItem('currentUser', JSON.stringify(user));
         
-        // Daily coin replenishment check
-        const lastLogin = new Date(user.lastLogin || 0);
+        // Daily coin replenishment check - once per calendar day
         const now = new Date();
-        const hoursSinceLastLogin = (now - lastLogin) / (1000 * 60 * 60);
+        const loginDayKey = now.toISOString().slice(0, 10); // YYYY-MM-DD format
+        const activityKey = `daily_bonus_${loginDayKey}`;
         let dailyBonusMessage = '';
         
-        if (hoursSinceLastLogin >= 24) {
-            const loginDayKey = now.toISOString().slice(0, 10);
-            const activityKey = `daily_bonus_${loginDayKey}`;
-            const hasDailyBonusEntry = ensureUserActivityLog(user).some(entry =>
-                entry.type === 'daily_bonus' &&
-                entry.details &&
-                entry.details.activityKey === activityKey
-            );
+        // Check if user already received bonus today
+        const hasDailyBonusEntry = ensureUserActivityLog(user).some(entry =>
+            entry.type === 'daily_bonus' &&
+            entry.details &&
+            entry.details.activityKey === activityKey
+        );
 
-            if (!hasDailyBonusEntry) {
-                user.coins += 100;
-                addUserActivity(user.id, 'daily_bonus', 100, {
-                    reason: 'Daily login bonus applied',
-                    activityKey,
-                    balanceAfter: user.coins
-                });
-                dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received 100 coins for logging in today.`;
-            }
-
-            user.lastLogin = now.toISOString();
+        if (!hasDailyBonusEntry) {
+            user.coins += 100;
+            addUserActivity(user.id, 'daily_bonus', 100, {
+                reason: 'Daily login bonus applied',
+                activityKey,
+                balanceAfter: user.coins
+            });
+            dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received 100 coins for logging in today.`;
         }
+
+        user.lastLogin = now.toISOString();
 
         await saveUsers();
 
