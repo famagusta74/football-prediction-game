@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.15.1"; // Fixed daily bonus to be once per calendar day (not 24-hour interval)
+const APP_VERSION = "v1.15.2"; // Fixed daily bonus to use local timezone instead of UTC
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -690,9 +690,13 @@ async function login() {
         currentUser = user;
         localStorage.setItem('currentUser', JSON.stringify(user));
         
-        // Daily coin replenishment check - once per calendar day
+        // Daily coin replenishment check - once per calendar day (user's local timezone)
         const now = new Date();
-        const loginDayKey = now.toISOString().slice(0, 10); // YYYY-MM-DD format
+        // Use local date instead of UTC to respect user's timezone
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const loginDayKey = `${year}-${month}-${day}`; // YYYY-MM-DD format in user's local timezone
         const activityKey = `daily_bonus_${loginDayKey}`;
         let dailyBonusMessage = '';
         
