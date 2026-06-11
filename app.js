@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.14.0"; // Bob suggestions are persisted, scored against results, and summarized with KPI tracking
+const APP_VERSION = "v1.15.0"; // History tab for processed matches and Today's Games section
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -902,6 +902,8 @@ function showTab(tabName) {
         loadPools();
     } else if (tabName === 'activity') {
         renderCurrentUserActivity();
+    } else if (tabName === 'history') {
+        loadHistory();
     }
 }
 
@@ -912,6 +914,42 @@ function loadMatches() {
     renderBobSuggestionKpi();
     
     const currentUserPredictions = predictions.filter(p => p.userId === currentUser.id);
+    
+    // Get today's date range (start and end of day in user's timezone)
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+    
+    // Filter today's matches (upcoming only, not finished)
+    const todaysMatches = matches.filter(match => {
+        const kickoffDate = new Date(match.kickoff);
+        return kickoffDate >= todayStart && kickoffDate <= todayEnd && match.status !== 'finished';
+    });
+    
+    // Render Today's Games section if there are any
+    if (todaysMatches.length > 0) {
+        const todaySection = document.createElement('div');
+        todaySection.className = 'todays-games-section';
+        todaySection.innerHTML = `
+            <div class="todays-games-header">
+                <h3>⚽ Today's Games</h3>
+                <span class="todays-games-count">${todaysMatches.length} match${todaysMatches.length !== 1 ? 'es' : ''}</span>
+            </div>
+        `;
+        matchesList.appendChild(todaySection);
+        
+        // Render today's matches with special styling
+        todaysMatches.forEach(match => {
+            const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
+            renderMatchCard(match, userPrediction, matchesList, true);
+        });
+        
+        // Add separator
+        const separator = document.createElement('div');
+        separator.className = 'matches-separator';
+        separator.innerHTML = '<h3>All Matches</h3>';
+        matchesList.appendChild(separator);
+    }
 
     matches.forEach(match => {
         const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
@@ -1013,6 +1051,189 @@ function loadMatches() {
         matchesList.appendChild(matchCard);
     });
 }
+// Helper function to render a match card
+function renderMatchCard(match, userPrediction, container, isTodaySection = false) {
+    const matchCard = document.createElement('div');
+    const matchLocked = isMatchLocked(match);
+    const predictionStateClass = userPrediction ? ' predicted' : ' unpredicted';
+    const todayClass = isTodaySection ? ' today-match' : '';
+    matchCard.className = `match-card${matchLocked ? ' locked' : ''}${predictionStateClass}${todayClass}`;
+    matchCard.onclick = () => openPredictionModal(match);
+    
+    const kickoffDate = new Date(match.kickoff);
+    const formattedDate = kickoffDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    // Calculate result if match is finished
+    let resultInfo = '';
+    let lockInfo = '';
+    if (match.status === 'finished' && match.finalScore && userPrediction) {
+        const payout = calculatePayout(userPrediction, match.finalScore);
+        const resultColor = payout > 0 ? '#28a745' : '#dc3545';
+        resultInfo = `
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid ${resultColor};">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <strong style="font-size: 16px;">Final Score: ${match.finalScore.home} - ${match.finalScore.away}</strong>
+                </div>
+                <div style="text-align: center; color: ${resultColor}; font-weight: bold; font-size: 18px;">
+                    ${payout > 0 ? `🎉 Won ${payout} coins!` : '❌ Lost ${userPrediction.betAmount} coins'}
+                </div>
+            </div>
+        `;
+    }
+
+    if (match.status === 'finished' && match.finalScore) {
+        lockInfo = `
+            <div style="text-align: center; margin-top: 12px; color: #666; font-size: 13px; font-weight: 600;">
+                🔒 Predictions closed - awaiting processed results
+            </div>
+        `;
+    } else if (matchLocked) {
+        lockInfo = `
+            <div style="text-align: center; margin-top: 12px; color: #dc3545; font-size: 13px; font-weight: 600;">
+                🔒 Predictions closed once kickoff passed
+            </div>
+        `;
+    }
+
+    const homeFlag = getCountryFlag(match.homeTeam);
+    const awayFlag = getCountryFlag(match.awayTeam);
+
+    const suggestion = ensureMatchSuggestion(match);
+    const suggestionOutcome = getSuggestionOutcome(match);
+
+    matchCard.innerHTML = `
+        <div class="match-header">
+            <span class="match-time">${formattedDate} - ${match.venue}</span>
+            <span class="match-status status-${match.status}">${match.status.toUpperCase()}</span>
+        </div>
+        <div class="match-teams">
+            <span class="team"><span class="team-flag">${homeFlag}</span>${match.homeTeam}</span>
+            <span class="vs">${match.status === 'finished' && match.finalScore ? `${match.finalScore.home} - ${match.finalScore.away}` : 'VS'}</span>
+            <span class="team">${match.awayTeam}<span class="team-flag">${awayFlag}</span></span>
+        </div>
+        <div style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
+            ${match.stage}
+        </div>
+        <div class="match-suggestion">
+            <div class="match-suggestion-header">
+                <span>🤖 Bob Suggestion</span>
+                <span class="match-suggestion-confidence">${suggestion.confidenceLabel}</span>
+            </div>
+            <div class="match-suggestion-score">Suggested score: ${suggestion.suggestedScore}</div>
+            <div class="match-suggestion-result">Suggested result: ${suggestion.resultLabel}</div>
+            <p class="match-suggestion-text">${suggestion.rationale}</p>
+            <div class="match-suggestion-note">${suggestion.sourceNote}</div>
+            ${suggestionOutcome ? `
+                <div class="match-suggestion-outcome ${suggestionOutcome.resultHit ? 'success' : 'miss'}">
+                    <strong>${suggestionOutcome.summary}</strong>
+                    <span>${suggestionOutcome.detail}</span>
+                </div>
+            ` : ''}
+        </div>
+        ${userPrediction ? `
+            <div class="match-prediction">
+                <span class="prediction-info">
+                    Your prediction: ${userPrediction.homeScore} - ${userPrediction.awayScore}
+                </span>
+                <span class="prediction-bet">${userPrediction.betAmount} 🪙</span>
+            </div>
+        ` : ''}
+        ${resultInfo}
+        ${lockInfo}
+    `;
+    
+    container.appendChild(matchCard);
+}
+
+// Load History Tab - Shows processed/finished matches
+function loadHistory() {
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = '';
+    
+    const currentUserPredictions = predictions.filter(p => p.userId === currentUser.id);
+    
+    // Filter for finished matches with final scores
+    const finishedMatches = matches.filter(match => 
+        match.status === 'finished' && match.finalScore
+    );
+    
+    if (finishedMatches.length === 0) {
+        historyList.innerHTML = '<div class="empty-state">No match history yet. Check back after matches are completed and processed.</div>';
+        return;
+    }
+    
+    // Sort by kickoff date (most recent first)
+    finishedMatches.sort((a, b) => new Date(b.kickoff) - new Date(a.kickoff));
+    
+    finishedMatches.forEach(match => {
+        const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
+        
+        const matchCard = document.createElement('div');
+        matchCard.className = 'match-card history-card';
+        
+        const kickoffDate = new Date(match.kickoff);
+        const formattedDate = kickoffDate.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        
+        const homeFlag = getCountryFlag(match.homeTeam);
+        const awayFlag = getCountryFlag(match.awayTeam);
+        
+        let resultInfo = '';
+        if (userPrediction) {
+            const payout = calculatePayout(userPrediction, match.finalScore);
+            const resultColor = payout > 0 ? '#28a745' : '#dc3545';
+            const resultIcon = payout > 0 ? '🎉' : '❌';
+            const resultText = payout > 0 ? `Won ${payout} coins!` : `Lost ${userPrediction.betAmount} coins`;
+            
+            resultInfo = `
+                <div class="history-result" style="border-top: 2px solid ${resultColor}; margin-top: 15px; padding-top: 15px;">
+                    <div style="text-align: center; margin-bottom: 8px;">
+                        <strong>Your Prediction: ${userPrediction.homeScore} - ${userPrediction.awayScore}</strong>
+                        <span style="margin-left: 10px; color: #666;">(Bet: ${userPrediction.betAmount} 🪙)</span>
+                    </div>
+                    <div style="text-align: center; color: ${resultColor}; font-weight: bold; font-size: 18px;">
+                        ${resultIcon} ${resultText}
+                    </div>
+                </div>
+            `;
+        } else {
+            resultInfo = `
+                <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd; color: #999;">
+                    No prediction made for this match
+                </div>
+            `;
+        }
+        
+        matchCard.innerHTML = `
+            <div class="match-header">
+                <span class="match-time">${formattedDate} - ${match.venue}</span>
+                <span class="match-status status-finished">FINISHED</span>
+            </div>
+            <div class="match-teams">
+                <span class="team"><span class="team-flag">${homeFlag}</span>${match.homeTeam}</span>
+                <span class="vs">${match.finalScore.home} - ${match.finalScore.away}</span>
+                <span class="team">${match.awayTeam}<span class="team-flag">${awayFlag}</span></span>
+            </div>
+            <div style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
+                ${match.stage}
+            </div>
+            ${resultInfo}
+        `;
+        
+        historyList.appendChild(matchCard);
+    });
+}
+
 
 function getCountryFlag(teamName) {
     const countryFlags = {

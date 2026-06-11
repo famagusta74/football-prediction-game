@@ -864,6 +864,100 @@ input:focus, textarea:focus, select:focus {
     font-weight: 700;
 }
 
+/* Today's Games Section */
+.todays-games-section {
+    margin-bottom: 30px;
+}
+
+.todays-games-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #0f62fe 0%, #0353e9 100%);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(15, 98, 254, 0.3);
+}
+
+.todays-games-header h3 {
+    color: white;
+    font-size: 20px;
+    margin: 0;
+}
+
+.todays-games-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.match-card.today-match {
+    border: 3px solid #0f62fe;
+    box-shadow: 0 6px 20px rgba(15, 98, 254, 0.25);
+}
+
+.match-card.today-match:hover {
+    box-shadow: 0 8px 24px rgba(15, 98, 254, 0.35);
+}
+
+/* Matches Separator */
+.matches-separator {
+    margin: 40px 0 30px 0;
+    padding: 15px 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.matches-separator h3 {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 18px;
+    text-align: center;
+    margin: 0;
+}
+
+/* History Card Styles */
+.match-card.history-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    border-color: #b8c5d6;
+    cursor: default;
+}
+
+.match-card.history-card:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.history-result {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+
 .match-header {
     display: flex;
     justify-content: space-between;

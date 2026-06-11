@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 1.14.0
+**Version:** 1.15.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~2,700
+**Total Lines of Code:** ~2,900
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,10 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game  
-**Version:** 1.14.0
-**Built by:** IBM Bob AI Assistant  
-**Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase  
-**Lines of Code:** ~1,800 (JavaScript), ~800 (CSS), ~300 (HTML)
+**Version:** 1.15.0
+**Built by:** IBM Bob AI Assistant
+**Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
+**Lines of Code:** ~2,000 (JavaScript), ~900 (CSS), ~300 (HTML)
 
 ---
 
@@ -138,6 +138,7 @@ football-prediction-game/
 
     <div class="tabs">
         <button class="tab active" onclick="showTab('predictions')">Predictions</button>
+        <button class="tab" onclick="showTab('history')">History</button>
         <button class="tab" onclick="showTab('pools')">My Pools</button>
         <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
         <button class="tab" onclick="showTab('activity')">Activity</button>
@@ -305,7 +306,9 @@ Reload Persisted User → Dashboard Display → Optional Notification
 **File:** [`app.js`](../app.js)
 
 **Functions:**
-- [`loadMatches()`](../app.js)
+- [`loadMatches()`](../app.js) - Loads upcoming matches with Today's Games section
+- [`loadHistory()`](../app.js) - Loads finished matches for History tab
+- [`renderMatchCard()`](../app.js) - Helper function to render match cards
 - [`openPredictionModal()`](../app.js)
 - [`submitPrediction()`](../app.js)
 - [`calculatePayout()`](../app.js)

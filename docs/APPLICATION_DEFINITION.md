@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.10.1
+**Version:** 1.15.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -310,6 +310,7 @@ For admins:
 - Registration screen
 - Dashboard
 - Predictions tab
+- History tab
 - Pools tab
 - Leaderboard tab
 - Activity tab
@@ -317,7 +318,9 @@ For admins:
 - Admin Users tab
 
 ### 7.2 Prediction Screen Behavior
-- Upcoming matches are shown as cards
+- A "Today's Games" section appears at the top when there are matches scheduled for the current day
+- Today's matches are highlighted with special styling for easy identification
+- All upcoming matches are shown as cards below the Today's Games section
 - The login experience now uses a prediction-first football hero banner with World Cup styling and participating-country flags
 - The onboarding copy explains exact score rewards, correct-result winnings, and player-versus-pool competition before login
 - The overall palette follows a Bob-inspired blue visual direction
@@ -337,6 +340,15 @@ For admins:
 - Users see a personal summary of balance, total in, total out, and entry count
 - Users see detailed transaction history in HTML
 - Admins can inspect the same style of history for any user
+
+### 7.3 History Tab Behavior
+- Shows all finished matches with final scores
+- Displays user's predictions alongside actual results
+- Clearly indicates wins (green) and losses (red) with coin amounts
+- Matches are sorted by date (most recent first)
+- Shows an empty state message when no matches have been completed yet
+- Provides a complete record of past performance for review
+
 - Daily bonus entries show the awarded amount and the correct resulting balance
 - Normal users see the daily bonus entry immediately after login when a new eligible-day bonus is awarded
 
@@ -349,10 +361,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.14.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.15.0, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.14.0 keeps the existing functionality intact while extending Bob's optional match suggestions into a tracked performance feature, so every suggestion is preserved, compared against the final score, and summarized with a KPI panel on the Predictions page.
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.15.0 adds a dedicated History tab where users can review all their past predictions and results for finished matches, plus a "Today's Games" section that highlights matches happening on the current day for easier access and better user experience.

@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v1.14.0 - Bob Suggestion KPI Tracking</div>
+            <div class="version-header">v1.15.0 - History Tab & Today's Games</div>
             <div class="landing-shell">
                 <div class="hero-banner hero-banner--revamp">
                     <div class="hero-overlay"></div>
@@ -183,7 +183,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.14.0 - Bob Suggestion KPI Tracking
+                Version 1.15.0 - History Tab & Today's Games
             </div>
         </div>
     </div>
@@ -207,7 +207,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.14.0 - Bob Suggestion KPI Tracking
+                Version 1.15.0 - History Tab & Today's Games
             </div>
         </div>
     </div>
@@ -224,7 +224,7 @@
                             <span class="coin-icon">🪙</span>
                             <span id="userCoins">1000</span>
                         </div>
-                        <div class="version-badge">v1.14.0</div>
+                        <div class="version-badge">v1.15.0</div>
                     </div>
                     <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
                 </div>
@@ -251,6 +251,7 @@
 
         <div class="tabs">
             <button class="tab active" onclick="showTab('predictions')">Predictions</button>
+            <button class="tab" onclick="showTab('history')">History</button>
             <button class="tab" onclick="showTab('pools')">My Pools</button>
             <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
             <button class="tab" onclick="showTab('activity')">Activity</button>
@@ -299,6 +300,20 @@
                 <p class="prediction-note">✅ Cards with saved predictions already contain your pick. Open cards are ready for a new prediction, daily login still awards 100 coins, and Bob suggestions are optional guidance only.</p>
                 <div id="bobSuggestionKpi"></div>
                 <div id="matchesList" class="matches-list"></div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="historyTab" class="tab-content">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <h2>Match History</h2>
+                        <p class="section-subtitle">Review your predictions and results for all processed matches.</p>
+                    </div>
+                    <div class="section-badge">📜 Past Results</div>
+                </div>
+                <div id="historyList" class="matches-list"></div>
             </div>
         </div>
 
