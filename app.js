@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.15.3"; // Added missing country flags for all teams
+const APP_VERSION = "v1.15.4"; // Daily bonus awarded on any interaction, not just login
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -662,6 +662,58 @@ function showRegister() {
     document.getElementById('registerScreen').classList.add('active');
     document.getElementById('loginScreen').classList.remove('active');
 }
+// Check and award daily bonus - can be called on any interaction
+function checkAndAwardDailyBonus() {
+    if (!currentUser) return '';
+    
+    // Daily coin replenishment check - once per calendar day (user's local timezone)
+    const now = new Date();
+    // Use local date instead of UTC to respect user's timezone
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const loginDayKey = `${year}-${month}-${day}`; // YYYY-MM-DD format in user's local timezone
+    const activityKey = `daily_bonus_${loginDayKey}`;
+    let dailyBonusMessage = '';
+    
+    // Check if user already received bonus today
+    const hasDailyBonusEntry = ensureUserActivityLog(currentUser).some(entry =>
+        entry.type === 'daily_bonus' &&
+        entry.details &&
+        entry.details.activityKey === activityKey
+    );
+
+    if (!hasDailyBonusEntry) {
+        currentUser.coins += 100;
+        addUserActivity(currentUser.id, 'daily_bonus', 100, {
+            reason: 'Daily bonus applied',
+            activityKey,
+            balanceAfter: currentUser.coins
+        });
+        dailyBonusMessage = `Thanks for coming back, ${currentUser.nickname}! You received 100 coins for today.`;
+        
+        // Update user in storage
+        updateUserInStorage();
+        
+        // Update UI
+        document.getElementById('userCoins').textContent = currentUser.coins;
+        
+        // Show notification
+        if (dailyBonusMessage) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Daily Bonus!', {
+                    body: dailyBonusMessage,
+                    icon: 'bobimage.jpeg'
+                });
+            } else {
+                alert(dailyBonusMessage);
+            }
+        }
+    }
+    
+    return dailyBonusMessage;
+}
+
 
 async function login() {
     const nickname = document.getElementById('nickname').value.trim();
@@ -690,34 +742,10 @@ async function login() {
         currentUser = user;
         localStorage.setItem('currentUser', JSON.stringify(user));
         
-        // Daily coin replenishment check - once per calendar day (user's local timezone)
-        const now = new Date();
-        // Use local date instead of UTC to respect user's timezone
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const loginDayKey = `${year}-${month}-${day}`; // YYYY-MM-DD format in user's local timezone
-        const activityKey = `daily_bonus_${loginDayKey}`;
-        let dailyBonusMessage = '';
+        // Check for daily bonus on login
+        const dailyBonusMessage = checkAndAwardDailyBonus();
         
-        // Check if user already received bonus today
-        const hasDailyBonusEntry = ensureUserActivityLog(user).some(entry =>
-            entry.type === 'daily_bonus' &&
-            entry.details &&
-            entry.details.activityKey === activityKey
-        );
-
-        if (!hasDailyBonusEntry) {
-            user.coins += 100;
-            addUserActivity(user.id, 'daily_bonus', 100, {
-                reason: 'Daily login bonus applied',
-                activityKey,
-                balanceAfter: user.coins
-            });
-            dailyBonusMessage = `Thanks for coming back, ${user.nickname}! You received 100 coins for logging in today.`;
-        }
-
-        user.lastLogin = now.toISOString();
+        user.lastLogin = new Date().toISOString();
 
         await saveUsers();
 
@@ -837,6 +865,9 @@ function logout() {
 
 // Dashboard Functions
 function showDashboard() {
+    // Check for daily bonus when showing dashboard
+    checkAndAwardDailyBonus();
+    
     document.getElementById('loginScreen').classList.remove('active');
     document.getElementById('registerScreen').classList.remove('active');
     document.getElementById('dashboardScreen').classList.add('active');
@@ -878,6 +909,9 @@ function showDashboard() {
 }
 
 function showTab(tabName) {
+    // Check for daily bonus on any tab interaction
+    checkAndAwardDailyBonus();
+    
     activeTabName = tabName;
 
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));

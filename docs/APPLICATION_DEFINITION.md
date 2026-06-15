@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.15.3
+**Version:** 1.15.4
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -43,7 +43,7 @@ Enable football fans to:
 3. **Reward System**
    - 5x payout for exact score predictions
    - 2x payout for correct result (win/draw/loss)
-   - Daily coin replenishment of 100 coins once per calendar day in user's local timezone (first login of the day)
+   - Daily coin replenishment of 100 coins once per calendar day in user's local timezone (awarded on any interaction during a new day)
    - No maximum balance cap on daily bonus allocation
    - Daily thank-you notification when bonus coins are awarded
    - Starting balance: 1000 coins
@@ -140,9 +140,10 @@ The original primary admin remains Menicos.
 4. Activity history records the edit
 5. Match remains locked after kickoff
 
-### 4.4 Daily Login Bonus
-1. User logs in on a new calendar day
-2. System awards 100 coins for the first login of that day
+### 4.4 Daily Bonus
+1. User interacts with the system (navigates, clicks, reloads) on a new calendar day
+2. System automatically checks and awards 100 coins for the first interaction of that day
+3. Works even if user keeps session open overnight - bonus awarded on next interaction
 3. No maximum balance cap blocks the daily allocation
 4. A daily bonus activity entry is recorded once for that calendar day
 5. The activity entry stores the correct balance after the award
@@ -361,10 +362,10 @@ Every change to the application must follow this release process:
 2. Update the documentation set to reflect the new behavior
 3. Create a local git commit so the Mac GitHub Desktop workflow can push the release
 
-For version 1.15.3, this rule has been applied to the application UI, documentation portal, and supporting documents.
+For version 1.15.4, this rule has been applied to the application UI, documentation portal, and supporting documents.
 
 ---
 
 ## 9. Conclusion
 
-The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.15.3 adds missing country flags for all teams in the tournament (South Africa, Czechia, Bosnia and Herzegovina, Paraguay, Qatar, Switzerland, Haiti, Scotland, Türkiye, Curaçao, Côte d'Ivoire, Sweden, Cabo Verde).
+The Football Prediction Game is a lightweight but feature-rich social prediction platform. Version 1.15.4 improves the daily bonus system to award coins on any user interaction (tab navigation, clicks, page reload) rather than only on login, ensuring users with open sessions receive their daily bonus automatically.
