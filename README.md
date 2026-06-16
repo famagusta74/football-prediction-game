@@ -223,4 +223,4 @@ Free to use for personal and educational purposes.
 
 **Enjoy predicting and may the best predictor win!** ⚽🏆
 
-_Current release theme: v2.0.4 - Auto-Update Matches on Version Change_
+_Current release theme: v2.0.5 - Improved Past Matches Readability_

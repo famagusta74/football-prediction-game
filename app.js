@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.4"; // Auto-update matches on version change
+const APP_VERSION = "v2.0.5"; // Improved past matches readability
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -3363,7 +3363,9 @@ function displayCalendarMatches(date) {
         
         pastMatches.forEach(match => {
             const matchCard = createMatchCard(match);
-            matchCard.style.opacity = '0.8';
+            // Make past matches visually distinct but still readable
+            matchCard.style.background = 'linear-gradient(135deg, rgba(100, 100, 100, 0.15) 0%, rgba(80, 80, 80, 0.15) 100%)';
+            matchCard.style.borderColor = 'rgba(150, 150, 150, 0.3)';
             matchesList.appendChild(matchCard);
         });
     }
