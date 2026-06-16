@@ -1,0 +1,72 @@
+feat: Add admin data backup feature (v2.0.8)
+
+## Summary
+Added one-click data backup button in admin panel for easy data protection and disaster recovery.
+
+## Changes Made
+
+### New Features
+- Added "💾 Backup Data" button in admin header (next to "Process Results")
+- Implemented backupAllData() function with admin-only access
+- Automatic JSON file download with timestamped filename
+- Backup history tracking (last 10 backups)
+- Support for both Firebase and localStorage
+- Visual feedback during backup process
+
+### Files Modified
+- app.js: Added backupAllData() function (line 2565)
+- index.html: Added backup button in admin header (line 242)
+- Updated version to v2.0.8 in both files
+
+### Files Created
+- RELEASE_NOTES_v2.0.8.md: Complete release documentation
+- COMMIT_MESSAGE_v2.0.8.txt: This commit message
+- backup-data.html: Standalone backup tool (optional)
+- backups/backup_v2.0.7_*: Backup of previous version
+
+### Documentation
+- Created comprehensive release notes
+- Updated version numbers across application
+- Added backup feature documentation
+
+## What Gets Backed Up
+- All matches with results and Bob predictions
+- All user accounts and profiles
+- All user predictions
+- All pools and members
+- Admin notifications
+
+## Testing
+- ✅ Admin authentication check works
+- ✅ Backup button appears for admin users
+- ✅ JSON file downloads successfully
+- ✅ Backup contains all required data
+- ✅ Works with both Firebase and localStorage
+- ✅ Backup history tracking functional
+
+## Breaking Changes
+None. Fully backward compatible with v2.0.7.
+
+## Migration
+No migration required. Simply update files and reload.
+
+## Why This Change
+After the v2.0.7 data recovery incident, we learned the importance of:
+1. Easy, accessible data backups
+2. Admin tools for data protection
+3. Regular backup capabilities
+4. Disaster recovery options
+
+This feature ensures admins can easily protect their game data with one click.
+
+## Related Issues
+- Resolves data loss concerns from v2.0.0-v2.0.6 migration bug
+- Implements user feedback for better data protection
+- Provides disaster recovery capability
+
+---
+
+Version: v2.0.8
+Previous: v2.0.7
+Date: 2026-06-16
+Priority: HIGH - Data Protection

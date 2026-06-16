@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Restore - Click One Button</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .big-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+            margin: 20px 0;
+        }
+        
+        .big-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(40, 167, 69, 0.4);
+        }
+        
+        .big-button:active {
+            transform: translateY(0);
+        }
+        
+        #status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .status-loading {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .status-info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .step {
+            text-align: left;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .step-done {
+            color: #28a745;
+        }
+        
+        .step-current {
+            background: #fff3cd;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Auto Restore Tool</h1>
+        <p class="subtitle">Automatic data restoration - just click the button!</p>
+        
+        <button class="big-button" onclick="autoRestore()" id="restoreBtn">
+            🚀 RESTORE MY DATA NOW
+        </button>
+        
+        <div id="status"></div>
+    </div>
+    
+    <!-- Load Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration (embedded directly)
+        const firebaseConfig = {
+            apiKey: "AIzaSyATsmrz6NlM1bgootQFhIrZAmT-vui_chI",
+            authDomain: "football-prediction-game-ca155.firebaseapp.com",
+            databaseURL: "https://football-prediction-game-ca155-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "football-prediction-game-ca155",
+            storageBucket: "football-prediction-game-ca155.firebasestorage.app",
+            messagingSenderId: "266847662424",
+            appId: "1:266847662424:web:fc24bb439d3015e02cf52d"
+        };
+        
+        let statusDiv = document.getElementById('status');
+        let restoreBtn = document.getElementById('restoreBtn');
+        let firebaseApp;
+        let database;
+        
+        // Initialize Firebase when page loads
+        window.addEventListener('load', function() {
+            try {
+                if (typeof firebase !== 'undefined') {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                    database = firebase.database();
+                    console.log('✅ Firebase initialized successfully');
+                    showStatus(`
+                        <h3 style="color: #1e3c72; margin-bottom: 15px;">Ready to Restore</h3>
+                        <p>✅ Firebase connected successfully!</p>
+                        <p style="margin-top: 15px;">This tool will automatically:</p>
+                        <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                            <li>✅ Check Firebase for your data</li>
+                            <li>✅ Check browser cache for backups</li>
+                            <li>✅ Restore data automatically</li>
+                            <li>✅ Sync everything</li>
+                        </ul>
+                        <p style="margin-top: 15px; font-weight: 600;">Just click the button above!</p>
+                    `, 'info');
+                } else {
+                    throw new Error('Firebase SDK not loaded');
+                }
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                showStatus(`
+                    <h3 style="color: #dc3545; margin-bottom: 15px;">❌ Firebase Not Loaded</h3>
+                    <p><strong>${error.message}</strong></p>
+                    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                    <p>Please check:</p>
+                    <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                        <li>Internet connection (Firebase SDK loads from internet)</li>
+                        <li>Browser console (F12) for more details</li>
+                        <li>Try refreshing the page</li>
+                    </ul>
+                `, 'error');
+            }
+        });
+        
+        function showStatus(message, type = 'info') {
+            statusDiv.className = 'status-' + type;
+            statusDiv.innerHTML = message;
+        }
+        
+        function addStep(message, done = false) {
+            const step = document.createElement('div');
+            step.className = 'step' + (done ? ' step-done' : ' step-current');
+            step.innerHTML = (done ? '✅ ' : '⏳ ') + message;
+            statusDiv.appendChild(step);
+        }
+        
+        async function autoRestore() {
+            restoreBtn.disabled = true;
+            restoreBtn.style.opacity = '0.5';
+            statusDiv.innerHTML = '';
+            
+            try {
+                // Step 1: Check Firebase connection
+                addStep('Connecting to Firebase...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                if (!database) {
+                    throw new Error('Firebase not initialized. Please refresh the page and try again.');
+                }
+                
+                const db = database;
+                statusDiv.innerHTML = '';
+                addStep('Connected to Firebase', true);
+                
+                // Step 2: Check Firebase for existing data
+                addStep('Checking Firebase database...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const matchesSnap = await db.ref('matches').once('value');
+                const firebaseMatches = matchesSnap.val() || {};
+                const firebaseMatchesArray = Object.values(firebaseMatches);
+                
+                statusDiv.innerHTML = '';
+                addStep('Connected to Firebase', true);
+                addStep(`Found ${firebaseMatchesArray.length} matches in Firebase`, true);
+                
+                // Step 3: Check localStorage
+                addStep('Checking browser cache...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const localMatches = localStorage.getItem('matches');
+                const localMatchesArray = localMatches ? JSON.parse(localMatches) : [];
+                
+                statusDiv.innerHTML = '';
+                addStep('Connected to Firebase', true);
+                addStep(`Found ${firebaseMatchesArray.length} matches in Firebase`, true);
+                addStep(`Found ${localMatchesArray.length} matches in browser cache`, true);
+                
+                // Step 4: Determine what to do
+                addStep('Analyzing data...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const firebaseHasResults = firebaseMatchesArray.filter(m => m.homeScore !== undefined).length;
+                const localHasResults = localMatchesArray.filter(m => m.homeScore !== undefined).length;
+                
+                statusDiv.innerHTML = '';
+                addStep('Connected to Firebase', true);
+                addStep(`Found ${firebaseMatchesArray.length} matches in Firebase (${firebaseHasResults} with results)`, true);
+                addStep(`Found ${localMatchesArray.length} matches in browser cache (${localHasResults} with results)`, true);
+                
+                // Decision logic
+                if (firebaseHasResults > 0) {
+                    // Firebase has data with results - restore to localStorage
+                    addStep('Restoring from Firebase to browser...');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    localStorage.setItem('matches', JSON.stringify(firebaseMatchesArray));
+                    
+                    statusDiv.innerHTML = '';
+                    addStep('Connected to Firebase', true);
+                    addStep(`Found ${firebaseMatchesArray.length} matches in Firebase (${firebaseHasResults} with results)`, true);
+                    addStep(`Restored ${firebaseMatchesArray.length} matches to browser`, true);
+                    
+                    showStatus(`
+                        <h3 style="color: #28a745; margin-bottom: 15px;">✅ SUCCESS!</h3>
+                        <p><strong>Restored ${firebaseMatchesArray.length} matches from Firebase</strong></p>
+                        <p style="margin-top: 10px;">${firebaseHasResults} matches have results</p>
+                        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                        <p style="font-size: 18px; font-weight: 600; color: #1e3c72;">
+                            Now open <strong>index.html</strong> to see your restored data!
+                        </p>
+                    `, 'success');
+                    
+                } else if (localHasResults > 0) {
+                    // localStorage has data - migrate to Firebase
+                    addStep('Migrating from browser to Firebase...');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    const matchesObj = {};
+                    localMatchesArray.forEach(match => {
+                        matchesObj[match.id] = match;
+                    });
+                    await db.ref('matches').set(matchesObj);
+                    
+                    statusDiv.innerHTML = '';
+                    addStep('Connected to Firebase', true);
+                    addStep(`Found ${localMatchesArray.length} matches in browser cache (${localHasResults} with results)`, true);
+                    addStep(`Migrated ${localMatchesArray.length} matches to Firebase`, true);
+                    
+                    showStatus(`
+                        <h3 style="color: #28a745; margin-bottom: 15px;">✅ SUCCESS!</h3>
+                        <p><strong>Migrated ${localMatchesArray.length} matches to Firebase</strong></p>
+                        <p style="margin-top: 10px;">${localHasResults} matches have results</p>
+                        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                        <p style="font-size: 18px; font-weight: 600; color: #1e3c72;">
+                            Your data is now safe in Firebase!<br>
+                            Open <strong>index.html</strong> to continue.
+                        </p>
+                    `, 'success');
+                    
+                } else if (firebaseMatchesArray.length > 0 || localMatchesArray.length > 0) {
+                    // Has matches but no results - sync them
+                    const bestSource = firebaseMatchesArray.length >= localMatchesArray.length ? firebaseMatchesArray : localMatchesArray;
+                    
+                    addStep('Syncing match data...');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    if (bestSource === localMatchesArray && localMatchesArray.length > 0) {
+                        const matchesObj = {};
+                        localMatchesArray.forEach(match => {
+                            matchesObj[match.id] = match;
+                        });
+                        await db.ref('matches').set(matchesObj);
+                    }
+                    
+                    localStorage.setItem('matches', JSON.stringify(bestSource));
+                    
+                    showStatus(`
+                        <h3 style="color: #17a2b8; margin-bottom: 15px;">ℹ️ DATA SYNCED</h3>
+                        <p><strong>Synced ${bestSource.length} matches</strong></p>
+                        <p style="margin-top: 10px; color: #856404;">⚠️ No match results found</p>
+                        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                        <p>Your matches are synced, but no historic results were found.</p>
+                        <p style="margin-top: 10px;">You may need to manually re-enter match results as admin.</p>
+                        <p style="margin-top: 10px; font-weight: 600;">Open <strong>index.html</strong> to continue.</p>
+                    `, 'info');
+                    
+                } else {
+                    // No data found anywhere
+                    showStatus(`
+                        <h3 style="color: #dc3545; margin-bottom: 15px;">❌ NO DATA FOUND</h3>
+                        <p>No match data was found in Firebase or browser cache.</p>
+                        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                        <p><strong>What this means:</strong></p>
+                        <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                            <li>The historic data was lost during migration</li>
+                            <li>No backup exists in Firebase or browser</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Next steps:</strong></p>
+                        <ol style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                            <li>Open <strong>index.html</strong></li>
+                            <li>Log in as admin (Menicos)</li>
+                            <li>Manually re-enter match results</li>
+                        </ol>
+                    `, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`
+                    <h3 style="color: #dc3545; margin-bottom: 15px;">❌ ERROR</h3>
+                    <p><strong>${error.message}</strong></p>
+                    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                    <p>Please check:</p>
+                    <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                        <li>Internet connection</li>
+                        <li>Browser console (F12) for more details</li>
+                        <li>Try refreshing the page</li>
+                    </ul>
+                `, 'error');
+                
+                restoreBtn.disabled = false;
+                restoreBtn.style.opacity = '1';
+            }
+        }
+    </script>
+</body>
+</html>

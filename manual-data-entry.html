@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Data Entry - Match Results & Bob Predictions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .match-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .match-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        
+        .match-teams {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .team {
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .vs {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .score-inputs {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .score-input {
+            text-align: center;
+        }
+        
+        .score-input input {
+            width: 80px;
+            padding: 10px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .score-input label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .bob-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .bob-section h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .filter-section {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-section label {
+            margin-right: 15px;
+            font-weight: 600;
+        }
+        
+        .filter-section select {
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 2px solid #667eea;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ Manual Data Entry</h1>
+        <p class="subtitle">Enter match results and Bob's predictions</p>
+        
+        <div class="filter-section">
+            <label>Filter by Status:</label>
+            <select id="statusFilter" onchange="filterMatches()">
+                <option value="all">All Matches</option>
+                <option value="upcoming">Upcoming Only</option>
+                <option value="finished">Finished Only</option>
+            </select>
+            
+            <label style="margin-left: 20px;">Filter by Group:</label>
+            <select id="groupFilter" onchange="filterMatches()">
+                <option value="all">All Groups</option>
+            </select>
+        </div>
+        
+        <div id="matchesContainer"></div>
+        
+        <button class="btn btn-success" onclick="saveAllData()">💾 Save All Data</button>
+        <button class="btn" onclick="exportJSON()">📥 Export as JSON</button>
+        
+        <div id="status" class="status"></div>
+    </div>
+    
+    <script src="firebase-config.js"></script>
+    <script>
+        let matches = [];
+        let currentFilter = { status: 'all', group: 'all' };
+        
+        // Sample matches structure
+        const sampleMatches = [
+            {
+                id: 1,
+                homeTeam: "Mexico",
+                awayTeam: "South Africa",
+                kickoff: "2026-06-11T22:00:00",
+                status: "upcoming",
+                stage: "First Stage - Group A",
+                venue: "Mexico City Stadium (Mexico City)"
+            },
+            // Add more matches as needed
+        ];
+        
+        function initializeMatches() {
+            // Try to load from Firebase first
+            if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                firebase.database().ref('matches').once('value').then(snapshot => {
+                    const firebaseMatches = snapshot.val();
+                    if (firebaseMatches && Array.isArray(firebaseMatches)) {
+                        matches = firebaseMatches;
+                    } else {
+                        matches = sampleMatches;
+                    }
+                    renderMatches();
+                    populateGroupFilter();
+                }).catch(() => {
+                    matches = sampleMatches;
+                    renderMatches();
+                    populateGroupFilter();
+                });
+            } else {
+                matches = sampleMatches;
+                renderMatches();
+                populateGroupFilter();
+            }
+        }
+        
+        function populateGroupFilter() {
+            const groups = [...new Set(matches.map(m => m.stage))];
+            const select = document.getElementById('groupFilter');
+            groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group;
+                option.textContent = group;
+                select.appendChild(option);
+            });
+        }
+        
+        function filterMatches() {
+            currentFilter.status = document.getElementById('statusFilter').value;
+            currentFilter.group = document.getElementById('groupFilter').value;
+            renderMatches();
+        }
+        
+        function renderMatches() {
+            const container = document.getElementById('matchesContainer');
+            
+            let filteredMatches = matches;
+            
+            if (currentFilter.status !== 'all') {
+                filteredMatches = filteredMatches.filter(m => m.status === currentFilter.status);
+            }
+            
+            if (currentFilter.group !== 'all') {
+                filteredMatches = filteredMatches.filter(m => m.stage === currentFilter.group);
+            }
+            
+            container.innerHTML = filteredMatches.map(match => `
+                <div class="match-card">
+                    <div class="match-header">
+                        Match ${match.id} - ${match.stage}
+                        <span style="float: right; font-size: 14px; color: #666;">
+                            ${new Date(match.kickoff).toLocaleString()}
+                        </span>
+                    </div>
+                    
+                    <div class="match-teams">
+                        <div class="team">${match.homeTeam}</div>
+                        <div class="vs">vs</div>
+                        <div class="team">${match.awayTeam}</div>
+                    </div>
+                    
+                    <div class="score-inputs">
+                        <div class="score-input">
+                            <label>Home Score</label>
+                            <input type="number" id="home_${match.id}" min="0" 
+                                   value="${match.homeScore !== undefined ? match.homeScore : ''}"
+                                   placeholder="-">
+                        </div>
+                        <div class="vs">-</div>
+                        <div class="score-input">
+                            <label>Away Score</label>
+                            <input type="number" id="away_${match.id}" min="0"
+                                   value="${match.awayScore !== undefined ? match.awayScore : ''}"
+                                   placeholder="-">
+                        </div>
+                    </div>
+                    
+                    <div class="bob-section">
+                        <h4>🤖 Bob's Prediction</h4>
+                        <div class="score-inputs">
+                            <div class="score-input">
+                                <label>Bob's Home</label>
+                                <input type="number" id="bob_home_${match.id}" min="0"
+                                       value="${match.bobPrediction?.homeScore !== undefined ? match.bobPrediction.homeScore : ''}"
+                                       placeholder="-">
+                            </div>
+                            <div class="vs">-</div>
+                            <div class="score-input">
+                                <label>Bob's Away</label>
+                                <input type="number" id="bob_away_${match.id}" min="0"
+                                       value="${match.bobPrediction?.awayScore !== undefined ? match.bobPrediction.awayScore : ''}"
+                                       placeholder="-">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function collectData() {
+            return matches.map(match => {
+                const homeScore = document.getElementById(`home_${match.id}`).value;
+                const awayScore = document.getElementById(`away_${match.id}`).value;
+                const bobHome = document.getElementById(`bob_home_${match.id}`).value;
+                const bobAway = document.getElementById(`bob_away_${match.id}`).value;
+                
+                const updatedMatch = { ...match };
+                
+                if (homeScore !== '' && awayScore !== '') {
+                    updatedMatch.homeScore = parseInt(homeScore);
+                    updatedMatch.awayScore = parseInt(awayScore);
+                    updatedMatch.status = 'finished';
+                }
+                
+                if (bobHome !== '' && bobAway !== '') {
+                    updatedMatch.bobPrediction = {
+                        homeScore: parseInt(bobHome),
+                        awayScore: parseInt(bobAway)
+                    };
+                }
+                
+                return updatedMatch;
+            });
+        }
+        
+        async function saveAllData() {
+            const updatedMatches = collectData();
+            
+            try {
+                // Save to Firebase if available
+                if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                    await firebase.database().ref('matches').set(updatedMatches);
+                    showStatus('✅ Data saved to Firebase successfully!');
+                } else {
+                    // Save to localStorage as fallback
+                    localStorage.setItem('matches', JSON.stringify(updatedMatches));
+                    showStatus('✅ Data saved to localStorage successfully!');
+                }
+                
+                matches = updatedMatches;
+                
+            } catch (error) {
+                showStatus('❌ Error saving data: ' + error.message);
+            }
+        }
+        
+        function exportJSON() {
+            const updatedMatches = collectData();
+            const json = JSON.stringify(updatedMatches, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `matches-data-${Date.now()}.json`;
+            a.click();
+            showStatus('✅ Data exported as JSON file!');
+        }
+        
+        function showStatus(message) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Initialize on load
+        window.onload = initializeMatches;
+    </script>
+</body>
+</html>

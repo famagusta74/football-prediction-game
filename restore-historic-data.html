@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historic Data Restoration Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .status-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-box.success {
+            border-left-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .status-box.warning {
+            border-left-color: #ffc107;
+            background: #fffbf0;
+        }
+        
+        .status-box.error {
+            border-left-color: #dc3545;
+            background: #fff8f8;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .step {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .step h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        #log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+        }
+        
+        .log-success { color: #4ec9b0; }
+        .log-error { color: #f48771; }
+        .log-warning { color: #dcdcaa; }
+        .log-info { color: #9cdcfe; }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 10px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Historic Data Restoration Tool</h1>
+        <p class="subtitle">Restore match data lost during v2.0.0-v2.0.6 migration</p>
+        
+        <div class="status-box warning">
+            <h3>⚠️ What Happened?</h3>
+            <p>Versions v2.0.0 through v2.0.6 had a bug where <strong>match data</strong> (results and Bob's predictions) was not migrated from localStorage to Firebase. When the migration cleared localStorage, this data was lost.</p>
+            <p style="margin-top: 10px;"><strong>What was lost:</strong> Match results, Bob's predictions, match history</p>
+            <p><strong>What was preserved:</strong> User accounts, user predictions, pools, coins</p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">1</span>Check Current Data Status</h3>
+            <p>First, let's see what data currently exists in Firebase and localStorage.</p>
+            <button class="btn" onclick="checkCurrentData()">🔍 Check Current Data</button>
+            <div id="currentDataStatus"></div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">2</span>Check Browser Cache (If Available)</h3>
+            <p>If you haven't cleared your browser cache, there might be a backup in localStorage.</p>
+            <button class="btn btn-secondary" onclick="checkBrowserCache()">🔎 Check Browser Cache</button>
+            <div id="cacheStatus"></div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">3</span>Restore from Backup File</h3>
+            <p>If you have a backup JSON file (exported before the migration), paste it here:</p>
+            <textarea id="backupData" placeholder='Paste your backup JSON here, e.g.:
+{
+  "matches": [...],
+  "users": [...],
+  "predictions": [...]
+}'></textarea>
+            <button class="btn btn-success" onclick="restoreFromBackup()">💾 Restore from Backup</button>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">4</span>Reset Migration Flag (Advanced)</h3>
+            <p>If you have match data in localStorage but it wasn't migrated, you can reset the migration flag to trigger a re-migration.</p>
+            <button class="btn btn-danger" onclick="resetMigration()">🔄 Reset Migration Flag</button>
+            <p style="margin-top: 10px; color: #dc3545; font-size: 14px;"><strong>Warning:</strong> Only use this if you have match data in localStorage and want to re-run the migration.</p>
+        </div>
+        
+        <div id="log"></div>
+    </div>
+    
+    <script src="firebase-config.js"></script>
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        async function checkCurrentData() {
+            log('Checking current data status...', 'info');
+            const statusDiv = document.getElementById('currentDataStatus');
+            
+            try {
+                // Check Firebase
+                if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                    const db = firebase.database();
+                    const matchesSnap = await db.ref('matches').once('value');
+                    const matches = matchesSnap.val() || [];
+                    
+                    const matchesWithResults = matches.filter(m => m.homeScore !== undefined);
+                    const matchesWithBob = matches.filter(m => m.bobPrediction);
+                    
+                    let html = '<div class="status-box ' + (matchesWithResults.length > 0 || matchesWithBob.length > 0 ? 'success' : 'error') + '" style="margin-top: 15px;">';
+                    html += '<h4>Firebase Data:</h4>';
+                    html += `<p><strong>Total Matches:</strong> ${matches.length}</p>`;
+                    html += `<p><strong>Matches with Results:</strong> ${matchesWithResults.length}</p>`;
+                    html += `<p><strong>Matches with Bob Predictions:</strong> ${matchesWithBob.length}</p>`;
+                    
+                    if (matchesWithResults.length === 0 && matchesWithBob.length === 0) {
+                        html += '<p style="color: #dc3545; margin-top: 10px;"><strong>❌ No historic match data found in Firebase</strong></p>';
+                    } else {
+                        html += '<p style="color: #28a745; margin-top: 10px;"><strong>✅ Historic data exists in Firebase!</strong></p>';
+                    }
+                    
+                    html += '</div>';
+                    statusDiv.innerHTML = html;
+                    
+                    log(`Firebase: ${matches.length} matches (${matchesWithResults.length} with results)`, matchesWithResults.length > 0 ? 'success' : 'warning');
+                } else {
+                    statusDiv.innerHTML = '<div class="status-box error" style="margin-top: 15px;"><p>❌ Firebase not initialized</p></div>';
+                    log('Firebase not initialized', 'error');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status-box error" style="margin-top: 15px;"><p>❌ Error: ${error.message}</p></div>`;
+                log('Error checking data: ' + error.message, 'error');
+            }
+        }
+        
+        function checkBrowserCache() {
+            log('Checking browser cache...', 'info');
+            const cacheDiv = document.getElementById('cacheStatus');
+            
+            try {
+                const localMatches = localStorage.getItem('matches');
+                const migrationDone = localStorage.getItem('firebaseMigrationDone');
+                
+                let html = '<div class="status-box" style="margin-top: 15px;">';
+                html += '<h4>Browser Cache Status:</h4>';
+                html += `<p><strong>Migration Status:</strong> ${migrationDone ? '✅ Completed' : '⚠️ Not Started'}</p>`;
+                
+                if (localMatches) {
+                    const matches = JSON.parse(localMatches);
+                    const matchesWithResults = matches.filter(m => m.homeScore !== undefined);
+                    const matchesWithBob = matches.filter(m => m.bobPrediction);
+                    
+                    html += `<p><strong>localStorage Matches:</strong> ${matches.length}</p>`;
+                    html += `<p><strong>With Results:</strong> ${matchesWithResults.length}</p>`;
+                    html += `<p><strong>With Bob Predictions:</strong> ${matchesWithBob.length}</p>`;
+                    
+                    if (matchesWithResults.length > 0 || matchesWithBob.length > 0) {
+                        html += '<p style="color: #28a745; margin-top: 10px;"><strong>✅ Found match data in localStorage!</strong></p>';
+                        html += '<button class="btn btn-success" onclick="migrateLocalData()" style="margin-top: 10px;">📤 Migrate to Firebase</button>';
+                    }
+                } else {
+                    html += '<p style="color: #dc3545;"><strong>❌ No matches found in localStorage</strong></p>';
+                }
+                
+                html += '</div>';
+                cacheDiv.innerHTML = html;
+                
+                log(localMatches ? 'Found matches in localStorage' : 'No matches in localStorage', localMatches ? 'success' : 'warning');
+            } catch (error) {
+                cacheDiv.innerHTML = `<div class="status-box error" style="margin-top: 15px;"><p>❌ Error: ${error.message}</p></div>`;
+                log('Error checking cache: ' + error.message, 'error');
+            }
+        }
+        
+        async function migrateLocalData() {
+            if (!confirm('This will migrate match data from localStorage to Firebase. Continue?')) {
+                return;
+            }
+            
+            log('Starting migration...', 'info');
+            
+            try {
+                const localMatches = JSON.parse(localStorage.getItem('matches') || '[]');
+                
+                if (localMatches.length === 0) {
+                    alert('❌ No matches found in localStorage');
+                    return;
+                }
+                
+                const db = firebase.database();
+                await db.ref('matches').set(localMatches);
+                
+                log(`✅ Migrated ${localMatches.length} matches to Firebase`, 'success');
+                alert(`✅ Successfully migrated ${localMatches.length} matches to Firebase!\n\nReload the main application to see your restored data.`);
+                
+                checkCurrentData();
+            } catch (error) {
+                log('Migration error: ' + error.message, 'error');
+                alert('❌ Error: ' + error.message);
+            }
+        }
+        
+        async function restoreFromBackup() {
+            const backupText = document.getElementById('backupData').value.trim();
+            
+            if (!backupText) {
+                alert('⚠️ Please paste your backup JSON first');
+                return;
+            }
+            
+            if (!confirm('This will restore data from your backup file. Continue?')) {
+                return;
+            }
+            
+            log('Parsing backup data...', 'info');
+            
+            try {
+                const backup = JSON.parse(backupText);
+                
+                if (!backup.matches || !Array.isArray(backup.matches)) {
+                    throw new Error('Invalid backup format: matches array not found');
+                }
+                
+                log(`Found ${backup.matches.length} matches in backup`, 'info');
+                
+                // Check Firebase connection
+                if (typeof firebase === 'undefined' || firebase.apps.length === 0) {
+                    throw new Error('Firebase not initialized');
+                }
+                
+                const db = firebase.database();
+                
+                // Restore matches
+                await db.ref('matches').set(backup.matches);
+                log(`✅ Restored ${backup.matches.length} matches to Firebase`, 'success');
+                
+                // Restore other data if present
+                if (backup.users && Array.isArray(backup.users)) {
+                    await db.ref('users').set(backup.users);
+                    log(`✅ Restored ${backup.users.length} users`, 'success');
+                }
+                
+                if (backup.predictions && Array.isArray(backup.predictions)) {
+                    await db.ref('predictions').set(backup.predictions);
+                    log(`✅ Restored ${backup.predictions.length} predictions`, 'success');
+                }
+                
+                if (backup.pools && Array.isArray(backup.pools)) {
+                    await db.ref('pools').set(backup.pools);
+                    log(`✅ Restored ${backup.pools.length} pools`, 'success');
+                }
+                
+                alert('✅ Data restored successfully!\n\nReload the main application (index.html) to see your restored data.');
+                checkCurrentData();
+                
+            } catch (error) {
+                log('Restore error: ' + error.message, 'error');
+                alert('❌ Error: ' + error.message + '\n\nPlease check that your backup JSON is valid.');
+            }
+        }
+        
+        function resetMigration() {
+            if (!confirm('⚠️ WARNING: This will reset the migration flag.\n\nOnly do this if you have match data in localStorage that needs to be migrated.\n\nContinue?')) {
+                return;
+            }
+            
+            try {
+                localStorage.removeItem('firebaseMigrationDone');
+                log('✅ Migration flag reset', 'success');
+                alert('✅ Migration flag reset!\n\nNow reload the main application (index.html) to trigger a fresh migration.');
+            } catch (error) {
+                log('Error resetting migration: ' + error.message, 'error');
+                alert('❌ Error: ' + error.message);
+            }
+        }
+        
+        // Auto-check on load
+        window.onload = () => {
+            log('Historic Data Restoration Tool loaded', 'success');
+            log('Ready to restore your data', 'info');
+        };
+    </script>
+</body>
+</html>

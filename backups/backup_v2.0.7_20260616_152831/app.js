@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.8"; // Admin Data Backup Feature: One-click backup button in admin panel
+const APP_VERSION = "v2.0.7"; // CRITICAL FIX: Migrate matches data to preserve results and Bob predictions
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
