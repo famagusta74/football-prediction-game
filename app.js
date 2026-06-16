@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.5"; // Improved past matches readability
+const APP_VERSION = "v2.0.6"; // CRITICAL FIX: Preserve match results and predictions
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -37,17 +37,14 @@ async function initializeApp() {
         // Load data from Firebase
         await loadDataFromFirebase();
         
-        // Check if matches need to be updated for this version
-        const lastMatchesVersion = localStorage.getItem('matchesVersion');
-        const needsMatchUpdate = !lastMatchesVersion || lastMatchesVersion !== APP_VERSION;
-        
-        // Initialize or force update matches
-        if (matches.length === 0 || needsMatchUpdate) {
-            console.log(`Updating matches to version ${APP_VERSION}...`);
+        // Initialize matches if empty (first time only)
+        if (matches.length === 0) {
+            console.log('No matches found, initializing with sample matches...');
             matches = [...sampleMatches];
             await FirebaseDB.saveAllMatches(matches);
-            localStorage.setItem('matchesVersion', APP_VERSION);
-            console.log(`Matches updated: ${matches.length} matches loaded`);
+            console.log(`Matches initialized: ${matches.length} matches loaded`);
+        } else {
+            console.log(`Loaded ${matches.length} existing matches from Firebase`);
         }
     } else {
         console.log('Firebase not available, using localStorage');
@@ -56,23 +53,19 @@ async function initializeApp() {
         pools = JSON.parse(localStorage.getItem('pools')) || [];
         predictions = JSON.parse(localStorage.getItem('predictions')) || [];
         
-        // Check if matches need to be updated for this version
-        const lastMatchesVersion = localStorage.getItem('matchesVersion');
-        const needsMatchUpdate = !lastMatchesVersion || lastMatchesVersion !== APP_VERSION;
-        
         // Load matches from localStorage or use defaults
         const storedMatches = localStorage.getItem('matches');
-        if (storedMatches && !needsMatchUpdate) {
+        if (storedMatches) {
             matches = JSON.parse(storedMatches);
+            console.log(`Loaded ${matches.length} existing matches from localStorage`);
         }
         
-        // If no matches in localStorage or version mismatch, use sample matches
-        if (matches.length === 0 || needsMatchUpdate) {
-            console.log(`Updating matches to version ${APP_VERSION}...`);
+        // If no matches in localStorage, use sample matches (first time only)
+        if (matches.length === 0) {
+            console.log('No matches found, initializing with sample matches...');
             matches = [...sampleMatches];
             localStorage.setItem('matches', JSON.stringify(matches));
-            localStorage.setItem('matchesVersion', APP_VERSION);
-            console.log(`Matches updated: ${matches.length} matches loaded`);
+            console.log(`Matches initialized: ${matches.length} matches loaded`);
         }
     }
     
