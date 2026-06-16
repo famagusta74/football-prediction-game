@@ -1,0 +1,37 @@
+Fix: Correct Final Score display in calendar and flag views (v2.0.9)
+
+## Bug Fix
+- Fixed incorrect final score display in historic matches
+- Calendar view and country flag view now show correct scores
+- Example: Australia vs Türkiye now correctly shows "2-0" instead of "0-0"
+
+## Technical Changes
+- Updated createMatchCard() function (app.js line 3635)
+- Changed from deprecated match.homeScore/awayScore to match.finalScore.home/away
+- Added fallback logic for backward compatibility
+- Maintained support for older data structures
+
+## Files Modified
+- app.js (version updated to v2.0.9, fixed score display logic)
+- index.html (version header updated to v2.0.9)
+- docs/SOURCE_CODE_DOCUMENTATION.md (version updated)
+
+## Documentation
+- Created RELEASE_NOTES_v2.0.9.md with detailed bug fix information
+- Updated version references across documentation
+
+## Testing
+- Verified calendar view displays correct final scores
+- Verified country flag view displays correct final scores
+- Confirmed backward compatibility with old data structure
+- No regression in other features
+
+## Related Issues
+- Resolves final score display bug reported in v2.0.8
+- Maintains admin backup feature from v2.0.8
+- Preserves data recovery tools from v2.0.7
+
+---
+Version: 2.0.9
+Date: June 16, 2026
+Type: Bug Fix Release

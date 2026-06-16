@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.9"; // BUG FIX: Correct Final Score display in calendar and flag views
+const APP_VERSION = "v2.0.8"; // Admin Data Backup Feature: One-click backup button in admin panel
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -3632,7 +3632,7 @@ function createMatchCard(match) {
             </button>
         ` : match.status === 'finished' ? `
             <div class="match-result">
-                Final Score: ${match.finalScore ? `${match.finalScore.home}-${match.finalScore.away}` : (match.homeScore !== undefined ? `${match.homeScore}-${match.awayScore}` : '0-0')}
+                Final Score: ${match.homeScore || 0}-${match.awayScore || 0}
             </div>
         ` : `
             <div class="match-locked">
