@@ -15,7 +15,28 @@ A social football prediction game where friends compete by predicting FIFA World
   - Correct result (winner/draw): 2x payout
   - Incorrect prediction: 0x payout
 
+### 🆕 v2.0.0 New Features - Calendar & Team Flags Views:
+- ✅ **Calendar View** - Browse matches by date with an interactive calendar
+  - Click on any date to see all matches scheduled for that day
+  - Visual indicators show which dates have matches
+  - Today's date is highlighted for easy reference
+  - Navigate between months to explore the full tournament schedule
+  - Historical matches are displayed as read-only with predictions preserved
+- ✅ **Team Flags View** - Browse matches by team with country flags
+  - All participating teams displayed with their national flags
+  - Click on any team to see all their matches
+  - Search functionality to quickly find specific teams
+  - Match count displayed for each team
+  - Historical matches shown as read-only with predictions intact
+- ✅ **Multiple View Options** - Switch between List, Calendar, and Team Flags views
+  - List View: Traditional chronological match listing
+  - Calendar View: Date-based match browsing
+  - Team Flags View: Team-based match filtering
+  - Seamless switching between views with preserved state
+
 ### FIFA World Cup 2026 Matches:
+- **60 First Stage Matches** covering June 11-28, 2026
+- All 12 groups (A through L) with complete fixtures
 - Real matches from the upcoming tournament
 - Includes teams like Mexico, USA, Canada, England, Brazil, Germany, Argentina, France, Spain, and more
 - Group stage matches with venue information
@@ -202,4 +223,4 @@ Free to use for personal and educational purposes.
 
 **Enjoy predicting and may the best predictor win!** ⚽🏆
 
-_Current release theme: v1.14.0 - Bob Suggestion KPI Tracking_
+_Current release theme: v2.0.0 - Calendar & Team Flags Views with Full First Stage Matches_

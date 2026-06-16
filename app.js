@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v1.15.4"; // Daily bonus awarded on any interaction, not just login
+const APP_VERSION = "v2.0.0"; // Calendar & Team Flags Views with Full First Stage Matches
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -588,6 +588,406 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group L",
         venue: "Dallas Stadium (Dallas)"
+    },
+    {
+        id: 21,
+        homeTeam: "Czechia",
+        awayTeam: "South Africa",
+        kickoff: "2026-06-18T19:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group A",
+        venue: "Atlanta Stadium (Atlanta)"
+    },
+    {
+        id: 22,
+        homeTeam: "Switzerland",
+        awayTeam: "Bosnia and Herzegovina",
+        kickoff: "2026-06-18T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group B",
+        venue: "Los Angeles Stadium (Los Angeles)"
+    },
+    {
+        id: 23,
+        homeTeam: "Canada",
+        awayTeam: "Qatar",
+        kickoff: "2026-06-19T01:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group B",
+        venue: "BC Place Vancouver (Vancouver)"
+    },
+    {
+        id: 24,
+        homeTeam: "Scotland",
+        awayTeam: "Morocco",
+        kickoff: "2026-06-20T01:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group C",
+        venue: "Boston Stadium (Boston)"
+    },
+    {
+        id: 25,
+        homeTeam: "Brazil",
+        awayTeam: "Haiti",
+        kickoff: "2026-06-20T03:30:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group C",
+        venue: "Philadelphia Stadium (Philadelphia)"
+    },
+    {
+        id: 26,
+        homeTeam: "Türkiye",
+        awayTeam: "Paraguay",
+        kickoff: "2026-06-20T06:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group D",
+        venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
+    },
+    {
+        id: 27,
+        homeTeam: "Netherlands",
+        awayTeam: "Sweden",
+        kickoff: "2026-06-20T20:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group F",
+        venue: "Houston Stadium (Houston)"
+    },
+    {
+        id: 28,
+        homeTeam: "Ecuador",
+        awayTeam: "Curaçao",
+        kickoff: "2026-06-21T03:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group E",
+        venue: "Kansas City Stadium (Kansas City)"
+    },
+    {
+        id: 29,
+        homeTeam: "Tunisia",
+        awayTeam: "Japan",
+        kickoff: "2026-06-21T07:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group F",
+        venue: "Monterrey Stadium (Monterrey)"
+    },
+    {
+        id: 30,
+        homeTeam: "Spain",
+        awayTeam: "Saudi Arabia",
+        kickoff: "2026-06-21T19:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group H",
+        venue: "Atlanta Stadium (Atlanta)"
+    },
+    {
+        id: 31,
+        homeTeam: "Belgium",
+        awayTeam: "IR Iran",
+        kickoff: "2026-06-21T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group G",
+        venue: "Los Angeles Stadium (Los Angeles)"
+    },
+    {
+        id: 32,
+        homeTeam: "Argentina",
+        awayTeam: "Austria",
+        kickoff: "2026-06-22T20:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group J",
+        venue: "Dallas Stadium (Dallas)"
+    },
+    {
+        id: 33,
+        homeTeam: "France",
+        awayTeam: "Iraq",
+        kickoff: "2026-06-23T00:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group I",
+        venue: "Philadelphia Stadium (Philadelphia)"
+    },
+    {
+        id: 34,
+        homeTeam: "Norway",
+        awayTeam: "Senegal",
+        kickoff: "2026-06-23T03:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group I",
+        venue: "New York/New Jersey Stadium (New Jersey)"
+    },
+    {
+        id: 35,
+        homeTeam: "England",
+        awayTeam: "Ghana",
+        kickoff: "2026-06-23T23:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group L",
+        venue: "Boston Stadium (Boston)"
+    },
+    {
+        id: 36,
+        homeTeam: "Panama",
+        awayTeam: "Croatia",
+        kickoff: "2026-06-24T02:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group L",
+        venue: "Toronto Stadium (Toronto)"
+    },
+    {
+        id: 37,
+        homeTeam: "Colombia",
+        awayTeam: "Congo DR",
+        kickoff: "2026-06-24T05:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group K",
+        venue: "Guadalajara Stadium (Guadalajara)"
+    },
+    {
+        id: 38,
+        homeTeam: "Switzerland",
+        awayTeam: "Canada",
+        kickoff: "2026-06-24T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group B",
+        venue: "BC Place Vancouver (Vancouver)"
+    },
+    {
+        id: 39,
+        homeTeam: "Scotland",
+        awayTeam: "Brazil",
+        kickoff: "2026-06-25T01:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group C",
+        venue: "Miami Stadium (Miami)"
+    },
+    {
+        id: 40,
+        homeTeam: "Morocco",
+        awayTeam: "Haiti",
+        kickoff: "2026-06-25T01:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group C",
+        venue: "Atlanta Stadium (Atlanta)"
+    },
+    {
+        id: 41,
+        homeTeam: "Czechia",
+        awayTeam: "Mexico",
+        kickoff: "2026-06-25T04:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group A",
+        venue: "Mexico City Stadium (Mexico City)"
+    },
+    {
+        id: 42,
+        homeTeam: "South Africa",
+        awayTeam: "Korea Republic",
+        kickoff: "2026-06-25T04:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group A",
+        venue: "Monterrey Stadium (Monterrey)"
+    },
+    {
+        id: 43,
+        homeTeam: "Curaçao",
+        awayTeam: "Côte d'Ivoire",
+        kickoff: "2026-06-25T19:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group E",
+        venue: "Houston Stadium (Houston)"
+    },
+    {
+        id: 44,
+        homeTeam: "Germany",
+        awayTeam: "Ecuador",
+        kickoff: "2026-06-25T19:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group E",
+        venue: "Seattle Stadium (Seattle)"
+    },
+    {
+        id: 45,
+        homeTeam: "Japan",
+        awayTeam: "Sweden",
+        kickoff: "2026-06-26T02:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group F",
+        venue: "Dallas Stadium (Dallas)"
+    },
+    {
+        id: 46,
+        homeTeam: "Tunisia",
+        awayTeam: "Netherlands",
+        kickoff: "2026-06-26T02:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group F",
+        venue: "Kansas City Stadium (Kansas City)"
+    },
+    {
+        id: 47,
+        homeTeam: "Türkiye",
+        awayTeam: "USA",
+        kickoff: "2026-06-26T05:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group D",
+        venue: "Los Angeles Stadium (Los Angeles)"
+    },
+    {
+        id: 48,
+        homeTeam: "Paraguay",
+        awayTeam: "Australia",
+        kickoff: "2026-06-26T05:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group D",
+        venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
+    },
+    {
+        id: 49,
+        homeTeam: "Cabo Verde",
+        awayTeam: "Saudi Arabia",
+        kickoff: "2026-06-27T03:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group H",
+        venue: "Houston Stadium (Houston)"
+    },
+    {
+        id: 50,
+        homeTeam: "Uruguay",
+        awayTeam: "Spain",
+        kickoff: "2026-06-27T03:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group H",
+        venue: "Guadalajara Stadium (Guadalajara)"
+    },
+    {
+        id: 51,
+        homeTeam: "Egypt",
+        awayTeam: "IR Iran",
+        kickoff: "2026-06-27T06:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group G",
+        venue: "Seattle Stadium (Seattle)"
+    },
+    {
+        id: 52,
+        homeTeam: "New Zealand",
+        awayTeam: "Belgium",
+        kickoff: "2026-06-27T06:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group G",
+        venue: "Miami Stadium (Miami)"
+    },
+    {
+        id: 53,
+        homeTeam: "Croatia",
+        awayTeam: "Ghana",
+        kickoff: "2026-06-28T00:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group L",
+        venue: "Philadelphia Stadium (Philadelphia)"
+    },
+    {
+        id: 54,
+        homeTeam: "Colombia",
+        awayTeam: "Portugal",
+        kickoff: "2026-06-28T02:30:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group K",
+        venue: "Miami Stadium (Miami)"
+    },
+    {
+        id: 55,
+        homeTeam: "Congo DR",
+        awayTeam: "Uzbekistan",
+        kickoff: "2026-06-28T02:30:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group K",
+        venue: "Atlanta Stadium (Atlanta)"
+    },
+    {
+        id: 56,
+        homeTeam: "Algeria",
+        awayTeam: "Austria",
+        kickoff: "2026-06-28T05:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group J",
+        venue: "Kansas City Stadium (Kansas City)"
+    },
+    {
+        id: 57,
+        homeTeam: "Jordan",
+        awayTeam: "Argentina",
+        kickoff: "2026-06-28T05:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group J",
+        venue: "New York/New Jersey Stadium (New Jersey)"
+    },
+    {
+        id: 58,
+        homeTeam: "Iraq",
+        awayTeam: "Senegal",
+        kickoff: "2026-06-28T20:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group I",
+        venue: "Boston Stadium (Boston)"
+    },
+    {
+        id: 59,
+        homeTeam: "Norway",
+        awayTeam: "France",
+        kickoff: "2026-06-28T20:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group I",
+        venue: "Toronto Stadium (Toronto)"
+    },
+    {
+        id: 60,
+        homeTeam: "Panama",
+        awayTeam: "England",
+        kickoff: "2026-06-28T23:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "First Stage - Group L",
+        venue: "Monterrey Stadium (Monterrey)"
     },
 ];
 
@@ -2670,5 +3070,373 @@ async function loadUsersTab() {
 
 // Initialize app when page loads
 window.onload = init;
+
+
+// ============================================
+// CALENDAR & TEAM FLAGS VIEW FUNCTIONS (v2.0.0)
+// ============================================
+
+// Current view state
+let currentView = 'list';
+let currentCalendarDate = new Date();
+let selectedCalendarDate = null;
+let selectedTeam = null;
+
+// Team flag emoji mapping
+const teamFlags = {
+    "Mexico": "🇲🇽",
+    "South Africa": "🇿🇦",
+    "Korea Republic": "🇰🇷",
+    "Czechia": "🇨🇿",
+    "Canada": "🇨🇦",
+    "Bosnia and Herzegovina": "🇧🇦",
+    "USA": "🇺🇸",
+    "Paraguay": "🇵🇾",
+    "Qatar": "🇶🇦",
+    "Switzerland": "🇨🇭",
+    "Brazil": "🇧🇷",
+    "Morocco": "🇲🇦",
+    "Haiti": "🇭🇹",
+    "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "Australia": "🇦🇺",
+    "Türkiye": "🇹🇷",
+    "Germany": "🇩🇪",
+    "Curaçao": "🇨🇼",
+    "Netherlands": "🇳🇱",
+    "Japan": "🇯🇵",
+    "Côte d'Ivoire": "🇨🇮",
+    "Ecuador": "🇪🇨",
+    "Sweden": "🇸🇪",
+    "Tunisia": "🇹🇳",
+    "Spain": "🇪🇸",
+    "Cabo Verde": "🇨🇻",
+    "Belgium": "🇧🇪",
+    "Egypt": "🇪🇬",
+    "Saudi Arabia": "🇸🇦",
+    "Uruguay": "🇺🇾",
+    "IR Iran": "🇮🇷",
+    "New Zealand": "🇳🇿",
+    "France": "🇫🇷",
+    "Senegal": "🇸🇳",
+    "Austria": "🇦🇹",
+    "Jordan": "🇯🇴",
+    "Portugal": "🇵🇹",
+    "Congo DR": "🇨🇩",
+    "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+    "Croatia": "🇭🇷",
+    "Argentina": "🇦🇷",
+    "Algeria": "🇩🇿",
+    "Iraq": "🇮🇶",
+    "Norway": "🇳🇴",
+    "Ghana": "🇬🇭",
+    "Panama": "🇵🇦",
+    "Colombia": "🇨🇴",
+    "Uzbekistan": "🇺🇿"
+};
+
+// Switch between prediction views
+function switchPredictionView(view) {
+    currentView = view;
+    
+    // Update button states
+    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Hide all views
+    document.querySelectorAll('.prediction-view').forEach(v => {
+        v.classList.remove('active');
+    });
+    
+    // Show selected view
+    if (view === 'list') {
+        document.getElementById('listView').classList.add('active');
+    } else if (view === 'calendar') {
+        document.getElementById('calendarView').classList.add('active');
+        renderCalendar();
+    } else if (view === 'teams') {
+        document.getElementById('teamsView').classList.add('active');
+        renderTeamsGrid();
+    }
+}
+
+// ============================================
+// CALENDAR VIEW FUNCTIONS
+// ============================================
+
+function renderCalendar() {
+    const year = currentCalendarDate.getFullYear();
+    const month = currentCalendarDate.getMonth();
+    
+    // Update header
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+                       "July", "August", "September", "October", "November", "December"];
+    document.getElementById('calendarMonthYear').textContent = `${monthNames[month]} ${year}`;
+    
+    // Get first and last day of month
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    // Build calendar grid
+    const calendarGrid = document.getElementById('calendarGrid');
+    calendarGrid.innerHTML = '';
+    
+    // Add day headers
+    const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayHeaders.forEach(day => {
+        const header = document.createElement('div');
+        header.className = 'calendar-day-header';
+        header.textContent = day;
+        calendarGrid.appendChild(header);
+    });
+    
+    // Add empty cells for days before month starts
+    for (let i = 0; i < startingDayOfWeek; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'calendar-day other-month';
+        calendarGrid.appendChild(emptyDay);
+    }
+    
+    // Add days of month
+    const today = new Date();
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayDate = new Date(year, month, day);
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        
+        // Check if this day has matches
+        const matchesOnDay = getMatchesForDate(dayDate);
+        if (matchesOnDay.length > 0) {
+            dayElement.classList.add('has-matches');
+        }
+        
+        // Check if today
+        if (dayDate.toDateString() === today.toDateString()) {
+            dayElement.classList.add('today');
+        }
+        
+        // Check if selected
+        if (selectedCalendarDate && dayDate.toDateString() === selectedCalendarDate.toDateString()) {
+            dayElement.classList.add('selected');
+        }
+        
+        // Day number
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'calendar-day-number';
+        dayNumber.textContent = day;
+        dayElement.appendChild(dayNumber);
+        
+        // Match count
+        if (matchesOnDay.length > 0) {
+            const matchCount = document.createElement('div');
+            matchCount.className = 'calendar-day-matches';
+            matchCount.textContent = `${matchesOnDay.length} match${matchesOnDay.length > 1 ? 'es' : ''}`;
+            dayElement.appendChild(matchCount);
+        }
+        
+        // Click handler
+        dayElement.onclick = () => selectCalendarDate(dayDate);
+        
+        calendarGrid.appendChild(dayElement);
+    }
+    
+    // If a date is selected, show its matches
+    if (selectedCalendarDate) {
+        displayCalendarMatches(selectedCalendarDate);
+    }
+}
+
+function navigateCalendar(direction) {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+    selectedCalendarDate = null; // Clear selection when navigating
+    renderCalendar();
+    document.getElementById('calendarMatchesList').innerHTML = '';
+}
+
+function selectCalendarDate(date) {
+    selectedCalendarDate = date;
+    renderCalendar();
+    displayCalendarMatches(date);
+}
+
+function getMatchesForDate(date) {
+    return matches.filter(match => {
+        const matchDate = new Date(match.kickoff);
+        return matchDate.toDateString() === date.toDateString();
+    });
+}
+
+function displayCalendarMatches(date) {
+    const matchesOnDay = getMatchesForDate(date);
+    const matchesList = document.getElementById('calendarMatchesList');
+    
+    if (matchesOnDay.length === 0) {
+        matchesList.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7); padding: 20px;">No matches on this date</p>';
+        return;
+    }
+    
+    // Sort matches by kickoff time
+    matchesOnDay.sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+    
+    matchesList.innerHTML = '';
+    matchesOnDay.forEach(match => {
+        const matchCard = createMatchCard(match);
+        matchesList.appendChild(matchCard);
+    });
+}
+
+// ============================================
+// TEAM FLAGS VIEW FUNCTIONS
+// ============================================
+
+function renderTeamsGrid() {
+    const teamsGrid = document.getElementById('teamsGrid');
+    teamsGrid.innerHTML = '';
+    
+    // Get unique teams from matches
+    const teams = new Set();
+    matches.forEach(match => {
+        teams.add(match.homeTeam);
+        teams.add(match.awayTeam);
+    });
+    
+    // Sort teams alphabetically
+    const sortedTeams = Array.from(teams).sort();
+    
+    // Create team cards
+    sortedTeams.forEach(team => {
+        const teamMatches = matches.filter(m => 
+            m.homeTeam === team || m.awayTeam === team
+        );
+        
+        const teamCard = document.createElement('div');
+        teamCard.className = 'team-card';
+        if (selectedTeam === team) {
+            teamCard.classList.add('selected');
+        }
+        
+        teamCard.innerHTML = `
+            <div class="team-flag">${teamFlags[team] || '🏴'}</div>
+            <div class="team-name">${team}</div>
+            <div class="team-matches-count">${teamMatches.length} match${teamMatches.length > 1 ? 'es' : ''}</div>
+        `;
+        
+        teamCard.onclick = () => selectTeam(team);
+        teamsGrid.appendChild(teamCard);
+    });
+    
+    // If a team is selected, show its matches
+    if (selectedTeam) {
+        displayTeamMatches(selectedTeam);
+    }
+}
+
+function selectTeam(team) {
+    selectedTeam = team;
+    renderTeamsGrid();
+    displayTeamMatches(team);
+}
+
+function displayTeamMatches(team) {
+    const teamMatches = matches.filter(m => 
+        m.homeTeam === team || m.awayTeam === team
+    );
+    
+    // Sort by kickoff time
+    teamMatches.sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+    
+    const matchesList = document.getElementById('teamMatchesList');
+    matchesList.innerHTML = '';
+    
+    teamMatches.forEach(match => {
+        const matchCard = createMatchCard(match);
+        matchesList.appendChild(matchCard);
+    });
+}
+
+function filterTeams() {
+    const searchInput = document.getElementById('teamSearchInput').value.toLowerCase();
+    const teamCards = document.querySelectorAll('.team-card');
+    
+    teamCards.forEach(card => {
+        const teamName = card.querySelector('.team-name').textContent.toLowerCase();
+        if (teamName.includes(searchInput)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Helper function to create match card (reusable for all views)
+function createMatchCard(match) {
+    const matchCard = document.createElement('div');
+    matchCard.className = 'match-card';
+    
+    const matchDate = new Date(match.kickoff);
+    const now = new Date();
+    const isLocked = hasMatchStarted(match);
+    const userPrediction = predictions.find(p => 
+        p.userId === currentUser.id && p.matchId === match.id
+    );
+    
+    // Determine if this is a historical match
+    const isHistorical = match.status === 'finished' || isLocked;
+    
+    matchCard.innerHTML = `
+        <div class="match-header">
+            <span class="match-league">${match.league}</span>
+            <span class="match-stage">${match.stage}</span>
+        </div>
+        <div class="match-teams">
+            <div class="team">
+                <span class="team-flag">${teamFlags[match.homeTeam] || '🏴'}</span>
+                <span class="team-name">${match.homeTeam}</span>
+            </div>
+            <div class="match-vs">VS</div>
+            <div class="team">
+                <span class="team-flag">${teamFlags[match.awayTeam] || '🏴'}</span>
+                <span class="team-name">${match.awayTeam}</span>
+            </div>
+        </div>
+        <div class="match-info">
+            <div class="match-time">
+                <span class="time-icon">🕐</span>
+                ${matchDate.toLocaleString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                })}
+            </div>
+            <div class="match-venue">📍 ${match.venue}</div>
+        </div>
+        ${userPrediction ? `
+            <div class="prediction-badge ${isHistorical ? 'historical' : ''}">
+                ${isHistorical ? '📜 ' : '✅ '}Predicted: ${userPrediction.homeScore}-${userPrediction.awayScore} 
+                (${userPrediction.betAmount} coins)
+                ${isHistorical ? ' - View Only' : ''}
+            </div>
+        ` : ''}
+        ${!isHistorical ? `
+            <button class="predict-btn" onclick="openPredictionModal(${match.id})">
+                ${userPrediction ? 'Update Prediction' : 'Make Prediction'}
+            </button>
+        ` : match.status === 'finished' ? `
+            <div class="match-result">
+                Final Score: ${match.homeScore || 0}-${match.awayScore || 0}
+            </div>
+        ` : `
+            <div class="match-locked">
+                🔒 Match Started - Predictions Locked
+            </div>
+        `}
+    `;
+    
+    return matchCard;
+}
 
 // Made with Bob

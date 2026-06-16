@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 1.15.4
+**Version:** 2.0.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~2,950
+**Total Lines of Code:** ~3,500
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -19,11 +19,18 @@
 
 ## 1. Project Overview
 
-**Repository:** Football Prediction Game  
-**Version:** 1.15.4
+**Repository:** Football Prediction Game
+**Version:** 2.0.0
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
-**Lines of Code:** ~2,050 (JavaScript), ~900 (CSS), ~300 (HTML)
+**Lines of Code:** ~2,500 (JavaScript), ~1,200 (CSS), ~350 (HTML)
+
+**v2.0.0 Major Features:**
+- Calendar View for date-based match browsing
+- Team Flags View for team-based match filtering
+- 60 First Stage matches (June 11-28, 2026)
+- Enhanced UI with view toggle system
+- Historical match preservation with read-only display
 
 ---
 
@@ -41,13 +48,14 @@ football-prediction-game/
 │   ├── Activity Tab
 │   └── Documentation Link
 │
-├── styles.css                 # Styling
+├── styles.css                 # Styling (~1,200 lines)
 │   ├── Global Styles
 │   ├── Screen Layouts
 │   ├── Component Styles
 │   ├── Match Card States
 │   ├── Animations
-│   └── Responsive Design
+│   ├── Responsive Design
+│   └── NEW: Calendar & Team Flags Views (v2.0.0)
 │
 ├── app.js                     # Application Logic
 │   ├── Constants & Variables

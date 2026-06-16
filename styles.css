@@ -1904,4 +1904,294 @@ textarea {
         padding: 8px;
     }
 }
+
+/* ============================================
+   VIEW TOGGLE & PREDICTION VIEWS (v2.0.0)
+   ============================================ */
+
+/* View Toggle Buttons */
+.view-toggle {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.view-toggle-btn {
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.view-toggle-btn.active {
+    background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%);
+    border-color: #0f62fe;
+    box-shadow: 0 4px 12px rgba(15, 98, 254, 0.3);
+}
+
+/* Prediction Views Container */
+.prediction-view {
+    display: none;
+}
+
+.prediction-view.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   CALENDAR VIEW
+   ============================================ */
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.calendar-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.calendar-nav-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calendar-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.calendar-day-header {
+    text-align: center;
+    padding: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.calendar-day:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.calendar-day.has-matches {
+    border-color: #0f62fe;
+    background: rgba(15, 98, 254, 0.1);
+}
+
+.calendar-day.has-matches:hover {
+    background: rgba(15, 98, 254, 0.2);
+}
+
+.calendar-day.selected {
+    background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%);
+    border-color: #0f62fe;
+    box-shadow: 0 4px 12px rgba(15, 98, 254, 0.4);
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.calendar-day.today {
+    border-color: #42be65;
+    border-width: 3px;
+}
+
+.calendar-day-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.calendar-day-matches {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+/* ============================================
+   TEAM FLAGS VIEW
+   ============================================ */
+
+.teams-search {
+    margin: 20px 0;
+}
+
+.teams-search input {
+    width: 100%;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.teams-search input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #0f62fe;
+    box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.2);
+}
+
+.teams-search input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.team-card {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.team-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.team-card.selected {
+    background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%);
+    border-color: #0f62fe;
+    box-shadow: 0 4px 12px rgba(15, 98, 254, 0.4);
+}
+
+.team-flag {
+    font-size: 48px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.team-name {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.team-matches-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+}
+
+/* Responsive Design for New Views */
+@media (max-width: 768px) {
+    .calendar-grid {
+        gap: 5px;
+    }
+    
+    .calendar-day {
+        padding: 5px;
+    }
+    
+    .calendar-day-number {
+        font-size: 14px;
+    }
+    
+    .calendar-day-matches {
+        font-size: 9px;
+        padding: 1px 4px;
+    }
+    
+    .teams-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .team-flag {
+        font-size: 36px;
+    }
+    
+    .view-toggle {
+        gap: 5px;
+    }
+    
+    .view-toggle-btn {
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+}
+
 /* Made with Bob */

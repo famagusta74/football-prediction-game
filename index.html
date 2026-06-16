@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v1.15.4 - Daily Bonus on Interaction</div>
+            <div class="version-header">v2.0.0 - Calendar & Team Flags Views</div>
             <div class="landing-shell">
                 <div class="hero-banner hero-banner--revamp">
                     <div class="hero-overlay"></div>
@@ -183,7 +183,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.15.4 - Daily Bonus on Interaction
+                Version 2.0.0 - Calendar & Team Flags Views
             </div>
         </div>
     </div>
@@ -207,7 +207,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 1.15.4 - Daily Bonus on Interaction
+                Version 2.0.0 - Calendar & Team Flags Views
             </div>
         </div>
     </div>
@@ -224,7 +224,7 @@
                             <span class="coin-icon">🪙</span>
                             <span id="userCoins">1000</span>
                         </div>
-                        <div class="version-badge">v1.15.4</div>
+                        <div class="version-badge">v2.0.0</div>
                     </div>
                     <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
                 </div>
@@ -274,32 +274,69 @@
                     </div>
                     <div class="section-badge">🌍 Tournament Matchday</div>
                 </div>
-                <div class="quick-guide">
-                    <div class="quick-guide-card">
-                        <span>1</span>
-                        <div>
-                            <strong>Choose a match</strong>
-                            <p>Open any available fixture and enter your score prediction.</p>
-                        </div>
-                    </div>
-                    <div class="quick-guide-card">
-                        <span>2</span>
-                        <div>
-                            <strong>Bet your coins</strong>
-                            <p>Higher confidence can mean bigger returns when you are right.</p>
-                        </div>
-                    </div>
-                    <div class="quick-guide-card">
-                        <span>3</span>
-                        <div>
-                            <strong>Win as player and pool</strong>
-                            <p>Your prediction winnings help both your personal rank and your pool total.</p>
-                        </div>
-                    </div>
+                
+                <!-- View Toggle Buttons -->
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active" onclick="switchPredictionView('list')">
+                        📋 List View
+                    </button>
+                    <button class="view-toggle-btn" onclick="switchPredictionView('calendar')">
+                        📅 Calendar View
+                    </button>
+                    <button class="view-toggle-btn" onclick="switchPredictionView('teams')">
+                        🏴 Team Flags View
+                    </button>
                 </div>
-                <p class="prediction-note">✅ Cards with saved predictions already contain your pick. Open cards are ready for a new prediction, daily login still awards 100 coins, and Bob suggestions are optional guidance only.</p>
-                <div id="bobSuggestionKpi"></div>
-                <div id="matchesList" class="matches-list"></div>
+                
+                <!-- List View (Original) -->
+                <div id="listView" class="prediction-view active">
+                    <div class="quick-guide">
+                        <div class="quick-guide-card">
+                            <span>1</span>
+                            <div>
+                                <strong>Choose a match</strong>
+                                <p>Open any available fixture and enter your score prediction.</p>
+                            </div>
+                        </div>
+                        <div class="quick-guide-card">
+                            <span>2</span>
+                            <div>
+                                <strong>Bet your coins</strong>
+                                <p>Higher confidence can mean bigger returns when you are right.</p>
+                            </div>
+                        </div>
+                        <div class="quick-guide-card">
+                            <span>3</span>
+                            <div>
+                                <strong>Win as player and pool</strong>
+                                <p>Your prediction winnings help both your personal rank and your pool total.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="prediction-note">✅ Cards with saved predictions already contain your pick. Open cards are ready for a new prediction, daily login still awards 100 coins, and Bob suggestions are optional guidance only.</p>
+                    <div id="bobSuggestionKpi"></div>
+                    <div id="matchesList" class="matches-list"></div>
+                </div>
+                
+                <!-- Calendar View -->
+                <div id="calendarView" class="prediction-view">
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" onclick="navigateCalendar(-1)">◀ Previous</button>
+                        <h3 id="calendarMonthYear">June 2026</h3>
+                        <button class="calendar-nav-btn" onclick="navigateCalendar(1)">Next ▶</button>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                    <div id="calendarMatchesList" class="matches-list"></div>
+                </div>
+                
+                <!-- Team Flags View -->
+                <div id="teamsView" class="prediction-view">
+                    <div class="teams-search">
+                        <input type="text" id="teamSearchInput" placeholder="🔍 Search teams..." onkeyup="filterTeams()">
+                    </div>
+                    <div id="teamsGrid" class="teams-grid"></div>
+                    <div id="teamMatchesList" class="matches-list"></div>
+                </div>
             </div>
         </div>
 

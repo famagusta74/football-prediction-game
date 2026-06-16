@@ -1,6 +1,6 @@
 # Football Prediction Game - Technical Specification Document
 
-**Version:** 1.15.4
+**Version:** 2.0.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 
@@ -133,6 +133,82 @@ Reload Persisted User → Dashboard Display → Optional Browser Notification
 - Prediction deductions and edits are recorded in activity history
 - Match cards are visually marked by checking the current user's saved predictions before rendering
 - Predicted cards use a stronger green palette and unpredicted cards use a blue-grey palette
+
+
+### 3.2.1 Calendar & Team Flags Views (v2.0.0)
+
+**File:** [`app.js`](../app.js)
+
+**New Functions:**
+- [`switchPredictionView(view)`](../app.js) - Switch between list, calendar, and team flags views
+- [`renderCalendar()`](../app.js) - Render interactive calendar grid
+- [`navigateCalendar(direction)`](../app.js) - Navigate between months
+- [`selectCalendarDate(date)`](../app.js) - Select a date and display its matches
+- [`getMatchesForDate(date)`](../app.js) - Filter matches by date
+- [`displayCalendarMatches(date)`](../app.js) - Display matches for selected date
+- [`renderTeamsGrid()`](../app.js) - Render team flags grid
+- [`selectTeam(team)`](../app.js) - Select a team and display its matches
+- [`displayTeamMatches(team)`](../app.js) - Display matches for selected team
+- [`filterTeams()`](../app.js) - Filter teams by search input
+- [`createMatchCard(match)`](../app.js) - Create reusable match card for all views
+
+**View Types:**
+1. **List View** (Default)
+   - Traditional chronological match listing
+   - Quick guide cards for new users
+   - Bob suggestion KPI tracking
+
+2. **Calendar View**
+   - Interactive calendar grid (7x6 layout)
+   - Day headers (Sun-Sat)
+   - Visual indicators for dates with matches
+   - Today's date highlighted
+   - Month navigation (previous/next)
+   - Click on date to see matches
+   - Match count badge on dates with matches
+   - Historical matches displayed as read-only
+
+3. **Team Flags View**
+   - Grid of all participating teams with flags
+   - Country flag emoji for each team
+   - Match count for each team
+   - Search functionality to filter teams
+   - Click on team to see all their matches
+   - Responsive grid layout (auto-fill)
+   - Historical matches displayed as read-only
+
+**Team Flag Mapping:**
+```javascript
+const teamFlags = {
+    "Mexico": "🇲🇽", "South Africa": "🇿🇦", "Korea Republic": "🇰🇷",
+    "Czechia": "🇨🇿", "Canada": "🇨🇦", "Bosnia and Herzegovina": "🇧🇦",
+    "USA": "🇺🇸", "Paraguay": "🇵🇾", "Qatar": "🇶🇦",
+    "Switzerland": "🇨🇭", "Brazil": "🇧🇷", "Morocco": "🇲🇦",
+    // ... 48 total teams with flags
+};
+```
+
+**Historical Match Handling:**
+- Matches with `status === 'finished'` are read-only
+- Matches past kickoff time are locked for predictions
+- Historical predictions are preserved and displayed
+- "View Only" badge shown on historical predictions
+- Prediction buttons hidden for locked/finished matches
+- Final scores displayed for finished matches
+
+**CSS Classes (v2.0.0):**
+- `.view-toggle` - Container for view toggle buttons
+- `.view-toggle-btn` - Individual view toggle button
+- `.prediction-view` - Container for each view type
+- `.calendar-grid` - Calendar grid layout
+- `.calendar-day` - Individual calendar day cell
+- `.calendar-day.has-matches` - Day with matches
+- `.calendar-day.selected` - Selected day
+- `.calendar-day.today` - Current day
+- `.teams-grid` - Team flags grid layout
+- `.team-card` - Individual team card
+- `.team-card.selected` - Selected team
+- `.team-flag` - Team flag emoji display
 
 ### 3.3 Activity History Module
 

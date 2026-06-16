@@ -4,7 +4,7 @@
 
 The Football Prediction Game is a web-based application that allows users to predict match outcomes for the FIFA World Cup 2026 and compete with friends in private pools. Users earn coins based on prediction accuracy, track their activity history, and compare performance on leaderboards.
 
-**Version:** 1.15.4
+**Version:** 2.0.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Platform:** Web Application (HTML5, CSS3, JavaScript)
@@ -33,12 +33,16 @@ Enable football fans to:
    - Secure login system
    - Cross-device synchronization via Firebase
 
-2. **Match Predictions**
+2. **Match Predictions** (Enhanced in v2.0.0)
    - Predict exact scores for upcoming matches
    - Place coin bets on predictions
    - View prediction history and results
    - Automatic prediction locking after kickoff
    - Visual distinction between predicted and unpredicted match cards based on saved user predictions
+   - **NEW: Calendar View** - Browse matches by date with interactive calendar
+   - **NEW: Team Flags View** - Browse matches by team with country flags
+   - **NEW: Multiple View Options** - Switch between List, Calendar, and Team Flags views
+   - **NEW: 60 First Stage Matches** - Complete FIFA World Cup 2026 First Stage coverage (June 11-28, 2026)
 
 3. **Reward System**
    - 5x payout for exact score predictions
