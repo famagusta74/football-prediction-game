@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.2"; // Enhanced calendar readability with better colors
+const APP_VERSION = "v2.0.3"; // Show all matches in calendar view with selected date highlighted
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -3281,22 +3281,79 @@ function getMatchesForDate(date) {
 }
 
 function displayCalendarMatches(date) {
-    const matchesOnDay = getMatchesForDate(date);
     const matchesList = document.getElementById('calendarMatchesList');
+    matchesList.innerHTML = '';
+    
+    // Get matches for the selected date
+    const matchesOnDay = getMatchesForDate(date);
     
     if (matchesOnDay.length === 0) {
         matchesList.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7); padding: 20px;">No matches on this date</p>';
         return;
     }
     
-    // Sort matches by kickoff time
-    matchesOnDay.sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+    // Show all matches, sorted by date
+    const allMatches = [...matches].sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+    const now = new Date();
     
-    matchesList.innerHTML = '';
+    // Separate into past and future matches
+    const pastMatches = allMatches.filter(m => new Date(m.kickoff) < now);
+    const futureMatches = allMatches.filter(m => new Date(m.kickoff) >= now);
+    
+    // Add section header for selected date matches
+    const selectedDateHeader = document.createElement('div');
+    selectedDateHeader.style.cssText = 'background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;';
+    selectedDateHeader.innerHTML = `
+        <h3 style="margin: 0; color: white; font-size: 18px; font-weight: 600;">
+            📅 Matches on ${date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+        </h3>
+    `;
+    matchesList.appendChild(selectedDateHeader);
+    
+    // Display selected date matches
     matchesOnDay.forEach(match => {
         const matchCard = createMatchCard(match);
+        matchCard.style.border = '3px solid #0f62fe';
+        matchCard.style.boxShadow = '0 4px 16px rgba(15, 98, 254, 0.4)';
         matchesList.appendChild(matchCard);
     });
+    
+    // Add section for all matches
+    const allMatchesHeader = document.createElement('div');
+    allMatchesHeader.style.cssText = 'background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; margin: 30px 0 20px 0; text-align: center;';
+    allMatchesHeader.innerHTML = `
+        <h3 style="margin: 0; color: white; font-size: 18px; font-weight: 600;">
+            📋 All Matches
+        </h3>
+    `;
+    matchesList.appendChild(allMatchesHeader);
+    
+    // Display past matches
+    if (pastMatches.length > 0) {
+        const pastHeader = document.createElement('div');
+        pastHeader.style.cssText = 'padding: 10px; margin: 15px 0 10px 0; color: rgba(255,255,255,0.7); font-weight: 600; font-size: 14px;';
+        pastHeader.innerHTML = '📜 Past Matches';
+        matchesList.appendChild(pastHeader);
+        
+        pastMatches.forEach(match => {
+            const matchCard = createMatchCard(match);
+            matchCard.style.opacity = '0.8';
+            matchesList.appendChild(matchCard);
+        });
+    }
+    
+    // Display future matches
+    if (futureMatches.length > 0) {
+        const futureHeader = document.createElement('div');
+        futureHeader.style.cssText = 'padding: 10px; margin: 15px 0 10px 0; color: rgba(255,255,255,0.7); font-weight: 600; font-size: 14px;';
+        futureHeader.innerHTML = '🔮 Upcoming Matches';
+        matchesList.appendChild(futureHeader);
+        
+        futureMatches.forEach(match => {
+            const matchCard = createMatchCard(match);
+            matchesList.appendChild(matchCard);
+        });
+    }
 }
 
 // ============================================
