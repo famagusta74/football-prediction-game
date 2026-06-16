@@ -3141,8 +3141,10 @@ function switchPredictionView(view) {
     // Update button states
     document.querySelectorAll('.view-toggle-btn').forEach(btn => {
         btn.classList.remove('active');
+        if (btn.getAttribute('data-view') === view) {
+            btn.classList.add('active');
+        }
     });
-    event.target.classList.add('active');
     
     // Hide all views
     document.querySelectorAll('.prediction-view').forEach(v => {

@@ -277,14 +277,17 @@
                 
                 <!-- View Toggle Buttons -->
                 <div class="view-toggle">
-                    <button class="view-toggle-btn active" onclick="switchPredictionView('list')">
-                        📋 List View
+                    <button class="view-toggle-btn active" data-view="list" onclick="switchPredictionView('list')">
+                        <span class="view-icon">📋</span>
+                        <span class="view-label">List View</span>
                     </button>
-                    <button class="view-toggle-btn" onclick="switchPredictionView('calendar')">
-                        📅 Calendar View
+                    <button class="view-toggle-btn" data-view="calendar" onclick="switchPredictionView('calendar')">
+                        <span class="view-icon">📅</span>
+                        <span class="view-label">Calendar View</span>
                     </button>
-                    <button class="view-toggle-btn" onclick="switchPredictionView('teams')">
-                        🏴 Team Flags View
+                    <button class="view-toggle-btn" data-view="teams" onclick="switchPredictionView('teams')">
+                        <span class="view-icon">🏴</span>
+                        <span class="view-label">Team Flags View</span>
                     </button>
                 </div>
                 
