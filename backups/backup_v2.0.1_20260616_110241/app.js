@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.2"; // Enhanced calendar readability with better colors
+const APP_VERSION = "v2.0.1"; // Fixed calendar/team views readability and functionality
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;

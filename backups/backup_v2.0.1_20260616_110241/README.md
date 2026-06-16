@@ -223,4 +223,4 @@ Free to use for personal and educational purposes.
 
 **Enjoy predicting and may the best predictor win!** ⚽🏆
 
-_Current release theme: v2.0.2 - Enhanced Calendar Readability_
+_Current release theme: v2.0.1 - Bug Fixes for Calendar & Team Flags Views_

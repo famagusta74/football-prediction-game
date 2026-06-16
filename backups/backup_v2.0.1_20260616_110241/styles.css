@@ -2084,8 +2084,8 @@ textarea {
     align-items: center;
     justify-content: center;
     padding: 10px;
-    background: rgba(30, 30, 30, 0.8);
-    border: 2px solid rgba(100, 100, 100, 0.5);
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -2093,27 +2093,24 @@ textarea {
 }
 
 .calendar-day:hover {
-    background: rgba(50, 50, 50, 0.9);
-    border-color: rgba(150, 150, 150, 0.7);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: scale(1.05);
 }
 
 .calendar-day.has-matches {
-    border-color: #4589ff;
-    background: rgba(30, 30, 30, 0.95);
-    box-shadow: 0 0 10px rgba(69, 137, 255, 0.3);
+    border-color: #0f62fe;
+    background: rgba(15, 98, 254, 0.25);
 }
 
 .calendar-day.has-matches:hover {
-    background: rgba(40, 40, 40, 0.95);
-    border-color: #78a9ff;
-    box-shadow: 0 0 15px rgba(69, 137, 255, 0.5);
+    background: rgba(15, 98, 254, 0.35);
 }
 
 .calendar-day.selected {
     background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%);
-    border-color: #4589ff;
-    box-shadow: 0 4px 16px rgba(15, 98, 254, 0.6);
+    border-color: #0f62fe;
+    box-shadow: 0 4px 12px rgba(15, 98, 254, 0.4);
 }
 
 .calendar-day.other-month {
@@ -2124,27 +2121,25 @@ textarea {
 .calendar-day.today {
     border-color: #42be65;
     border-width: 3px;
-    background: rgba(30, 30, 30, 0.95);
-    box-shadow: 0 0 10px rgba(66, 190, 101, 0.4);
+    background: rgba(66, 190, 101, 0.15);
 }
 
 .calendar-day-number {
-    font-size: 20px;
-    font-weight: 800;
-    color: #f4f4f4;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
     margin-bottom: 4px;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .calendar-day-matches {
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 600;
     color: #ffffff;
-    background: rgba(15, 98, 254, 0.8);
-    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 3px 8px;
     border-radius: 12px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* ============================================
