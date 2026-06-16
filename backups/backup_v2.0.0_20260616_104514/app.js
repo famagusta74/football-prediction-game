@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.1"; // Fixed calendar/team views readability and functionality
+const APP_VERSION = "v2.0.0"; // Calendar & Team Flags Views with Full First Stage Matches
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1984,15 +1984,6 @@ function renderBobSuggestionKpi() {
     `;
 }
 
-function openPredictionModalById(matchId) {
-    const match = matches.find(m => m.id === matchId);
-    if (!match) {
-        console.error('Match not found:', matchId);
-        return;
-    }
-    openPredictionModal(match);
-}
-
 function openPredictionModal(match) {
     if (isMatchLocked(match)) {
         alert('This match is locked. Predictions are frozen after kickoff and remain unavailable until an admin enters the final result and processes payouts.');
@@ -3433,7 +3424,7 @@ function createMatchCard(match) {
             </div>
         ` : ''}
         ${!isHistorical ? `
-            <button class="predict-btn" onclick="openPredictionModalById(${match.id})">
+            <button class="predict-btn" onclick="openPredictionModal(${match.id})">
                 ${userPrediction ? 'Update Prediction' : 'Make Prediction'}
             </button>
         ` : match.status === 'finished' ? `

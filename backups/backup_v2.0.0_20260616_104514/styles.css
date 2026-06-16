@@ -2084,8 +2084,8 @@ textarea {
     align-items: center;
     justify-content: center;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -2093,18 +2093,18 @@ textarea {
 }
 
 .calendar-day:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
     transform: scale(1.05);
 }
 
 .calendar-day.has-matches {
     border-color: #0f62fe;
-    background: rgba(15, 98, 254, 0.25);
+    background: rgba(15, 98, 254, 0.1);
 }
 
 .calendar-day.has-matches:hover {
-    background: rgba(15, 98, 254, 0.35);
+    background: rgba(15, 98, 254, 0.2);
 }
 
 .calendar-day.selected {
@@ -2121,25 +2121,21 @@ textarea {
 .calendar-day.today {
     border-color: #42be65;
     border-width: 3px;
-    background: rgba(66, 190, 101, 0.15);
 }
 
 .calendar-day-number {
-    font-size: 18px;
-    font-weight: 700;
-    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
     margin-bottom: 4px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .calendar-day-matches {
-    font-size: 11px;
-    font-weight: 600;
-    color: #ffffff;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 3px 8px;
-    border-radius: 12px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 10px;
 }
 
 /* ============================================
@@ -2181,8 +2177,8 @@ textarea {
 
 .team-card {
     padding: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     text-align: center;
     cursor: pointer;
@@ -2190,8 +2186,8 @@ textarea {
 }
 
 .team-card:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
@@ -2206,30 +2202,18 @@ textarea {
     font-size: 48px;
     margin-bottom: 10px;
     display: block;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .team-name {
-    color: #ffffff;
+    color: white;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     margin-bottom: 5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    background: rgba(0, 0, 0, 0.3);
-    padding: 4px 8px;
-    border-radius: 6px;
 }
 
 .team-matches-count {
-    color: #ffffff;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 12px;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    background: rgba(0, 0, 0, 0.3);
-    padding: 2px 6px;
-    border-radius: 6px;
-    display: inline-block;
-    margin-top: 4px;
 }
 
 /* Responsive Design for New Views */

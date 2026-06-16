@@ -1,6 +1,6 @@
 # Football Prediction Game - Technical Specification Document
 
-**Version:** 2.0.1
+**Version:** 2.0.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 
