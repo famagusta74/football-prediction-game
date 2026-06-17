@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.12"; // AUTO-UPDATE: Force Firebase match update for all users
+const APP_VERSION = "v2.0.13"; // CRITICAL FIX: Preserve match history during update (merge, don't overwrite)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -49,13 +49,28 @@ async function initializeApp() {
             localStorage.setItem('lastMatchVersion', APP_VERSION);
             console.log(`Matches initialized: ${matches.length} matches loaded`);
         } else if (needsMatchUpdate && sampleMatches.length > matches.length) {
-            // Auto-update: New version with more matches
-            console.log(`🔄 Updating matches for ${APP_VERSION}...`);
+            // Auto-update: MERGE new matches while preserving existing data
+            console.log(`🔄 Merging new matches for ${APP_VERSION}...`);
             console.log(`Current: ${matches.length} matches, New: ${sampleMatches.length} matches`);
-            matches = [...sampleMatches];
+            
+            // Create a map of existing matches by ID to preserve their data
+            const existingMatchesMap = new Map(matches.map(m => [m.id, m]));
+            
+            // Merge: Use existing match data if available, otherwise use sample match
+            matches = sampleMatches.map(sampleMatch => {
+                const existingMatch = existingMatchesMap.get(sampleMatch.id);
+                if (existingMatch) {
+                    // Preserve existing match (keeps results, Bob predictions, status)
+                    return existingMatch;
+                } else {
+                    // New match, use sample data
+                    return { ...sampleMatch };
+                }
+            });
+            
             await FirebaseDB.saveAllMatches(matches);
             localStorage.setItem('lastMatchVersion', APP_VERSION);
-            console.log(`✅ Matches updated: ${matches.length} matches loaded`);
+            console.log(`✅ Matches merged: ${matches.length} total (preserved existing data)`);
         } else {
             console.log(`Loaded ${matches.length} existing matches from Firebase`);
             if (!needsMatchUpdate) {
