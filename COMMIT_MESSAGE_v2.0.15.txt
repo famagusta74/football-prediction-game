@@ -1,0 +1,31 @@
+fix: Correct all 12 new match kickoff times (v2.0.15)
+
+Fixed incorrect kickoff times for matches 61-72 by verifying against FIFA official schedule.
+All times converted from Greek timezone (UTC+3) to UTC.
+
+Changes:
+- Match 61 (Mexico vs Korea Republic): 04:00 → 01:00 UTC (June 19)
+- Match 62 (Bosnia vs Qatar): Wrong date/time → 19:00 UTC (June 24)
+- Match 63 (USA vs Australia): Wrong date → 19:00 UTC (June 19)
+- Match 64 (Germany vs Côte d'Ivoire): Wrong date → 20:00 UTC (June 20)
+- Match 65 (Egypt vs New Zealand): 05:00 → 01:00 UTC (June 22)
+- Match 66 (Cabo Verde vs Uruguay): Wrong date → 22:00 UTC (June 21)
+- Match 67 (Iraq vs Norway): 20:00 → 21:00 UTC (June 22)
+- Match 68 (Algeria vs Jordan): Wrong date/time → 03:00 UTC (June 23)
+- Match 69 (Argentina vs Algeria): Already fixed in v2.0.14 ✓
+- Match 70 (Portugal vs Uzbekistan): Wrong date/time → 17:00 UTC (June 23)
+- Match 71 (Uzbekistan vs Colombia): 05:00 → 02:00 UTC (June 18)
+- Match 72 (Ghana vs Panama): Wrong date → 23:00 UTC (June 17)
+
+Also corrected venues for matches 62, 64, 66, 67, 68, 70 to match FIFA data.
+
+Files modified:
+- app.js: Updated APP_VERSION to v2.0.15 and corrected all 12 match times
+- index.html: Updated version display to v2.0.15
+- RELEASE_NOTES_v2.0.15.md: Detailed documentation of all changes
+
+Impact:
+✅ All 72 First Stage matches now have accurate kickoff times
+✅ Calendar view will display matches on correct dates
+✅ Teams Flag view shows correct match schedules
+✅ Historic data (17 completed matches) preserved

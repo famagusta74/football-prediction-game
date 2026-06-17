@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.14"; // Fix Argentina vs Algeria kickoff time
+const APP_VERSION = "v2.0.15"; // Fix all 12 new match kickoff times (61-72)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1050,7 +1050,7 @@ const sampleMatches = [
         id: 61,
         homeTeam: "Mexico",
         awayTeam: "Korea Republic",
-        kickoff: "2026-06-19T04:00:00",
+        kickoff: "2026-06-19T01:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group A",
@@ -1060,17 +1060,17 @@ const sampleMatches = [
         id: 62,
         homeTeam: "Bosnia and Herzegovina",
         awayTeam: "Qatar",
-        kickoff: "2026-06-19T07:00:00",
+        kickoff: "2026-06-24T19:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group B",
-        venue: "Toronto Stadium (Toronto)"
+        venue: "Seattle Stadium (Seattle)"
     },
     {
         id: 63,
         homeTeam: "USA",
         awayTeam: "Australia",
-        kickoff: "2026-06-20T22:00:00",
+        kickoff: "2026-06-19T19:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group D",
@@ -1080,17 +1080,17 @@ const sampleMatches = [
         id: 64,
         homeTeam: "Germany",
         awayTeam: "Côte d'Ivoire",
-        kickoff: "2026-06-21T22:00:00",
+        kickoff: "2026-06-20T20:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group E",
-        venue: "Philadelphia Stadium (Philadelphia)"
+        venue: "Toronto Stadium (Toronto)"
     },
     {
         id: 65,
         homeTeam: "Egypt",
         awayTeam: "New Zealand",
-        kickoff: "2026-06-22T05:00:00",
+        kickoff: "2026-06-22T01:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group G",
@@ -1100,31 +1100,31 @@ const sampleMatches = [
         id: 66,
         homeTeam: "Cabo Verde",
         awayTeam: "Uruguay",
-        kickoff: "2026-06-22T22:00:00",
+        kickoff: "2026-06-21T22:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group H",
-        venue: "Dallas Stadium (Dallas)"
+        venue: "Miami Stadium (Miami)"
     },
     {
         id: 67,
         homeTeam: "Iraq",
         awayTeam: "Norway",
-        kickoff: "2026-06-23T20:00:00",
+        kickoff: "2026-06-22T21:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group I",
-        venue: "Boston Stadium (Boston)"
+        venue: "Philadelphia Stadium (Philadelphia)"
     },
     {
         id: 68,
         homeTeam: "Algeria",
         awayTeam: "Jordan",
-        kickoff: "2026-06-24T20:00:00",
+        kickoff: "2026-06-23T03:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group J",
-        venue: "Houston Stadium (Houston)"
+        venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
     },
     {
         id: 69,
@@ -1140,17 +1140,17 @@ const sampleMatches = [
         id: 70,
         homeTeam: "Portugal",
         awayTeam: "Uzbekistan",
-        kickoff: "2026-06-24T23:00:00",
+        kickoff: "2026-06-23T17:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group K",
-        venue: "Atlanta Stadium (Atlanta)"
+        venue: "Houston Stadium (Houston)"
     },
     {
         id: 71,
         homeTeam: "Uzbekistan",
         awayTeam: "Colombia",
-        kickoff: "2026-06-18T05:00:00",
+        kickoff: "2026-06-18T02:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group K",
@@ -1160,7 +1160,7 @@ const sampleMatches = [
         id: 72,
         homeTeam: "Ghana",
         awayTeam: "Panama",
-        kickoff: "2026-06-18T02:00:00",
+        kickoff: "2026-06-17T23:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group L",
