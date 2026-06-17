@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.11"; // DATA RESTORATION: Restored 12 missing group stage matches (cache break)
+const APP_VERSION = "v2.0.12"; // AUTO-UPDATE: Force Firebase match update for all users
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -37,14 +37,30 @@ async function initializeApp() {
         // Load data from Firebase
         await loadDataFromFirebase();
         
+        // Check if matches need updating (version-based update)
+        const lastMatchVersion = localStorage.getItem('lastMatchVersion');
+        const needsMatchUpdate = !lastMatchVersion || lastMatchVersion !== APP_VERSION;
+        
         // Initialize matches if empty (first time only)
         if (matches.length === 0) {
             console.log('No matches found, initializing with sample matches...');
             matches = [...sampleMatches];
             await FirebaseDB.saveAllMatches(matches);
+            localStorage.setItem('lastMatchVersion', APP_VERSION);
             console.log(`Matches initialized: ${matches.length} matches loaded`);
+        } else if (needsMatchUpdate && sampleMatches.length > matches.length) {
+            // Auto-update: New version with more matches
+            console.log(`🔄 Updating matches for ${APP_VERSION}...`);
+            console.log(`Current: ${matches.length} matches, New: ${sampleMatches.length} matches`);
+            matches = [...sampleMatches];
+            await FirebaseDB.saveAllMatches(matches);
+            localStorage.setItem('lastMatchVersion', APP_VERSION);
+            console.log(`✅ Matches updated: ${matches.length} matches loaded`);
         } else {
             console.log(`Loaded ${matches.length} existing matches from Firebase`);
+            if (!needsMatchUpdate) {
+                console.log(`Matches are up to date for ${APP_VERSION}`);
+            }
         }
     } else {
         console.log('Firebase not available, using localStorage');
