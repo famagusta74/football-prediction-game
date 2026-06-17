@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.13"; // CRITICAL FIX: Preserve match history during update (merge, don't overwrite)
+const APP_VERSION = "v2.0.14"; // Fix Argentina vs Algeria kickoff time
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1130,7 +1130,7 @@ const sampleMatches = [
         id: 69,
         homeTeam: "Argentina",
         awayTeam: "Algeria",
-        kickoff: "2026-06-17T20:00:00",
+        kickoff: "2026-06-17T07:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group J",
