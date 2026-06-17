@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.10"; // DATA RESTORATION: Restored 12 missing group stage matches
+const APP_VERSION = "v2.0.11"; // DATA RESTORATION: Restored 12 missing group stage matches (cache break)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
