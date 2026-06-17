@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.15"; // Fix all 12 new match kickoff times (61-72)
+const APP_VERSION = "v2.0.16"; // Fix Match 69 kickoff time (Argentina vs Algeria)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1130,7 +1130,7 @@ const sampleMatches = [
         id: 69,
         homeTeam: "Argentina",
         awayTeam: "Algeria",
-        kickoff: "2026-06-17T07:00:00",
+        kickoff: "2026-06-17T01:00:00",
         status: "upcoming",
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group J",

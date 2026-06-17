@@ -1,0 +1,21 @@
+fix: Correct Match 69 kickoff time - Argentina vs Algeria (v2.0.16)
+
+Fixed incorrect kickoff time for Match 69 (Argentina vs Algeria).
+The match was at 4:00 AM Greek time (01:00 UTC), not 10:00 AM Greek time (07:00 UTC).
+
+Changes:
+- Match 69 (Argentina vs Algeria): 07:00 → 01:00 UTC (June 17)
+  * Was showing: Wednesday 17 June, 10:00 AM Greek time (07:00 UTC)
+  * Corrected to: Wednesday 17 June, 4:00 AM Greek time (01:00 UTC)
+  * Match result: Argentina 3-0 Algeria (completed)
+
+All other 11 matches (61-68, 70-72) verified correct against FIFA schedule.
+
+Files modified:
+- app.js: Updated APP_VERSION to v2.0.16 and corrected Match 69 kickoff time
+- index.html: Updated version display to v2.0.16
+
+Impact:
+✅ Match 69 now shows correct kickoff time (4:00 AM Greek / 1:00 AM UTC)
+✅ All 72 First Stage matches have accurate kickoff times
+✅ Historic data preserved (17 completed matches including Match 69)
