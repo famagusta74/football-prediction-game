@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.0.2"; // v3.0.2: Fix login screen persisting after login on mobile; scroll to top on dashboard load
+const APP_VERSION = "v3.0.3"; // v3.0.3: Fix bottom nav showing on login/register screens on mobile
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;

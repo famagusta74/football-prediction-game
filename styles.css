@@ -2372,8 +2372,9 @@ textarea {
 /* ── Compact mobile dashboard header ── */
 @media (max-width: 600px) {
 
-    /* Show mobile nav, hide desktop tabs */
-    .mobile-bottom-nav {
+    /* Show mobile nav only when dashboard is active — prevents it
+       floating over the login / register screens */
+    #dashboardScreen.active .mobile-bottom-nav {
         display: flex;
     }
 
