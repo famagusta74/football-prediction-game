@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v2.0.16"; // Fix Match 69 kickoff time (Argentina vs Algeria)
+const APP_VERSION = "v3.0.0"; // v3: Mobile-first redesign, auto-login after register, smart list view (next match first)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1404,8 +1404,49 @@ async function register() {
     // Notify admin about new registration
     await notifyAdminNewUser(newUser);
 
-    alert('Account created successfully! Please login.');
-    showLogin();
+    // Auto-login: set currentUser and go straight to predictions
+    currentUser = newUser;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // Show welcome banner then go to dashboard -> predictions tab
+    showDashboard();
+    showWelcomeBanner(nickname);
+}
+
+function showWelcomeBanner(nickname) {
+    // Create a brief welcome overlay that auto-dismisses
+    const banner = document.createElement('div');
+    banner.id = 'welcomeBanner';
+    banner.style.cssText = `
+        position: fixed; inset: 0; z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(15, 98, 254, 0.92); backdrop-filter: blur(8px);
+    `;
+    banner.innerHTML = `
+        <div style="
+            background: white; border-radius: 28px; padding: 40px 32px;
+            max-width: 360px; width: 90%; text-align: center;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.28);
+        ">
+            <div style="font-size: 56px; margin-bottom: 16px;">🎉</div>
+            <h2 style="color: #0f2c5f; margin-bottom: 12px; font-size: 24px;">Welcome, ${nickname}!</h2>
+            <p style="color: #5b6f96; line-height: 1.6; margin-bottom: 24px;">
+                You're all set! You've been automatically logged in and given <strong>1,000 coins</strong> to start predicting.
+            </p>
+            <p style="color: #0f62fe; font-weight: 700; margin-bottom: 24px;">
+                ⚽ Let's make your first prediction!
+            </p>
+            <button onclick="document.getElementById('welcomeBanner').remove()" style="
+                background: linear-gradient(135deg, #0f62fe, #0353e9);
+                color: white; border: none; border-radius: 14px;
+                padding: 14px 32px; font-size: 16px; font-weight: 700;
+                cursor: pointer; width: 100%;
+            ">Start Predicting →</button>
+        </div>
+    `;
+    document.body.appendChild(banner);
+    // Auto-dismiss after 6 seconds
+    setTimeout(() => { if (banner.parentNode) banner.remove(); }, 6000);
 }
 
 // Notify admin about new user registration
@@ -1491,15 +1532,15 @@ function showTab(tabName) {
     
     activeTabName = tabName;
 
+    // Sync desktop tabs
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    if (event && event.target) {
-        event.target.classList.add('active');
-    } else {
-        const targetTab = document.querySelector(`.tab[onclick="showTab('${tabName}')"]`);
-        if (targetTab) {
-            targetTab.classList.add('active');
-        }
-    }
+    const targetDesktopTab = document.querySelector(`.tab[onclick="showTab('${tabName}')"]`);
+    if (targetDesktopTab) targetDesktopTab.classList.add('active');
+
+    // Sync mobile bottom nav
+    document.querySelectorAll('.mobile-nav-btn').forEach(btn => btn.classList.remove('active'));
+    const targetMobileBtn = document.querySelector(`.mobile-nav-btn[data-tab="${tabName}"]`);
+    if (targetMobileBtn) targetMobileBtn.classList.add('active');
     
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     document.getElementById(tabName + 'Tab').classList.add('active');
@@ -1526,19 +1567,27 @@ function loadMatches() {
     renderBobSuggestionKpi();
     
     const currentUserPredictions = predictions.filter(p => p.userId === currentUser.id);
-    
-    // Get today's date range (start and end of day in user's timezone)
     const now = new Date();
+
+    // Separate into upcoming (open for prediction) and past (locked/finished)
+    const upcomingMatches = matches
+        .filter(match => !isMatchLocked(match))
+        .sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+
+    const pastMatches = matches
+        .filter(match => isMatchLocked(match))
+        .sort((a, b) => new Date(b.kickoff) - new Date(a.kickoff));
+
+    // Get today's date range
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-    
-    // Filter today's matches (upcoming only, not finished)
-    const todaysMatches = matches.filter(match => {
-        const kickoffDate = new Date(match.kickoff);
-        return kickoffDate >= todayStart && kickoffDate <= todayEnd && match.status !== 'finished';
+
+    // Highlight today's upcoming matches at the top
+    const todaysMatches = upcomingMatches.filter(m => {
+        const ko = new Date(m.kickoff);
+        return ko >= todayStart && ko <= todayEnd;
     });
-    
-    // Render Today's Games section if there are any
+
     if (todaysMatches.length > 0) {
         const todaySection = document.createElement('div');
         todaySection.className = 'todays-games-section';
@@ -1549,119 +1598,61 @@ function loadMatches() {
             </div>
         `;
         matchesList.appendChild(todaySection);
-        
-        // Render today's matches with special styling
         todaysMatches.forEach(match => {
             const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
             renderMatchCard(match, userPrediction, matchesList, true);
         });
-        
-        // Add separator
         const separator = document.createElement('div');
         separator.className = 'matches-separator';
-        separator.innerHTML = '<h3>All Matches</h3>';
+        separator.innerHTML = '<h3>Upcoming Matches</h3>';
         matchesList.appendChild(separator);
     }
 
-    matches.forEach(match => {
-        const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
-        
-        const matchCard = document.createElement('div');
-        const matchLocked = isMatchLocked(match);
-        const predictionStateClass = userPrediction ? ' predicted' : ' unpredicted';
-        matchCard.className = `match-card${matchLocked ? ' locked' : ''}${predictionStateClass}`;
-        matchCard.onclick = () => openPredictionModal(match);
-        
-        const kickoffDate = new Date(match.kickoff);
-        const formattedDate = kickoffDate.toLocaleDateString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+    // Render upcoming matches (starting from next unplayed match)
+    const remainingUpcoming = todaysMatches.length > 0
+        ? upcomingMatches.filter(m => {
+            const ko = new Date(m.kickoff);
+            return !(ko >= todayStart && ko <= todayEnd);
+        })
+        : upcomingMatches;
+
+    if (remainingUpcoming.length === 0 && upcomingMatches.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'No upcoming matches to predict. Check the History section below for past results.';
+        matchesList.appendChild(empty);
+    } else {
+        remainingUpcoming.forEach(match => {
+            const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
+            renderMatchCard(match, userPrediction, matchesList, false);
         });
-        
-        // Calculate result if match is finished
-        let resultInfo = '';
-        let lockInfo = '';
-        if (match.status === 'finished' && match.finalScore && userPrediction) {
-            const payout = calculatePayout(userPrediction, match.finalScore);
-            const resultColor = payout > 0 ? '#28a745' : '#dc3545';
-            resultInfo = `
-                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid ${resultColor};">
-                    <div style="text-align: center; margin-bottom: 10px;">
-                        <strong style="font-size: 16px;">Final Score: ${match.finalScore.home} - ${match.finalScore.away}</strong>
-                    </div>
-                    <div style="text-align: center; color: ${resultColor}; font-weight: bold; font-size: 18px;">
-                        ${payout > 0 ? `🎉 Won ${payout} coins!` : '❌ Lost ${userPrediction.betAmount} coins'}
-                    </div>
-                </div>
-            `;
-        }
+    }
 
-        if (match.status === 'finished' && match.finalScore) {
-            lockInfo = `
-                <div style="text-align: center; margin-top: 12px; color: #666; font-size: 13px; font-weight: 600;">
-                    🔒 Predictions closed - awaiting processed results
-                </div>
-            `;
-        } else if (matchLocked) {
-            lockInfo = `
-                <div style="text-align: center; margin-top: 12px; color: #dc3545; font-size: 13px; font-weight: 600;">
-                    🔒 Predictions closed once kickoff passed
-                </div>
-            `;
-        }
-
-        const homeFlag = getCountryFlag(match.homeTeam);
-        const awayFlag = getCountryFlag(match.awayTeam);
-
-        const suggestion = ensureMatchSuggestion(match);
-        const suggestionOutcome = getSuggestionOutcome(match);
-
-        matchCard.innerHTML = `
-            <div class="match-header">
-                <span class="match-time">${formattedDate} - ${match.venue}</span>
-                <span class="match-status status-${match.status}">${match.status.toUpperCase()}</span>
-            </div>
-            <div class="match-teams">
-                <span class="team"><span class="team-flag">${homeFlag}</span>${match.homeTeam}</span>
-                <span class="vs">${match.status === 'finished' && match.finalScore ? `${match.finalScore.home} - ${match.finalScore.away}` : 'VS'}</span>
-                <span class="team">${match.awayTeam}<span class="team-flag">${awayFlag}</span></span>
-            </div>
-            <div style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
-                ${match.stage}
-            </div>
-            <div class="match-suggestion">
-                <div class="match-suggestion-header">
-                    <span>🤖 Bob Suggestion</span>
-                    <span class="match-suggestion-confidence">${suggestion.confidenceLabel}</span>
-                </div>
-                <div class="match-suggestion-score">Suggested score: ${suggestion.suggestedScore}</div>
-                <div class="match-suggestion-result">Suggested result: ${suggestion.resultLabel}</div>
-                <p class="match-suggestion-text">${suggestion.rationale}</p>
-                <div class="match-suggestion-note">${suggestion.sourceNote}</div>
-                ${suggestionOutcome ? `
-                    <div class="match-suggestion-outcome ${suggestionOutcome.resultHit ? 'success' : 'miss'}">
-                        <strong>${suggestionOutcome.summary}</strong>
-                        <span>${suggestionOutcome.detail}</span>
-                    </div>
-                ` : ''}
-            </div>
-            ${userPrediction ? `
-                <div class="match-prediction">
-                    <span class="prediction-info">
-                        Your prediction: ${userPrediction.homeScore} - ${userPrediction.awayScore}
-                    </span>
-                    <span class="prediction-bet">${userPrediction.betAmount} 🪙</span>
-                </div>
-            ` : ''}
-            ${resultInfo}
-            ${lockInfo}
+    // Collapsible Match History section at the bottom
+    if (pastMatches.length > 0) {
+        const historySection = document.createElement('div');
+        historySection.className = 'list-history-section';
+        const historyId = 'listHistoryMatches';
+        historySection.innerHTML = `
+            <button class="list-history-toggle" onclick="
+                var el = document.getElementById('${historyId}');
+                var arrow = this.querySelector('.lh-arrow');
+                el.classList.toggle('open');
+                arrow.textContent = el.classList.contains('open') ? '▲' : '▼';
+            ">
+                <span>📜 Match History (${pastMatches.length})</span>
+                <span class="lh-arrow">▼</span>
+            </button>
+            <div id="${historyId}" class="list-history-matches"></div>
         `;
-        
-        matchesList.appendChild(matchCard);
-    });
+        matchesList.appendChild(historySection);
+
+        const historyContainer = historySection.querySelector(`#${historyId}`);
+        pastMatches.forEach(match => {
+            const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
+            renderMatchCard(match, userPrediction, historyContainer, false);
+        });
+    }
 }
 // Helper function to render a match card
 function renderMatchCard(match, userPrediction, container, isTodaySection = false) {

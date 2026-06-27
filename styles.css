@@ -2276,3 +2276,400 @@ textarea {
 }
 
 /* Made with Bob */
+
+/* ============================================
+   v3.0.0 — MOBILE-FIRST REDESIGN
+   ============================================ */
+
+/* ── Mobile bottom navigation ── */
+.mobile-bottom-nav {
+    display: none; /* shown only on mobile via media query */
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 500;
+    background: rgba(6, 28, 70, 0.97);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+    justify-content: space-around;
+    align-items: center;
+}
+
+.mobile-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 14px;
+    transition: background 0.2s;
+    min-width: 56px;
+}
+
+.mobile-nav-btn.active {
+    background: rgba(15, 98, 254, 0.22);
+}
+
+.mobile-nav-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.mobile-nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.mobile-nav-btn.active .mobile-nav-label {
+    color: #78a9ff;
+}
+
+/* ── Match history collapsible in list view ── */
+.list-history-section {
+    margin-top: 32px;
+}
+
+.list-history-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 16px;
+    color: rgba(255,255,255,0.82);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.list-history-toggle:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.lh-arrow {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+}
+
+.list-history-matches {
+    display: none;
+    margin-top: 12px;
+}
+
+.list-history-matches.open {
+    display: block;
+}
+
+/* ── Compact mobile dashboard header ── */
+@media (max-width: 600px) {
+
+    /* Show mobile nav, hide desktop tabs */
+    .mobile-bottom-nav {
+        display: flex;
+    }
+
+    .desktop-tabs {
+        display: none !important;
+    }
+
+    /* Add bottom padding so content is not hidden behind the nav */
+    #dashboardScreen {
+        padding-bottom: 80px;
+    }
+
+    /* Slim header on mobile */
+    .header--revamp {
+        padding: 14px 14px 12px;
+        margin-bottom: 12px;
+        border-radius: 16px;
+    }
+
+    .dashboard-hero {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .dashboard-kicker {
+        font-size: 10px;
+        padding: 5px 10px;
+        margin-bottom: 6px;
+    }
+
+    .user-info {
+        font-size: 15px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .coins {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .version-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+        margin-left: 0;
+    }
+
+    .dashboard-summary {
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .dashboard-actions {
+        width: 100%;
+        gap: 8px;
+        align-items: stretch;
+    }
+
+    /* Hide bulky admin buttons on mobile by default (still accessible via desktop) */
+    .btn-process,
+    .btn-docs,
+    [onclick="backupAllData()"] {
+        display: none;
+    }
+
+    .header-bob-badge {
+        padding: 6px 10px;
+    }
+
+    .header-bob-img {
+        width: 26px;
+        height: 26px;
+    }
+
+    .header-bob-text,
+    .header-bob-prefix {
+        font-size: 12px;
+    }
+
+    .header-action-row {
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    /* Slim containers on mobile */
+    .container {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    /* Match cards: tighter on mobile */
+    .match-card {
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .match-header {
+        margin-bottom: 8px;
+    }
+
+    .match-time {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .match-teams {
+        font-size: 14px;
+        gap: 6px;
+    }
+
+    .team-flag {
+        width: 26px;
+        height: 26px;
+        font-size: 16px;
+    }
+
+    .team {
+        gap: 6px;
+        font-size: 13px;
+    }
+
+    /* Bob suggestion: collapsed by default on mobile */
+    .match-suggestion {
+        padding: 10px 12px;
+        border-radius: 12px;
+    }
+
+    .match-suggestion-text,
+    .match-suggestion-note {
+        font-size: 12px;
+    }
+
+    /* View toggle: horizontal scroll on very small screens */
+    .view-toggle {
+        gap: 8px;
+        padding: 8px;
+        overflow-x: auto;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .view-toggle::-webkit-scrollbar { display: none; }
+
+    .view-toggle-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+    /* Login screen on mobile */
+    .auth-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-panel-copy {
+        display: none; /* hide long copy on mobile login */
+    }
+
+    .auth-form--revamp {
+        padding: 18px 16px;
+        border-radius: 18px;
+    }
+
+    .hero-banner--revamp h1 {
+        font-size: 26px;
+    }
+
+    .hero-cta-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .hero-side-panel {
+        display: none; /* hide "how it works" sidebar on mobile login */
+    }
+
+    .welcome-info--revamp {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .tournament-strip {
+        gap: 8px;
+    }
+
+    .tournament-pill {
+        font-size: 12px;
+        padding: 7px 12px;
+    }
+
+    /* Quick guide: single column */
+    .quick-guide {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* Leaderboard: stack stats vertically */
+    .leaderboard-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .leaderboard-stats {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .stat-value {
+        font-size: 15px;
+    }
+
+    /* Pool cards */
+    .pool-card {
+        padding: 14px;
+    }
+
+    /* Modals: full-screen on mobile */
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 24px 24px 0 0;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal.active {
+        align-items: flex-end;
+    }
+
+    /* Score inputs in modal */
+    .score-inputs {
+        gap: 12px;
+    }
+
+    .team-score input {
+        width: 66px;
+        font-size: 20px;
+    }
+
+    /* Section headings */
+    .section-heading {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .section-badge {
+        font-size: 12px;
+        padding: 7px 12px;
+    }
+
+    /* Bob KPI compact */
+    .bob-kpi-card {
+        padding: 14px;
+    }
+
+    .bob-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .bob-kpi-stat strong {
+        font-size: 20px;
+    }
+
+    /* Leaderboard intro: single column */
+    .leaderboard-intro {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* Action strip */
+    .action-strip {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .action-strip .btn-primary,
+    .action-strip .btn-secondary {
+        flex: 1;
+        padding: 12px 8px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* Prediction note */
+    .prediction-note {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+}

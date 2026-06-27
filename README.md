@@ -1,6 +1,6 @@
-# ⚽ Football Prediction Game - FIFA World Cup 2026
+# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.0.0)
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins, now with a clearer prediction-first interface, optional Bob match suggestions, a Bob-inspired blue palette, and stronger player-versus-pool competition messaging.
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.0.0 brings a **mobile-first redesign**: a clean bottom navigation bar, instant auto-login after registration, and a smarter prediction list that always starts from the next upcoming match.
 
 ## 🎮 Features
 
@@ -15,24 +15,17 @@ A social football prediction game where friends compete by predicting FIFA World
   - Correct result (winner/draw): 2x payout
   - Incorrect prediction: 0x payout
 
-### 🆕 v2.0.0 New Features - Calendar & Team Flags Views:
+### 🆕 v3.0.0 — Mobile-First Redesign
+- ✅ **Mobile Bottom Navigation** — Five-tab bar (⚽ Predict / 🏆 Leaderboard / 👥 Pools / 📜 History / 🪙 Coins) fixed at the bottom of the screen on mobile
+- ✅ **Auto-Login after Registration** — New players are automatically logged in and redirected to predictions with a welcome banner (no extra login step)
+- ✅ **Smart Prediction List View** — List starts from the *next* upcoming match on the calendar; all past/locked matches are grouped in a collapsible **Match History** section at the bottom
+- ✅ **Slim Mobile UI** — Compact match cards, bottom-sheet modals, touch-friendly score inputs, and a stripped-down header on small screens
+- ✅ **Mobile-Optimised Login** — Fast-access form without long marketing copy on small screens; hero banner scales gracefully
+
+### v2.0.0 Features (still active)
 - ✅ **Calendar View** - Browse matches by date with an interactive calendar
-  - Click on any date to see all matches scheduled for that day
-  - Visual indicators show which dates have matches
-  - Today's date is highlighted for easy reference
-  - Navigate between months to explore the full tournament schedule
-  - Historical matches are displayed as read-only with predictions preserved
 - ✅ **Team Flags View** - Browse matches by team with country flags
-  - All participating teams displayed with their national flags
-  - Click on any team to see all their matches
-  - Search functionality to quickly find specific teams
-  - Match count displayed for each team
-  - Historical matches shown as read-only with predictions intact
-- ✅ **Multiple View Options** - Switch between List, Calendar, and Team Flags views
-  - List View: Traditional chronological match listing
-  - Calendar View: Date-based match browsing
-  - Team Flags View: Team-based match filtering
-  - Seamless switching between views with preserved state
+- ✅ **Multiple View Options** - List / Calendar / Team Flags views with seamless switching
 
 ### FIFA World Cup 2026 Matches:
 - **60 First Stage Matches** covering June 11-28, 2026
