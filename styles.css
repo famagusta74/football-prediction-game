@@ -2531,8 +2531,8 @@ textarea {
 
     /* ── Mobile Login: show ONLY the form, instantly ── */
 
-    /* Full-screen centred shell on mobile login */
-    #loginScreen {
+    /* Full-screen centred shell on mobile login — only when active */
+    #loginScreen.active {
         display: flex;
         align-items: center;
         justify-content: center;

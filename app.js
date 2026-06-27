@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.0.1"; // v3.0.1: Mobile login screen shows form instantly, hides all marketing content on small screens
+const APP_VERSION = "v3.0.2"; // v3.0.2: Fix login screen persisting after login on mobile; scroll to top on dashboard load
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1489,6 +1489,7 @@ function showDashboard() {
     document.getElementById('loginScreen').classList.remove('active');
     document.getElementById('registerScreen').classList.remove('active');
     document.getElementById('dashboardScreen').classList.add('active');
+    window.scrollTo(0, 0);
     
     document.getElementById('userNickname').textContent = currentUser.nickname;
     document.getElementById('userCoins').textContent = currentUser.coins;
