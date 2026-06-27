@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.0.3"; // v3.0.3: Fix bottom nav showing on login/register screens on mobile
+const APP_VERSION = "v3.0.4"; // v3.0.4: First-login nav hint splash with Skip button
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1337,6 +1337,11 @@ async function login() {
         
         showDashboard();
 
+        // Show nav hint splash on first login (mobile only, once per device)
+        if (!localStorage.getItem('navHintSeen')) {
+            showNavHint();
+        }
+
         if (dailyBonusMessage) {
             showDailyBonusNotification(dailyBonusMessage);
             renderCurrentUserActivity();
@@ -1448,6 +1453,111 @@ function showWelcomeBanner(nickname) {
     // Auto-dismiss after 6 seconds
     setTimeout(() => { if (banner.parentNode) banner.remove(); }, 6000);
 }
+
+
+// Show first-login navigation hint overlay (mobile, once per device)
+function showNavHint() {
+    // Only show on screens narrow enough to have the bottom nav
+    if (window.innerWidth > 600) return;
+
+    const dismissHint = () => {
+        localStorage.setItem('navHintSeen', '1');
+        const el = document.getElementById('navHintOverlay');
+        if (el) {
+            el.style.opacity = '0';
+            el.style.transition = 'opacity 0.35s';
+            setTimeout(() => el.remove(), 380);
+        }
+    };
+
+    const overlay = document.createElement('div');
+    overlay.id = 'navHintOverlay';
+    overlay.style.cssText = `
+        position: fixed; inset: 0; z-index: 9000;
+        background: rgba(4, 16, 46, 0.86);
+        backdrop-filter: blur(3px);
+        display: flex; flex-direction: column;
+        justify-content: flex-end;
+        font-family: 'Segoe UI', sans-serif;
+    `;
+
+    overlay.innerHTML = `
+        <!-- Skip button top-right -->
+        <button id="navHintSkip" style="
+            position: absolute; top: 18px; right: 18px;
+            background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.28);
+            color: white; font-size: 14px; font-weight: 700;
+            padding: 8px 18px; border-radius: 999px; cursor: pointer;
+            letter-spacing: 0.04em;
+        ">Skip</button>
+
+        <!-- Callout card sitting above the bottom bar -->
+        <div style="
+            margin: 0 12px 88px;
+            background: white; border-radius: 22px;
+            padding: 22px 20px 18px;
+            box-shadow: 0 -4px 40px rgba(0,0,0,0.4);
+        ">
+            <div style="text-align:center; font-size:22px; margin-bottom:6px;">👇</div>
+            <h3 style="margin:0 0 10px; color:#0f2c5f; font-size:17px; text-align:center;">
+                Your quick-access bar
+            </h3>
+            <p style="margin:0 0 18px; color:#5b6f96; font-size:14px; line-height:1.6; text-align:center;">
+                Everything you need is one tap away at the bottom of the screen.
+            </p>
+
+            <!-- Tab descriptions -->
+            <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:4px; text-align:center; margin-bottom:18px;">
+                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
+                    <div style="font-size:20px;">⚽</div>
+                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">PREDICT</div>
+                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Submit your next score</div>
+                </div>
+                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
+                    <div style="font-size:20px;">🏆</div>
+                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">LEADERS</div>
+                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">See who's winning</div>
+                </div>
+                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
+                    <div style="font-size:20px;">👥</div>
+                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">POOLS</div>
+                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Join or create a pool</div>
+                </div>
+                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
+                    <div style="font-size:20px;">📜</div>
+                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">HISTORY</div>
+                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Past results</div>
+                </div>
+                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
+                    <div style="font-size:20px;">🪙</div>
+                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">COINS</div>
+                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Your coin activity</div>
+                </div>
+            </div>
+
+            <button id="navHintGot" style="
+                width:100%; padding:13px;
+                background: linear-gradient(135deg,#0f62fe,#0353e9);
+                color:white; border:none; border-radius:14px;
+                font-size:15px; font-weight:700; cursor:pointer;
+            ">Got it — let's play! ⚽</button>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    document.getElementById('navHintSkip').onclick = dismissHint;
+    document.getElementById('navHintGot').onclick  = dismissHint;
+
+    // Tap anywhere on the dark backdrop (not the card) also dismisses
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) dismissHint();
+    });
+
+    // Auto-dismiss after 12 seconds
+    setTimeout(dismissHint, 12000);
+}
+
 
 // Notify admin about new user registration
 async function notifyAdminNewUser(newUser) {
