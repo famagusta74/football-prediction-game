@@ -2529,15 +2529,94 @@ textarea {
         grid-template-columns: 1fr;
     }
 
+    /* ── Mobile Login: show ONLY the form, instantly ── */
+
+    /* Full-screen centred shell on mobile login */
+    #loginScreen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+    }
+
+    #loginScreen .container {
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 24px 20px 32px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,248,255,0.99) 100%);
+    }
+
+    /* Hide ALL the marketing content — docs link, version banner,
+       hero banner, builder badge, info cards, pills, disclaimer footer */
+    #loginScreen .docs-link,
+    #loginScreen .version-header,
+    #loginScreen .hero-banner,
+    #loginScreen .builder-badge-link,
+    #loginScreen .welcome-info,
+    #loginScreen .tournament-strip,
+    #loginScreen .disclaimer-section,
+    #loginScreen > .container > [style*="Version"] {
+        display: none !important;
+    }
+
+    /* Make the landing shell just the auth panel */
+    .landing-shell {
+        gap: 0;
+    }
+
+    /* Auth panel: single column, no left copy */
+    .auth-panel {
+        grid-template-columns: 1fr;
+        padding: 0;
+        border: none;
+        background: none;
+    }
+
     .auth-panel-copy {
-        display: none; /* hide long copy on mobile login */
+        display: none;
     }
 
+    /* Form card */
     .auth-form--revamp {
-        padding: 18px 16px;
-        border-radius: 18px;
+        padding: 28px 20px 24px;
+        border-radius: 22px;
+        box-shadow: 0 12px 32px rgba(15, 44, 95, 0.14);
     }
 
+    /* Compact branded header injected above the inputs via pseudo-element */
+    .auth-form--revamp::before {
+        content: "⚽  FIFA World Cup 2026\A Predict · Compete · Win";
+        white-space: pre;
+        display: block;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 800;
+        color: #0f2c5f;
+        line-height: 1.9;
+        margin-bottom: 18px;
+    }
+
+    /* Inputs: comfortable touch targets */
+    #loginScreen input {
+        font-size: 16px; /* prevents iOS zoom */
+        padding: 14px 16px;
+        border-radius: 12px;
+    }
+
+    #loginScreen .btn-primary,
+    #loginScreen .btn-secondary {
+        padding: 14px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
+
+    /* Hero banner, CTA row, side panel: all hidden on mobile login */
     .hero-banner--revamp h1 {
         font-size: 26px;
     }
@@ -2549,7 +2628,7 @@ textarea {
     }
 
     .hero-side-panel {
-        display: none; /* hide "how it works" sidebar on mobile login */
+        display: none;
     }
 
     .welcome-info--revamp {

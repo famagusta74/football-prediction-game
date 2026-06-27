@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.0.0"; // v3: Mobile-first redesign, auto-login after register, smart list view (next match first)
+const APP_VERSION = "v3.0.1"; // v3.0.1: Mobile login screen shows form instantly, hides all marketing content on small screens
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
