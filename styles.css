@@ -2281,6 +2281,9 @@ textarea {
    v3.0.0 — MOBILE-FIRST REDESIGN
    ============================================ */
 
+/* Hidden on desktop, shown only inside mobile login card */
+.login-form-footer { display: none; }
+
 /* ── Mobile bottom navigation ── */
 .mobile-bottom-nav {
     display: none; /* shown only on mobile via media query */
@@ -2601,6 +2604,43 @@ textarea {
         color: #0f2c5f;
         line-height: 1.9;
         margin-bottom: 18px;
+    }
+
+    /* Version + Bob footer inside the mobile login card */
+    .login-form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(15, 98, 254, 0.1);
+    }
+
+    .login-form-version {
+        font-size: 11px;
+        font-weight: 700;
+        color: #a0aec0;
+        letter-spacing: 0.06em;
+    }
+
+    .login-form-bob {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+    .login-form-bob img {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .login-form-bob span {
+        font-size: 11px;
+        font-weight: 700;
+        color: #a0aec0;
     }
 
     /* Inputs: comfortable touch targets */

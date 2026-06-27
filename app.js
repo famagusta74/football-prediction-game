@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.0.4"; // v3.0.4: First-login nav hint splash with Skip button
+const APP_VERSION = "v3.0.5"; // v3.0.5: Mobile login card shows version + Powered by IBM Bob footer
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
