@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v3.2.2 - ET Score Validation</div>
+            <div class="version-header">v3.2.1 - Full Prediction Display</div>
             <div class="landing-shell">
                 <div class="hero-banner hero-banner--revamp">
                     <div class="hero-overlay"></div>
@@ -130,7 +130,7 @@
                         <button onclick="showRegister()" class="btn-secondary">Create Account</button>
                         <!-- Mobile-only footer: version + Bob credit -->
                         <div class="login-form-footer">
-                            <span class="login-form-version">v3.2.2</span>
+                            <span class="login-form-version">v3.2.1</span>
                             <a href="https://bob.ibm.com/" target="_blank" class="login-form-bob">
                                 <img src="bobimage.jpeg" alt="IBM Bob">
                                 <span>Powered by IBM Bob</span>
@@ -191,7 +191,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 3.2.2 - ET Score Validation
+                Version 3.2.1 - Full Prediction Display
             </div>
         </div>
     </div>
@@ -215,7 +215,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 3.2.2 - ET Score Validation
+                Version 3.2.1 - Full Prediction Display
             </div>
         </div>
     </div>
@@ -232,7 +232,7 @@
                             <span class="coin-icon">🪙</span>
                             <span id="userCoins">1000</span>
                         </div>
-                        <div class="version-badge">v3.2.2</div>
+                        <div class="version-badge">v3.2.1</div>
                     </div>
                     <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
                 </div>
@@ -596,20 +596,17 @@
 
                 <!-- Extra-time panel -->
                 <div id="koPanelET" class="ko-panel">
-                    <p class="ko-panel-hint">Enter the <strong>cumulative</strong> score at end of extra time (120 min) — it must be ≥ the 90-min score for both teams. A draw leads to penalties.</p>
+                    <p class="ko-panel-hint">Enter the cumulative score at end of extra time (120 min). A draw is allowed — that leads to penalties.</p>
                     <div class="score-inputs">
                         <div class="team-score">
                             <label id="koHomeLabelET">Home</label>
-                            <input type="number" id="koHomeET" min="0" max="20" value="0" oninput="updateKoTabStates()">
+                            <input type="number" id="koHomeET" min="0" max="20" value="0" onchange="updateKoTabStates()">
                         </div>
                         <span class="vs">VS</span>
                         <div class="team-score">
                             <label id="koAwayLabelET">Away</label>
-                            <input type="number" id="koAwayET" min="0" max="20" value="0" oninput="updateKoTabStates()">
+                            <input type="number" id="koAwayET" min="0" max="20" value="0" onchange="updateKoTabStates()">
                         </div>
-                    </div>
-                    <div id="etContinuationWarning" class="ko-panel-note ko-panel-note--error" style="display:none;">
-                        ⚠️ ET score must continue from the 90-min score — each team's ET goals cannot be less than their 90-min goals.
                     </div>
                     <div id="etNotNeededNote" class="ko-panel-note" style="display:none;">
                         ℹ️ Extra time is only needed if 90-min result is a draw. Your 90-min prediction has a winner — you can skip this tab.

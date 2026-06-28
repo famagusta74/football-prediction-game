@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.2.2"; // v3.2.2: ET score must continue from 90-min score (validation)
+const APP_VERSION = "v3.2.1"; // v3.2.1: Match cards show full prediction (90min + ET + Penalties)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -2713,18 +2713,6 @@ async function submitKnockoutPrediction() {
     const is90Draw = home90 === away90;
     const isETDraw = homeET === awayET;
 
-    // ET score must continue from 90-min score (both teams' ET goals >= their 90-min goals)
-    if (is90Draw && (homeET < home90 || awayET < away90)) {
-        alert(
-            `Extra time continues from 90 minutes.\n\n` +
-            `90-min score: ${home90} - ${away90}\n\n` +
-            `Both ET scores must be ≥ the 90-min scores.\n` +
-            `e.g. if 90 min ended ${home90}-${away90}, ET could be ${home90}-${away90+1}, ${home90+1}-${away90}, or ${home90+1}-${away90+1} etc.\n\n` +
-            `Please go to the ⏱ Extra Time tab and correct the score.`
-        );
-        showKoTab('ET'); return;
-    }
-
     // Validate: if 90-min draw, penalty winner must be chosen if ET also a draw
     if (is90Draw && isETDraw && !penWin) {
         alert('Both 90-min and extra time are draws — please select the penalty winner on the Penalties tab.');
@@ -3222,18 +3210,9 @@ function updateKoTabStates() {
     const aET = parseInt(document.getElementById('koAwayET').value) || 0;
     const isETDraw = hET === aET;
 
-    // ET tab: "not needed" note
+    // ET tab hint
     const etNote = document.getElementById('etNotNeededNote');
     etNote.style.display = is90Draw ? 'none' : 'block';
-
-    // ET tab: live validation — ET score must be >= 90-min score for both teams
-    const etWarning = document.getElementById('etContinuationWarning');
-    if (is90Draw) {
-        const etInvalid = (hET < h90) || (aET < a90);
-        if (etWarning) etWarning.style.display = etInvalid ? 'block' : 'none';
-    } else {
-        if (etWarning) etWarning.style.display = 'none';
-    }
 
     // Penalty tab hint + select
     const penNote = document.getElementById('penNotNeededNote');

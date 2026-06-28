@@ -1,6 +1,6 @@
-# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.2.2)
+# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.2.1)
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.2.2 enforces that the **ET score must continue from the 90-min score** — both teams' ET goals must be ≥ their 90-min goals, with live warning and hard validation on submit.
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.2.1 shows the **full prediction on every match card**: 90 min score, ET score, and Penalty winner — with `—` for fields not applicable to that match type.
 
 ## 🎮 Features
 

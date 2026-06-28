@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.2.1
+**Version:** 3.2.2
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,430
+**Total Lines of Code:** ~4,450
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,17 +20,17 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.2.1
+**Version:** 3.2.2
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
 **Lines of Code:** ~2,800 (JavaScript), ~1,600 (CSS), ~380 (HTML)
 
-**v3.2.1 — Match Card Prediction Display:**
-- All match cards in Predictions tab now show the full prediction breakdown
-- ⚽ 90 min score always shown with label
-- ⏱ ET and 🥅 Penalty rows shown for knockout matches (shows `—` if not applicable)
-- History tab and grid/list views updated with the same full display
-- Performance fix: prediction submit now writes only the changed record (was: all predictions)
+**v3.2.2 — ET Score Continuation Validation:**
+- ET score is now validated to be a continuation of the 90-min score
+- Both teams' ET goals must be ≥ their respective 90-min goals
+- Live red warning shown in the ET tab as you type an invalid score
+- Hard validation on submit auto-navigates to the ET tab with a clear error
+- Hint text updated to explain the cumulative scoring rule upfront
 
 ---
 

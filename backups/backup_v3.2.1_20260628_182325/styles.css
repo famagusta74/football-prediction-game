@@ -2927,13 +2927,6 @@ textarea {
     line-height: 1.4;
 }
 
-.ko-panel-note--error {
-    color: #c0392b;
-    background: rgba(192, 57, 43, 0.08);
-    border: 1px solid rgba(192, 57, 43, 0.25);
-    font-weight: 600;
-}
-
 /* Penalty winner select */
 .ko-select {
     width: 100%;
