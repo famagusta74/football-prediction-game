@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.0.5"; // v3.0.5: Mobile login card shows version + Powered by IBM Bob footer
+const APP_VERSION = "v3.1.0"; // v3.1.0: Added 16 Round of 32 matches (28 Jun - 4 Jul 2026, Cyprus/Greece time)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1165,6 +1165,167 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "First Stage - Group L",
         venue: "Toronto Stadium (Toronto)"
+    },
+    // ── Round of 32 ──
+    {
+        id: 73,
+        homeTeam: "South Africa",
+        awayTeam: "Canada",
+        kickoff: "2026-06-28T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Los Angeles Stadium (Los Angeles)"
+    },
+    {
+        id: 74,
+        homeTeam: "Brazil",
+        awayTeam: "Japan",
+        kickoff: "2026-06-29T20:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Houston Stadium (Houston)"
+    },
+    {
+        id: 75,
+        homeTeam: "Germany",
+        awayTeam: "Paraguay",
+        kickoff: "2026-06-29T23:30:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Boston Stadium (Boston)"
+    },
+    {
+        id: 76,
+        homeTeam: "Netherlands",
+        awayTeam: "Morocco",
+        kickoff: "2026-06-30T04:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Monterrey Stadium (Monterrey)"
+    },
+    {
+        id: 77,
+        homeTeam: "Côte d'Ivoire",
+        awayTeam: "Norway",
+        kickoff: "2026-06-30T20:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Dallas Stadium (Dallas)"
+    },
+    {
+        id: 78,
+        homeTeam: "France",
+        awayTeam: "Sweden",
+        kickoff: "2026-07-01T00:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "New York/New Jersey Stadium (New Jersey)"
+    },
+    {
+        id: 79,
+        homeTeam: "Mexico",
+        awayTeam: "Ecuador",
+        kickoff: "2026-07-01T04:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Mexico City Stadium (Mexico City)"
+    },
+    {
+        id: 80,
+        homeTeam: "England",
+        awayTeam: "Congo DR",
+        kickoff: "2026-07-01T19:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Atlanta Stadium (Atlanta)"
+    },
+    {
+        id: 81,
+        homeTeam: "Belgium",
+        awayTeam: "Senegal",
+        kickoff: "2026-07-01T23:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Seattle Stadium (Seattle)"
+    },
+    {
+        id: 82,
+        homeTeam: "USA",
+        awayTeam: "Bosnia and Herzegovina",
+        kickoff: "2026-07-02T03:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
+    },
+    {
+        id: 83,
+        homeTeam: "Spain",
+        awayTeam: "Austria",
+        kickoff: "2026-07-02T22:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Los Angeles Stadium (Los Angeles)"
+    },
+    {
+        id: 84,
+        homeTeam: "Portugal",
+        awayTeam: "Croatia",
+        kickoff: "2026-07-03T02:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Toronto Stadium (Toronto)"
+    },
+    {
+        id: 85,
+        homeTeam: "Switzerland",
+        awayTeam: "Algeria",
+        kickoff: "2026-07-03T06:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "BC Place Vancouver (Vancouver)"
+    },
+    {
+        id: 86,
+        homeTeam: "Australia",
+        awayTeam: "Egypt",
+        kickoff: "2026-07-03T21:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Dallas Stadium (Dallas)"
+    },
+    {
+        id: 87,
+        homeTeam: "Argentina",
+        awayTeam: "Cabo Verde",
+        kickoff: "2026-07-04T01:00:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Miami Stadium (Miami)"
+    },
+    {
+        id: 88,
+        homeTeam: "Colombia",
+        awayTeam: "Ghana",
+        kickoff: "2026-07-04T04:30:00",
+        status: "upcoming",
+        league: "FIFA World Cup 2026",
+        stage: "Round of 32",
+        venue: "Kansas City Stadium (Kansas City)"
     },
 ];
 

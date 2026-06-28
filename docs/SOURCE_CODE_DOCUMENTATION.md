@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.0.0
+**Version:** 3.1.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~3,900
@@ -20,7 +20,7 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.0.0
+**Version:** 3.1.0
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
 **Lines of Code:** ~2,800 (JavaScript), ~1,600 (CSS), ~380 (HTML)
