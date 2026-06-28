@@ -842,19 +842,6 @@ input:focus, textarea:focus, select:focus {
     box-shadow: 0 14px 28px rgba(15, 44, 95, 0.14);
 }
 
-/* Locked cards don't lift on hover */
-.match-card.locked:hover {
-    transform: none;
-    border-color: inherit;
-    box-shadow: none;
-    cursor: default;
-}
-
-/* Live card: subtle red tint on border */
-.match-card.live {
-    border-color: rgba(220, 53, 69, 0.4);
-}
-
 .match-card.predicted:hover {
     border-color: #0f62fe;
     box-shadow: 0 10px 24px rgba(15, 98, 254, 0.2);
@@ -863,28 +850,6 @@ input:focus, textarea:focus, select:focus {
 .match-card.unpredicted:hover {
     border-color: #4f6f91;
     box-shadow: 0 10px 24px rgba(30, 60, 114, 0.12);
-}
-
-/* Lock banners at the bottom of match cards */
-.match-lock-banner {
-    margin-top: 12px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.match-lock-banner--live {
-    background: rgba(220, 53, 69, 0.09);
-    color: #c0392b;
-    border: 1px solid rgba(220, 53, 69, 0.25);
-}
-
-.match-lock-banner--finished {
-    background: rgba(108, 117, 125, 0.09);
-    color: #555;
-    border: 1px solid rgba(108, 117, 125, 0.22);
 }
 
 .match-card.predicted .prediction-bet {

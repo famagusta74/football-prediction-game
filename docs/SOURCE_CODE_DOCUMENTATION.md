@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.2.3
+**Version:** 3.2.4
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,455
+**Total Lines of Code:** ~4,480
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,15 +20,17 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.2.3
+**Version:** 3.2.4
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
 **Lines of Code:** ~2,800 (JavaScript), ~1,600 (CSS), ~380 (HTML)
 
-**v3.2.3 — Flag Fix & Penalty Payout Boost:**
-- England flag corrected to 🏴󠁧󠁢󠁥󠁮󠁧󠁿 in getCountryFlag() (was showing plain 🏴)
-- Penalty winner correct prediction now pays 10× the bet (was 3×)
-- Knockout payout info panel updated to show ×10 for penalty winner
+**v3.2.4 — Live Lock & Auto-Refresh:**
+- Match cards show LIVE badge (pulsing red) once kickoff passes
+- Cards in progress show "🔴 Match in progress — predictions are closed" banner
+- Locked cards no longer clickable (cursor: default, no hover lift)
+- Match list auto-refreshes every 60 seconds while Predictions tab is open
+- Status label computed from kickoff time (not just DB status field)
 
 ---
 

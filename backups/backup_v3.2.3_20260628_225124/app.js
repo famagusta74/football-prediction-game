@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.2.4"; // v3.2.4: Live status badge, auto-refresh, clear prediction-closed UI
+const APP_VERSION = "v3.2.3"; // v3.2.3: England flag fixed; penalty correct winner pays 10x bet
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1353,14 +1353,6 @@ async function init() {
         localStorage.setItem('pendingPoolCode', poolCode);
         alert('Please login or create an account to join this pool!');
     }
-
-    // Auto-refresh the match list every 60 seconds so kick-off locks
-    // are applied without requiring a manual page reload
-    setInterval(() => {
-        if (currentUser && activeTabName === 'predictions') {
-            loadMatches();
-        }
-    }, 60000);
 }
 
 // Auto-join pool from invite link
@@ -1938,16 +1930,10 @@ function loadMatches() {
 function renderMatchCard(match, userPrediction, container, isTodaySection = false) {
     const matchCard = document.createElement('div');
     const matchLocked = isMatchLocked(match);
-    const matchLive = matchLocked && match.status !== 'finished';
     const predictionStateClass = userPrediction ? ' predicted' : ' unpredicted';
     const todayClass = isTodaySection ? ' today-match' : '';
-    matchCard.className = `match-card${matchLocked ? ' locked' : ''}${matchLive ? ' live' : ''}${predictionStateClass}${todayClass}`;
-    // Locked cards are not clickable (no prediction action possible)
-    if (!matchLocked) {
-        matchCard.onclick = () => openPredictionModal(match);
-    } else {
-        matchCard.style.cursor = 'default';
-    }
+    matchCard.className = `match-card${matchLocked ? ' locked' : ''}${predictionStateClass}${todayClass}`;
+    matchCard.onclick = () => openPredictionModal(match);
     
     const kickoffDate = new Date(match.kickoff);
     const formattedDate = kickoffDate.toLocaleDateString('en-US', {
@@ -1978,20 +1964,14 @@ function renderMatchCard(match, userPrediction, container, isTodaySection = fals
 
     if (match.status === 'finished' && match.finalScore) {
         lockInfo = `
-            <div class="match-lock-banner match-lock-banner--finished">
-                🔒 Match finished — predictions closed
+            <div style="text-align: center; margin-top: 12px; color: #666; font-size: 13px; font-weight: 600;">
+                🔒 Predictions closed - awaiting processed results
             </div>
         `;
-    } else if (match.status === 'finished') {
+    } else if (matchLocked) {
         lockInfo = `
-            <div class="match-lock-banner match-lock-banner--finished">
-                🔒 Predictions closed — awaiting final result
-            </div>
-        `;
-    } else if (matchLive) {
-        lockInfo = `
-            <div class="match-lock-banner match-lock-banner--live">
-                🔴 Match in progress — predictions are closed
+            <div style="text-align: center; margin-top: 12px; color: #dc3545; font-size: 13px; font-weight: 600;">
+                🔒 Predictions closed once kickoff passed
             </div>
         `;
     }
@@ -2002,18 +1982,10 @@ function renderMatchCard(match, userPrediction, container, isTodaySection = fals
     const suggestion = ensureMatchSuggestion(match);
     const suggestionOutcome = getSuggestionOutcome(match);
 
-    // Determine display status label
-    const displayStatus = match.status === 'finished' ? 'FINISHED'
-        : matchLive ? 'LIVE'
-        : match.status.toUpperCase();
-    const statusClass = match.status === 'finished' ? 'status-finished'
-        : matchLive ? 'status-live'
-        : `status-${match.status}`;
-
     matchCard.innerHTML = `
         <div class="match-header">
             <span class="match-time">${formattedDate} - ${match.venue}</span>
-            <span class="match-status ${statusClass}">${displayStatus}</span>
+            <span class="match-status status-${match.status}">${match.status.toUpperCase()}</span>
         </div>
         <div class="match-teams">
             <span class="team"><span class="team-flag">${homeFlag}</span>${match.homeTeam}</span>
