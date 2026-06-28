@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.2.0
+**Version:** 3.1.0
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,400
+**Total Lines of Code:** ~3,900
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,18 +20,20 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.2.0
+**Version:** 3.1.0
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
 **Lines of Code:** ~2,800 (JavaScript), ~1,600 (CSS), ~380 (HTML)
 
-**v3.2.0 Major Features:**
-- Knockout 3-stage prediction system: separate tabs for 90 min, Extra Time, and Penalties
-- Bob AI suggestions cover all 3 stages with "Adopt Bob's Prediction" one-tap button
-- Admin result entry and editing extended to capture ET score and penalty winner
-- Admin match list shows KO badge + ET/penalty result for finished knockout matches
-- Payout logic: 90-min unchanged; ET exact=+5x, ET correct result=+2x; Penalty winner=+3x
-- 88 matches total: 72 Group Stage + 16 Round of 32 (28 Jun – 4 Jul 2026, Cyprus time)
+**v3.0.0 Major Features:**
+- Mobile-first redesign with bottom navigation bar (⚽ Predict / 🏆 Leaderboard / 👥 Pools / 📜 History / 🪙 Coins)
+- Auto-login after registration with welcome screen redirecting to predictions
+- Smart Prediction List View: starts from next upcoming match, past matches in collapsible history
+- Slim, touch-friendly match cards and modals (bottom-sheet on mobile)
+- Login screen optimised for small screens: fast-access form, hidden long-copy blocks
+- 60 First Stage matches (June 11-28, 2026)
+- Enhanced UI with view toggle system
+- Historical match preservation with read-only display
 
 ---
 

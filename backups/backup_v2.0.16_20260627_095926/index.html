@@ -18,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v3.2.0 - Knockout 3-Stage Predictions</div>
+            <div class="version-header">v2.0.16 - Match 69 Time Fix</div>
             <div class="landing-shell">
                 <div class="hero-banner hero-banner--revamp">
                     <div class="hero-overlay"></div>
@@ -128,14 +128,6 @@
                         <input type="password" id="pin" placeholder="4-Digit PIN" maxlength="4" pattern="[0-9]*">
                         <button onclick="login()" class="btn-primary">Login</button>
                         <button onclick="showRegister()" class="btn-secondary">Create Account</button>
-                        <!-- Mobile-only footer: version + Bob credit -->
-                        <div class="login-form-footer">
-                            <span class="login-form-version">v3.2.0</span>
-                            <a href="https://bob.ibm.com/" target="_blank" class="login-form-bob">
-                                <img src="bobimage.jpeg" alt="IBM Bob">
-                                <span>Powered by IBM Bob</span>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -191,7 +183,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 3.2.0 - Knockout 3-Stage Predictions
+                Version 2.0.1 - Enhanced Readability & Functionality
             </div>
         </div>
     </div>
@@ -215,7 +207,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
-                Version 3.2.0 - Knockout 3-Stage Predictions
+                Version 2.0.6 - CRITICAL FIX: Data Preservation
             </div>
         </div>
     </div>
@@ -232,7 +224,7 @@
                             <span class="coin-icon">🪙</span>
                             <span id="userCoins">1000</span>
                         </div>
-                        <div class="version-badge">v3.2.0</div>
+                        <div class="version-badge">v2.0.16</div>
                     </div>
                     <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
                 </div>
@@ -260,8 +252,7 @@
             </div>
         </div>
 
-        <!-- Desktop Tabs (hidden on mobile) -->
-        <div class="tabs desktop-tabs">
+        <div class="tabs">
             <button class="tab active" onclick="showTab('predictions')">Predictions</button>
             <button class="tab" onclick="showTab('history')">History</button>
             <button class="tab" onclick="showTab('pools')">My Pools</button>
@@ -275,30 +266,6 @@
                 <span id="adminNotificationBadge" class="notification-badge" style="display: none;">0</span>
             </button>
         </div>
-
-        <!-- Mobile Bottom Navigation -->
-        <nav class="mobile-bottom-nav" id="mobileBottomNav">
-            <button class="mobile-nav-btn active" onclick="showTab('predictions')" data-tab="predictions">
-                <span class="mobile-nav-icon">⚽</span>
-                <span class="mobile-nav-label">Predict</span>
-            </button>
-            <button class="mobile-nav-btn" onclick="showTab('leaderboard')" data-tab="leaderboard">
-                <span class="mobile-nav-icon">🏆</span>
-                <span class="mobile-nav-label">Leaderboard</span>
-            </button>
-            <button class="mobile-nav-btn" onclick="showTab('pools')" data-tab="pools">
-                <span class="mobile-nav-icon">👥</span>
-                <span class="mobile-nav-label">Pools</span>
-            </button>
-            <button class="mobile-nav-btn" onclick="showTab('history')" data-tab="history">
-                <span class="mobile-nav-icon">📜</span>
-                <span class="mobile-nav-label">History</span>
-            </button>
-            <button class="mobile-nav-btn" onclick="showTab('activity')" data-tab="activity">
-                <span class="mobile-nav-icon">🪙</span>
-                <span class="mobile-nav-label">Coins</span>
-            </button>
-        </nav>
 
         <!-- Predictions Tab -->
         <div id="predictionsTab" class="tab-content active">
@@ -479,9 +446,7 @@
         <div class="modal-content">
             <span class="close" onclick="closePredictionModal()">&times;</span>
             <h3 id="modalMatchTitle">Match Prediction</h3>
-
-            <!-- Standard explainer (hidden for knockout) -->
-            <div id="standardExplainer" class="prediction-explainer">
+            <div class="prediction-explainer">
                 <div class="prediction-explainer-card">
                     <strong>Exact score</strong>
                     <p>Predict both team scores correctly for the highest payout.</p>
@@ -491,61 +456,25 @@
                     <p>If you correctly call win or draw, you still earn coins.</p>
                 </div>
             </div>
-
-            <!-- Knockout explainer (shown for Round of 32+) -->
-            <div id="knockoutExplainer" class="knockout-explainer" style="display:none;">
-                <div class="knockout-explainer-pill">⚽ 90 min</div>
-                <div class="knockout-explainer-pill">⏱ Extra Time</div>
-                <div class="knockout-explainer-pill">🥅 Penalties</div>
-                <p>Knockout match — predict the score at 90 mins, then extra time if it's a draw, then penalty winner if extra time is also a draw.</p>
-            </div>
-
-            <!-- Bob suggestion box -->
             <div class="modal-suggestion-box">
                 <div class="modal-suggestion-header">
-                    <strong>🤖 Bob's suggestion</strong>
+                    <strong>🤖 Bob's optional suggestion</strong>
                     <span id="modalSuggestionConfidence" class="modal-suggestion-confidence">Balanced matchup</span>
                 </div>
-                <!-- Standard suggestion -->
-                <div id="bobStandardSuggestion">
-                    <div class="modal-suggestion-grid">
-                        <div>
-                            <div class="modal-suggestion-label">Suggested score</div>
-                            <div id="modalSuggestionScore" class="modal-suggestion-value">1-1</div>
-                        </div>
-                        <div>
-                            <div class="modal-suggestion-label">Suggested result</div>
-                            <div id="modalSuggestionResult" class="modal-suggestion-value">Draw</div>
-                        </div>
+                <div class="modal-suggestion-grid">
+                    <div>
+                        <div class="modal-suggestion-label">Suggested score</div>
+                        <div id="modalSuggestionScore" class="modal-suggestion-value">1-1</div>
                     </div>
-                </div>
-                <!-- Knockout suggestion -->
-                <div id="bobKnockoutSuggestion" style="display:none;">
-                    <div class="knockout-bob-grid">
-                        <div class="knockout-bob-cell">
-                            <div class="modal-suggestion-label">⚽ 90 min score</div>
-                            <div id="bobSuggest90" class="modal-suggestion-value">1-1</div>
-                        </div>
-                        <div class="knockout-bob-cell">
-                            <div class="modal-suggestion-label">⏱ Extra time score</div>
-                            <div id="bobSuggestET" class="modal-suggestion-value">—</div>
-                        </div>
-                        <div class="knockout-bob-cell">
-                            <div class="modal-suggestion-label">🥅 Penalty winner</div>
-                            <div id="bobSuggestPen" class="modal-suggestion-value">—</div>
-                        </div>
+                    <div>
+                        <div class="modal-suggestion-label">Suggested result</div>
+                        <div id="modalSuggestionResult" class="modal-suggestion-value">Draw</div>
                     </div>
                 </div>
                 <p id="modalSuggestionReason" class="modal-suggestion-text">Suggestion details appear here for the selected match.</p>
-                <div class="modal-suggestion-note" id="bobSuggestionNote">Use this suggestion only if you want to. Your own prediction remains fully in your control.</div>
-                <!-- Adopt Bob button (knockout only) -->
-                <button id="adoptBobBtn" onclick="adoptBobPrediction()" class="adopt-bob-btn" style="display:none;">
-                    🤖 Adopt Bob's Prediction
-                </button>
+                <div class="modal-suggestion-note">Use this suggestion only if you want to. Your own prediction remains fully in your control.</div>
             </div>
-
-            <!-- Standard prediction form -->
-            <div id="standardPredictionForm" class="prediction-form">
+            <div class="prediction-form">
                 <div class="score-inputs">
                     <div class="team-score">
                         <label id="homeTeamLabel">Home</label>
@@ -567,79 +496,6 @@
                     <p>Correct Result: <strong id="resultPayout">100</strong> 🪙</p>
                 </div>
                 <button onclick="submitPrediction()" class="btn-primary">Submit Prediction</button>
-            </div>
-
-            <!-- Knockout prediction form -->
-            <div id="knockoutPredictionForm" style="display:none;" class="prediction-form">
-                <!-- Step tabs -->
-                <div class="ko-tabs">
-                    <button class="ko-tab active" id="koTab90" onclick="showKoTab('90')">⚽ 90 min</button>
-                    <button class="ko-tab" id="koTabET" onclick="showKoTab('ET')" id="koTabET">⏱ Extra Time</button>
-                    <button class="ko-tab" id="koTabPen" onclick="showKoTab('Pen')">🥅 Penalties</button>
-                </div>
-
-                <!-- 90-min score panel -->
-                <div id="koPanel90" class="ko-panel active">
-                    <p class="ko-panel-hint">Enter the score at the end of 90 minutes (including stoppage time). A draw is allowed.</p>
-                    <div class="score-inputs">
-                        <div class="team-score">
-                            <label id="koHomeLabel90">Home</label>
-                            <input type="number" id="koHome90" min="0" max="20" value="0" onchange="updateKoTabStates()">
-                        </div>
-                        <span class="vs">VS</span>
-                        <div class="team-score">
-                            <label id="koAwayLabel90">Away</label>
-                            <input type="number" id="koAway90" min="0" max="20" value="0" onchange="updateKoTabStates()">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Extra-time panel -->
-                <div id="koPanelET" class="ko-panel">
-                    <p class="ko-panel-hint">Enter the cumulative score at end of extra time (120 min). A draw is allowed — that leads to penalties.</p>
-                    <div class="score-inputs">
-                        <div class="team-score">
-                            <label id="koHomeLabelET">Home</label>
-                            <input type="number" id="koHomeET" min="0" max="20" value="0" onchange="updateKoTabStates()">
-                        </div>
-                        <span class="vs">VS</span>
-                        <div class="team-score">
-                            <label id="koAwayLabelET">Away</label>
-                            <input type="number" id="koAwayET" min="0" max="20" value="0" onchange="updateKoTabStates()">
-                        </div>
-                    </div>
-                    <div id="etNotNeededNote" class="ko-panel-note" style="display:none;">
-                        ℹ️ Extra time is only needed if 90-min result is a draw. Your 90-min prediction has a winner — you can skip this tab.
-                    </div>
-                </div>
-
-                <!-- Penalties panel -->
-                <div id="koPanelPen" class="ko-panel">
-                    <p class="ko-panel-hint">Penalties only happen if extra time also ends in a draw. Pick the winner — no draw possible in a shootout.</p>
-                    <div id="penWinnerSelect">
-                        <select id="penaltyWinner" class="ko-select">
-                            <option value="">— Select penalty winner —</option>
-                            <option id="penHome" value="home">Home team wins on penalties</option>
-                            <option id="penAway" value="away">Away team wins on penalties</option>
-                        </select>
-                    </div>
-                    <div id="penNotNeededNote" class="ko-panel-note" style="display:none;">
-                        ℹ️ Penalties are only needed if extra time ends in a draw. Adjust your 90-min or extra-time predictions if you expect a winner.
-                    </div>
-                </div>
-
-                <!-- Bet + submit -->
-                <div class="bet-amount" style="margin-top:16px;">
-                    <label>Bet Amount:</label>
-                    <input type="number" id="koBetAmount" min="10" max="500" value="50" step="10" oninput="updateKoPayoutDisplay()">
-                    <span class="coin-icon">🪙</span>
-                </div>
-                <div class="payout-info" id="koPayoutInfo">
-                    <p>90 min exact score: <strong id="koPayout90Exact">250</strong> 🪙</p>
-                    <p>90 min correct result: <strong id="koPayout90Result">100</strong> 🪙</p>
-                    <p style="font-size:12px;color:#5b6f96;">Bonus coins for correct ET & penalty predictions added on top.</p>
-                </div>
-                <button onclick="submitKnockoutPrediction()" class="btn-primary" style="margin-top:8px;">Submit Knockout Prediction</button>
             </div>
         </div>
     </div>

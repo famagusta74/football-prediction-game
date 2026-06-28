@@ -1,6 +1,6 @@
-# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.2.0)
+# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.0.0)
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.2.0 introduces **knockout stage 3-part predictions**: separate forecasts for 90 min, Extra Time, and Penalties — each with Bob AI suggestions and an "Adopt Bob's Prediction" button.
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.0.0 brings a **mobile-first redesign**: a clean bottom navigation bar, instant auto-login after registration, and a smarter prediction list that always starts from the next upcoming match.
 
 ## 🎮 Features
 

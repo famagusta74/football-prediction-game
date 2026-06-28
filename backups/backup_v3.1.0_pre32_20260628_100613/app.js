@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.2.0"; // v3.2.0: Knockout 3-stage prediction system (90min/ET/Penalties) + Bob AI suggestions
+const APP_VERSION = "v3.1.0"; // v3.1.0: Added 16 Round of 32 matches (28 Jun - 4 Jul 2026, Cyprus/Greece time)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -3677,31 +3677,16 @@ function loadAdminMatches() {
         const matchDate = new Date(match.kickoff);
         const isFinished = match.status === 'finished';
         const hasStarted = hasMatchStarted(match);
-        const ko = isKnockout(match);
-
-        // Build final score display (with ET/penalties for knockout matches)
-        let scoreDisplay = '';
-        if (isFinished && match.finalScore) {
-            scoreDisplay = `<br><small>90 min: ${match.finalScore.home} - ${match.finalScore.away}`;
-            if (ko && match.finalScore.et) {
-                scoreDisplay += ` | ET: ${match.finalScore.et.home} - ${match.finalScore.et.away}`;
-            }
-            if (ko && match.finalScore.penaltyWinner) {
-                scoreDisplay += ` | Pen: ${match.finalScore.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam}`;
-            }
-            scoreDisplay += `</small>`;
-        }
         
         matchItem.innerHTML = `
             <div>
                 <strong>${match.homeTeam} vs ${match.awayTeam}</strong>
-                ${ko ? `<span style="font-size:11px;background:#e67e22;color:#fff;border-radius:4px;padding:1px 6px;margin-left:6px;">KO</span>` : ''}
                 <br>
                 <small>${matchDate.toLocaleString()} | ${match.stage}</small>
                 <br>
                 <small>Status: <span style="color: ${isFinished ? '#28a745' : hasStarted ? '#dc3545' : '#ffc107'}">${isFinished ? 'FINISHED' : hasStarted ? 'LOCKED' : match.status.toUpperCase()}</span></small>
                 ${hasStarted && !isFinished ? `<br><small>Predictions frozen until admin enters the final score.</small>` : ''}
-                ${scoreDisplay}
+                ${isFinished && match.finalScore ? `<br><small>Final Score: ${match.finalScore.home} - ${match.finalScore.away}</small>` : ''}
             </div>
             <div>
                 ${!isFinished ? `
@@ -3726,10 +3711,10 @@ async function enterMatchResult(matchId) {
     const match = matches.find(m => m.id === matchId);
     if (!match) return;
     
-    const homeScore = prompt(`Enter result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nHome team (${match.homeTeam}) score (90 min):`, '0');
+    const homeScore = prompt(`Enter result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nHome team (${match.homeTeam}) score:`, '0');
     if (homeScore === null) return;
     
-    const awayScore = prompt(`Away team (${match.awayTeam}) score (90 min):`, '0');
+    const awayScore = prompt(`Away team (${match.awayTeam}) score:`, '0');
     if (awayScore === null) return;
     
     const home = parseInt(homeScore);
@@ -3739,43 +3724,18 @@ async function enterMatchResult(matchId) {
         alert('Invalid scores!');
         return;
     }
-
-    let finalScore = { home, away };
-
-    // For knockout matches, also collect ET and penalty if 90-min ends in a draw
-    if (isKnockout(match) && home === away) {
-        const etHomeStr = prompt(`90-min ended ${home}-${away} (draw).\n\nExtra Time — ${match.homeTeam} score:`, '0');
-        if (etHomeStr === null) return;
-        const etAwayStr = prompt(`Extra Time — ${match.awayTeam} score:`, '0');
-        if (etAwayStr === null) return;
-        const etHome = parseInt(etHomeStr);
-        const etAway = parseInt(etAwayStr);
-        if (isNaN(etHome) || isNaN(etAway) || etHome < 0 || etAway < 0) { alert('Invalid ET scores!'); return; }
-        finalScore.et = { home: etHome, away: etAway };
-
-        if (etHome === etAway) {
-            const penStr = prompt(`ET ended ${etHome}-${etAway} (draw) — goes to penalties!\n\nWho wins on penalties?\nEnter "1" for ${match.homeTeam}\nEnter "2" for ${match.awayTeam}`, '1');
-            if (penStr === null) return;
-            if (penStr !== '1' && penStr !== '2') { alert('Enter 1 or 2 for penalty winner.'); return; }
-            finalScore.penaltyWinner = penStr === '1' ? 'home' : 'away';
-        }
-    }
     
     // Update match
     match.status = 'finished';
-    match.finalScore = finalScore;
+    match.finalScore = { home, away };
     
     // Save to Firebase/localStorage
     await saveMatches();
     
     loadAdminMatches();
     loadMatches(); // Refresh main matches view
-
-    let summary = `${match.homeTeam} ${home} - ${away} ${match.awayTeam}`;
-    if (finalScore.et) summary += `\nET: ${finalScore.et.home}-${finalScore.et.away}`;
-    if (finalScore.penaltyWinner) summary += `\nPenalties: ${finalScore.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam} wins`;
     
-    alert(`Match result saved!\n${summary}\n\nDon't forget to click "Process Results" to award payouts!`);
+    alert(`Match result saved!\n${match.homeTeam} ${home} - ${away} ${match.awayTeam}\n\nDon't forget to click "Process Results" to award payouts!`);
 }
 
 // Admin: Edit match result
@@ -3784,15 +3744,11 @@ async function editMatchResult(matchId) {
     
     const match = matches.find(m => m.id === matchId);
     if (!match || !match.finalScore) return;
-
-    const currentET = match.finalScore.et ? `ET ${match.finalScore.et.home}-${match.finalScore.et.away}` : '';
-    const currentPen = match.finalScore.penaltyWinner ? `Pen: ${match.finalScore.penaltyWinner}` : '';
-    const currentExtra = [currentET, currentPen].filter(Boolean).join(' | ');
     
-    const homeScore = prompt(`Edit result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nCurrent: ${match.finalScore.home} - ${match.finalScore.away}${currentExtra ? ' | ' + currentExtra : ''}\n\nHome team (${match.homeTeam}) score (90 min):`, match.finalScore.home);
+    const homeScore = prompt(`Edit result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nCurrent: ${match.finalScore.home} - ${match.finalScore.away}\n\nHome team (${match.homeTeam}) score:`, match.finalScore.home);
     if (homeScore === null) return;
     
-    const awayScore = prompt(`Away team (${match.awayTeam}) score (90 min):`, match.finalScore.away);
+    const awayScore = prompt(`Away team (${match.awayTeam}) score:`, match.finalScore.away);
     if (awayScore === null) return;
     
     const home = parseInt(homeScore);
@@ -3802,31 +3758,9 @@ async function editMatchResult(matchId) {
         alert('Invalid scores!');
         return;
     }
-
-    let finalScore = { home, away };
-
-    // For knockout matches, also collect ET and penalty if 90-min ends in a draw
-    if (isKnockout(match) && home === away) {
-        const etHomeStr = prompt(`90-min ended ${home}-${away} (draw).\n\nExtra Time — ${match.homeTeam} score:`, match.finalScore.et?.home ?? '0');
-        if (etHomeStr === null) return;
-        const etAwayStr = prompt(`Extra Time — ${match.awayTeam} score:`, match.finalScore.et?.away ?? '0');
-        if (etAwayStr === null) return;
-        const etHome = parseInt(etHomeStr);
-        const etAway = parseInt(etAwayStr);
-        if (isNaN(etHome) || isNaN(etAway) || etHome < 0 || etAway < 0) { alert('Invalid ET scores!'); return; }
-        finalScore.et = { home: etHome, away: etAway };
-
-        if (etHome === etAway) {
-            const currentPenWin = match.finalScore.penaltyWinner === 'home' ? '1' : '2';
-            const penStr = prompt(`ET ended ${etHome}-${etAway} — goes to penalties!\n\nWho wins on penalties?\nEnter "1" for ${match.homeTeam}\nEnter "2" for ${match.awayTeam}`, currentPenWin);
-            if (penStr === null) return;
-            if (penStr !== '1' && penStr !== '2') { alert('Enter 1 or 2 for penalty winner.'); return; }
-            finalScore.penaltyWinner = penStr === '1' ? 'home' : 'away';
-        }
-    }
     
     // Update match
-    match.finalScore = finalScore;
+    match.finalScore = { home, away };
     
     // Mark all predictions for this match as unprocessed so they can be recalculated
     predictions.forEach(p => {
@@ -3841,12 +3775,8 @@ async function editMatchResult(matchId) {
     
     loadAdminMatches();
     loadMatches();
-
-    let summary = `${match.homeTeam} ${home} - ${away} ${match.awayTeam}`;
-    if (finalScore.et) summary += `\nET: ${finalScore.et.home}-${finalScore.et.away}`;
-    if (finalScore.penaltyWinner) summary += `\nPenalties: ${finalScore.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam} wins`;
     
-    alert(`Match result updated!\n${summary}\n\nPredictions marked as unprocessed. Click "Process Results" to recalculate payouts.`);
+    alert(`Match result updated!\n${match.homeTeam} ${home} - ${away} ${match.awayTeam}\n\nPredictions marked as unprocessed. Click "Process Results" to recalculate payouts.`);
 }
 
 async function updateUserInStorage() {

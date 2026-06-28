@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.2.0"; // v3.2.0: Knockout 3-stage prediction system (90min/ET/Penalties) + Bob AI suggestions
+const APP_VERSION = "v2.0.16"; // Fix Match 69 kickoff time (Argentina vs Algeria)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1166,167 +1166,6 @@ const sampleMatches = [
         stage: "First Stage - Group L",
         venue: "Toronto Stadium (Toronto)"
     },
-    // ── Round of 32 ──
-    {
-        id: 73,
-        homeTeam: "South Africa",
-        awayTeam: "Canada",
-        kickoff: "2026-06-28T22:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Los Angeles Stadium (Los Angeles)"
-    },
-    {
-        id: 74,
-        homeTeam: "Brazil",
-        awayTeam: "Japan",
-        kickoff: "2026-06-29T20:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Houston Stadium (Houston)"
-    },
-    {
-        id: 75,
-        homeTeam: "Germany",
-        awayTeam: "Paraguay",
-        kickoff: "2026-06-29T23:30:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Boston Stadium (Boston)"
-    },
-    {
-        id: 76,
-        homeTeam: "Netherlands",
-        awayTeam: "Morocco",
-        kickoff: "2026-06-30T04:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Monterrey Stadium (Monterrey)"
-    },
-    {
-        id: 77,
-        homeTeam: "Côte d'Ivoire",
-        awayTeam: "Norway",
-        kickoff: "2026-06-30T20:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Dallas Stadium (Dallas)"
-    },
-    {
-        id: 78,
-        homeTeam: "France",
-        awayTeam: "Sweden",
-        kickoff: "2026-07-01T00:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "New York/New Jersey Stadium (New Jersey)"
-    },
-    {
-        id: 79,
-        homeTeam: "Mexico",
-        awayTeam: "Ecuador",
-        kickoff: "2026-07-01T04:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Mexico City Stadium (Mexico City)"
-    },
-    {
-        id: 80,
-        homeTeam: "England",
-        awayTeam: "Congo DR",
-        kickoff: "2026-07-01T19:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Atlanta Stadium (Atlanta)"
-    },
-    {
-        id: 81,
-        homeTeam: "Belgium",
-        awayTeam: "Senegal",
-        kickoff: "2026-07-01T23:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Seattle Stadium (Seattle)"
-    },
-    {
-        id: 82,
-        homeTeam: "USA",
-        awayTeam: "Bosnia and Herzegovina",
-        kickoff: "2026-07-02T03:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "San Francisco Bay Area Stadium (San Francisco Bay Area)"
-    },
-    {
-        id: 83,
-        homeTeam: "Spain",
-        awayTeam: "Austria",
-        kickoff: "2026-07-02T22:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Los Angeles Stadium (Los Angeles)"
-    },
-    {
-        id: 84,
-        homeTeam: "Portugal",
-        awayTeam: "Croatia",
-        kickoff: "2026-07-03T02:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Toronto Stadium (Toronto)"
-    },
-    {
-        id: 85,
-        homeTeam: "Switzerland",
-        awayTeam: "Algeria",
-        kickoff: "2026-07-03T06:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "BC Place Vancouver (Vancouver)"
-    },
-    {
-        id: 86,
-        homeTeam: "Australia",
-        awayTeam: "Egypt",
-        kickoff: "2026-07-03T21:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Dallas Stadium (Dallas)"
-    },
-    {
-        id: 87,
-        homeTeam: "Argentina",
-        awayTeam: "Cabo Verde",
-        kickoff: "2026-07-04T01:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Miami Stadium (Miami)"
-    },
-    {
-        id: 88,
-        homeTeam: "Colombia",
-        awayTeam: "Ghana",
-        kickoff: "2026-07-04T04:30:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 32",
-        venue: "Kansas City Stadium (Kansas City)"
-    },
 ];
 
 // Initialize app
@@ -1498,11 +1337,6 @@ async function login() {
         
         showDashboard();
 
-        // Show nav hint splash on first login (mobile only, once per device)
-        if (!localStorage.getItem('navHintSeen')) {
-            showNavHint();
-        }
-
         if (dailyBonusMessage) {
             showDailyBonusNotification(dailyBonusMessage);
             renderCurrentUserActivity();
@@ -1570,155 +1404,9 @@ async function register() {
     // Notify admin about new registration
     await notifyAdminNewUser(newUser);
 
-    // Auto-login: set currentUser and go straight to predictions
-    currentUser = newUser;
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-    // Show welcome banner then go to dashboard -> predictions tab
-    showDashboard();
-    showWelcomeBanner(nickname);
+    alert('Account created successfully! Please login.');
+    showLogin();
 }
-
-function showWelcomeBanner(nickname) {
-    // Create a brief welcome overlay that auto-dismisses
-    const banner = document.createElement('div');
-    banner.id = 'welcomeBanner';
-    banner.style.cssText = `
-        position: fixed; inset: 0; z-index: 9999;
-        display: flex; align-items: center; justify-content: center;
-        background: rgba(15, 98, 254, 0.92); backdrop-filter: blur(8px);
-    `;
-    banner.innerHTML = `
-        <div style="
-            background: white; border-radius: 28px; padding: 40px 32px;
-            max-width: 360px; width: 90%; text-align: center;
-            box-shadow: 0 24px 48px rgba(0,0,0,0.28);
-        ">
-            <div style="font-size: 56px; margin-bottom: 16px;">🎉</div>
-            <h2 style="color: #0f2c5f; margin-bottom: 12px; font-size: 24px;">Welcome, ${nickname}!</h2>
-            <p style="color: #5b6f96; line-height: 1.6; margin-bottom: 24px;">
-                You're all set! You've been automatically logged in and given <strong>1,000 coins</strong> to start predicting.
-            </p>
-            <p style="color: #0f62fe; font-weight: 700; margin-bottom: 24px;">
-                ⚽ Let's make your first prediction!
-            </p>
-            <button onclick="document.getElementById('welcomeBanner').remove()" style="
-                background: linear-gradient(135deg, #0f62fe, #0353e9);
-                color: white; border: none; border-radius: 14px;
-                padding: 14px 32px; font-size: 16px; font-weight: 700;
-                cursor: pointer; width: 100%;
-            ">Start Predicting →</button>
-        </div>
-    `;
-    document.body.appendChild(banner);
-    // Auto-dismiss after 6 seconds
-    setTimeout(() => { if (banner.parentNode) banner.remove(); }, 6000);
-}
-
-
-// Show first-login navigation hint overlay (mobile, once per device)
-function showNavHint() {
-    // Only show on screens narrow enough to have the bottom nav
-    if (window.innerWidth > 600) return;
-
-    const dismissHint = () => {
-        localStorage.setItem('navHintSeen', '1');
-        const el = document.getElementById('navHintOverlay');
-        if (el) {
-            el.style.opacity = '0';
-            el.style.transition = 'opacity 0.35s';
-            setTimeout(() => el.remove(), 380);
-        }
-    };
-
-    const overlay = document.createElement('div');
-    overlay.id = 'navHintOverlay';
-    overlay.style.cssText = `
-        position: fixed; inset: 0; z-index: 9000;
-        background: rgba(4, 16, 46, 0.86);
-        backdrop-filter: blur(3px);
-        display: flex; flex-direction: column;
-        justify-content: flex-end;
-        font-family: 'Segoe UI', sans-serif;
-    `;
-
-    overlay.innerHTML = `
-        <!-- Skip button top-right -->
-        <button id="navHintSkip" style="
-            position: absolute; top: 18px; right: 18px;
-            background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.28);
-            color: white; font-size: 14px; font-weight: 700;
-            padding: 8px 18px; border-radius: 999px; cursor: pointer;
-            letter-spacing: 0.04em;
-        ">Skip</button>
-
-        <!-- Callout card sitting above the bottom bar -->
-        <div style="
-            margin: 0 12px 88px;
-            background: white; border-radius: 22px;
-            padding: 22px 20px 18px;
-            box-shadow: 0 -4px 40px rgba(0,0,0,0.4);
-        ">
-            <div style="text-align:center; font-size:22px; margin-bottom:6px;">👇</div>
-            <h3 style="margin:0 0 10px; color:#0f2c5f; font-size:17px; text-align:center;">
-                Your quick-access bar
-            </h3>
-            <p style="margin:0 0 18px; color:#5b6f96; font-size:14px; line-height:1.6; text-align:center;">
-                Everything you need is one tap away at the bottom of the screen.
-            </p>
-
-            <!-- Tab descriptions -->
-            <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:4px; text-align:center; margin-bottom:18px;">
-                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
-                    <div style="font-size:20px;">⚽</div>
-                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">PREDICT</div>
-                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Submit your next score</div>
-                </div>
-                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
-                    <div style="font-size:20px;">🏆</div>
-                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">LEADERS</div>
-                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">See who's winning</div>
-                </div>
-                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
-                    <div style="font-size:20px;">👥</div>
-                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">POOLS</div>
-                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Join or create a pool</div>
-                </div>
-                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
-                    <div style="font-size:20px;">📜</div>
-                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">HISTORY</div>
-                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Past results</div>
-                </div>
-                <div style="padding:8px 4px; background:#f0f4ff; border-radius:12px;">
-                    <div style="font-size:20px;">🪙</div>
-                    <div style="font-size:10px; font-weight:700; color:#0f62fe; margin-top:4px;">COINS</div>
-                    <div style="font-size:10px; color:#5b6f96; margin-top:2px; line-height:1.3;">Your coin activity</div>
-                </div>
-            </div>
-
-            <button id="navHintGot" style="
-                width:100%; padding:13px;
-                background: linear-gradient(135deg,#0f62fe,#0353e9);
-                color:white; border:none; border-radius:14px;
-                font-size:15px; font-weight:700; cursor:pointer;
-            ">Got it — let's play! ⚽</button>
-        </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    document.getElementById('navHintSkip').onclick = dismissHint;
-    document.getElementById('navHintGot').onclick  = dismissHint;
-
-    // Tap anywhere on the dark backdrop (not the card) also dismisses
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) dismissHint();
-    });
-
-    // Auto-dismiss after 12 seconds
-    setTimeout(dismissHint, 12000);
-}
-
 
 // Notify admin about new user registration
 async function notifyAdminNewUser(newUser) {
@@ -1760,7 +1448,6 @@ function showDashboard() {
     document.getElementById('loginScreen').classList.remove('active');
     document.getElementById('registerScreen').classList.remove('active');
     document.getElementById('dashboardScreen').classList.add('active');
-    window.scrollTo(0, 0);
     
     document.getElementById('userNickname').textContent = currentUser.nickname;
     document.getElementById('userCoins').textContent = currentUser.coins;
@@ -1804,15 +1491,15 @@ function showTab(tabName) {
     
     activeTabName = tabName;
 
-    // Sync desktop tabs
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    const targetDesktopTab = document.querySelector(`.tab[onclick="showTab('${tabName}')"]`);
-    if (targetDesktopTab) targetDesktopTab.classList.add('active');
-
-    // Sync mobile bottom nav
-    document.querySelectorAll('.mobile-nav-btn').forEach(btn => btn.classList.remove('active'));
-    const targetMobileBtn = document.querySelector(`.mobile-nav-btn[data-tab="${tabName}"]`);
-    if (targetMobileBtn) targetMobileBtn.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    } else {
+        const targetTab = document.querySelector(`.tab[onclick="showTab('${tabName}')"]`);
+        if (targetTab) {
+            targetTab.classList.add('active');
+        }
+    }
     
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     document.getElementById(tabName + 'Tab').classList.add('active');
@@ -1839,27 +1526,19 @@ function loadMatches() {
     renderBobSuggestionKpi();
     
     const currentUserPredictions = predictions.filter(p => p.userId === currentUser.id);
+    
+    // Get today's date range (start and end of day in user's timezone)
     const now = new Date();
-
-    // Separate into upcoming (open for prediction) and past (locked/finished)
-    const upcomingMatches = matches
-        .filter(match => !isMatchLocked(match))
-        .sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
-
-    const pastMatches = matches
-        .filter(match => isMatchLocked(match))
-        .sort((a, b) => new Date(b.kickoff) - new Date(a.kickoff));
-
-    // Get today's date range
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-
-    // Highlight today's upcoming matches at the top
-    const todaysMatches = upcomingMatches.filter(m => {
-        const ko = new Date(m.kickoff);
-        return ko >= todayStart && ko <= todayEnd;
+    
+    // Filter today's matches (upcoming only, not finished)
+    const todaysMatches = matches.filter(match => {
+        const kickoffDate = new Date(match.kickoff);
+        return kickoffDate >= todayStart && kickoffDate <= todayEnd && match.status !== 'finished';
     });
-
+    
+    // Render Today's Games section if there are any
     if (todaysMatches.length > 0) {
         const todaySection = document.createElement('div');
         todaySection.className = 'todays-games-section';
@@ -1870,61 +1549,119 @@ function loadMatches() {
             </div>
         `;
         matchesList.appendChild(todaySection);
+        
+        // Render today's matches with special styling
         todaysMatches.forEach(match => {
             const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
             renderMatchCard(match, userPrediction, matchesList, true);
         });
+        
+        // Add separator
         const separator = document.createElement('div');
         separator.className = 'matches-separator';
-        separator.innerHTML = '<h3>Upcoming Matches</h3>';
+        separator.innerHTML = '<h3>All Matches</h3>';
         matchesList.appendChild(separator);
     }
 
-    // Render upcoming matches (starting from next unplayed match)
-    const remainingUpcoming = todaysMatches.length > 0
-        ? upcomingMatches.filter(m => {
-            const ko = new Date(m.kickoff);
-            return !(ko >= todayStart && ko <= todayEnd);
-        })
-        : upcomingMatches;
-
-    if (remainingUpcoming.length === 0 && upcomingMatches.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'empty-state';
-        empty.textContent = 'No upcoming matches to predict. Check the History section below for past results.';
-        matchesList.appendChild(empty);
-    } else {
-        remainingUpcoming.forEach(match => {
-            const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
-            renderMatchCard(match, userPrediction, matchesList, false);
+    matches.forEach(match => {
+        const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
+        
+        const matchCard = document.createElement('div');
+        const matchLocked = isMatchLocked(match);
+        const predictionStateClass = userPrediction ? ' predicted' : ' unpredicted';
+        matchCard.className = `match-card${matchLocked ? ' locked' : ''}${predictionStateClass}`;
+        matchCard.onclick = () => openPredictionModal(match);
+        
+        const kickoffDate = new Date(match.kickoff);
+        const formattedDate = kickoffDate.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
-    }
+        
+        // Calculate result if match is finished
+        let resultInfo = '';
+        let lockInfo = '';
+        if (match.status === 'finished' && match.finalScore && userPrediction) {
+            const payout = calculatePayout(userPrediction, match.finalScore);
+            const resultColor = payout > 0 ? '#28a745' : '#dc3545';
+            resultInfo = `
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid ${resultColor};">
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <strong style="font-size: 16px;">Final Score: ${match.finalScore.home} - ${match.finalScore.away}</strong>
+                    </div>
+                    <div style="text-align: center; color: ${resultColor}; font-weight: bold; font-size: 18px;">
+                        ${payout > 0 ? `🎉 Won ${payout} coins!` : '❌ Lost ${userPrediction.betAmount} coins'}
+                    </div>
+                </div>
+            `;
+        }
 
-    // Collapsible Match History section at the bottom
-    if (pastMatches.length > 0) {
-        const historySection = document.createElement('div');
-        historySection.className = 'list-history-section';
-        const historyId = 'listHistoryMatches';
-        historySection.innerHTML = `
-            <button class="list-history-toggle" onclick="
-                var el = document.getElementById('${historyId}');
-                var arrow = this.querySelector('.lh-arrow');
-                el.classList.toggle('open');
-                arrow.textContent = el.classList.contains('open') ? '▲' : '▼';
-            ">
-                <span>📜 Match History (${pastMatches.length})</span>
-                <span class="lh-arrow">▼</span>
-            </button>
-            <div id="${historyId}" class="list-history-matches"></div>
+        if (match.status === 'finished' && match.finalScore) {
+            lockInfo = `
+                <div style="text-align: center; margin-top: 12px; color: #666; font-size: 13px; font-weight: 600;">
+                    🔒 Predictions closed - awaiting processed results
+                </div>
+            `;
+        } else if (matchLocked) {
+            lockInfo = `
+                <div style="text-align: center; margin-top: 12px; color: #dc3545; font-size: 13px; font-weight: 600;">
+                    🔒 Predictions closed once kickoff passed
+                </div>
+            `;
+        }
+
+        const homeFlag = getCountryFlag(match.homeTeam);
+        const awayFlag = getCountryFlag(match.awayTeam);
+
+        const suggestion = ensureMatchSuggestion(match);
+        const suggestionOutcome = getSuggestionOutcome(match);
+
+        matchCard.innerHTML = `
+            <div class="match-header">
+                <span class="match-time">${formattedDate} - ${match.venue}</span>
+                <span class="match-status status-${match.status}">${match.status.toUpperCase()}</span>
+            </div>
+            <div class="match-teams">
+                <span class="team"><span class="team-flag">${homeFlag}</span>${match.homeTeam}</span>
+                <span class="vs">${match.status === 'finished' && match.finalScore ? `${match.finalScore.home} - ${match.finalScore.away}` : 'VS'}</span>
+                <span class="team">${match.awayTeam}<span class="team-flag">${awayFlag}</span></span>
+            </div>
+            <div style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
+                ${match.stage}
+            </div>
+            <div class="match-suggestion">
+                <div class="match-suggestion-header">
+                    <span>🤖 Bob Suggestion</span>
+                    <span class="match-suggestion-confidence">${suggestion.confidenceLabel}</span>
+                </div>
+                <div class="match-suggestion-score">Suggested score: ${suggestion.suggestedScore}</div>
+                <div class="match-suggestion-result">Suggested result: ${suggestion.resultLabel}</div>
+                <p class="match-suggestion-text">${suggestion.rationale}</p>
+                <div class="match-suggestion-note">${suggestion.sourceNote}</div>
+                ${suggestionOutcome ? `
+                    <div class="match-suggestion-outcome ${suggestionOutcome.resultHit ? 'success' : 'miss'}">
+                        <strong>${suggestionOutcome.summary}</strong>
+                        <span>${suggestionOutcome.detail}</span>
+                    </div>
+                ` : ''}
+            </div>
+            ${userPrediction ? `
+                <div class="match-prediction">
+                    <span class="prediction-info">
+                        Your prediction: ${userPrediction.homeScore} - ${userPrediction.awayScore}
+                    </span>
+                    <span class="prediction-bet">${userPrediction.betAmount} 🪙</span>
+                </div>
+            ` : ''}
+            ${resultInfo}
+            ${lockInfo}
         `;
-        matchesList.appendChild(historySection);
-
-        const historyContainer = historySection.querySelector(`#${historyId}`);
-        pastMatches.forEach(match => {
-            const userPrediction = currentUserPredictions.find(p => p.matchId === match.id);
-            renderMatchCard(match, userPrediction, historyContainer, false);
-        });
-    }
+        
+        matchesList.appendChild(matchCard);
+    });
 }
 // Helper function to render a match card
 function renderMatchCard(match, userPrediction, container, isTodaySection = false) {
@@ -2440,89 +2177,34 @@ function openPredictionModal(match) {
     }
 
     currentMatchId = match.id;
-    const knockout = isKnockout(match);
     
-    // Title
+    const suggestion = ensureMatchSuggestion(match);
+
     document.getElementById('modalMatchTitle').textContent =
         `${match.homeTeam} vs ${match.awayTeam}`;
-
-    // Show/hide explainers
-    document.getElementById('standardExplainer').style.display    = knockout ? 'none' : '';
-    document.getElementById('knockoutExplainer').style.display    = knockout ? 'flex' : 'none';
-
-    // Show/hide forms
-    document.getElementById('standardPredictionForm').style.display  = knockout ? 'none' : '';
-    document.getElementById('knockoutPredictionForm').style.display  = knockout ? 'block' : 'none';
-
-    // Show/hide Bob suggestion panels
-    document.getElementById('bobStandardSuggestion').style.display  = knockout ? 'none' : '';
-    document.getElementById('bobKnockoutSuggestion').style.display  = knockout ? 'block' : 'none';
-    document.getElementById('adoptBobBtn').style.display            = knockout ? 'block' : 'none';
-
-    if (knockout) {
-        // Populate knockout suggestion
-        const s = getKnockoutSuggestion(match);
-        document.getElementById('modalSuggestionConfidence').textContent = s.confidenceLabel;
-        document.getElementById('modalSuggestionReason').textContent     = s.rationale;
-        document.getElementById('bobSuggest90').textContent  = s.score90;
-        document.getElementById('bobSuggestET').textContent  = s.etLabel;
-        document.getElementById('bobSuggestPen').textContent = s.penaltyLabel;
-
-        // Populate team name labels in ko form
-        document.getElementById('koHomeLabel90').textContent  = match.homeTeam;
-        document.getElementById('koAwayLabel90').textContent  = match.awayTeam;
-        document.getElementById('koHomeLabelET').textContent  = match.homeTeam;
-        document.getElementById('koAwayLabelET').textContent  = match.awayTeam;
-        document.getElementById('penHome').textContent = `${match.homeTeam} wins on penalties`;
-        document.getElementById('penAway').textContent = `${match.awayTeam} wins on penalties`;
-
-        // Existing prediction?
-        const existing = predictions.find(p => p.userId === currentUser.id && p.matchId === match.id);
-        if (existing) {
-            document.getElementById('koHome90').value   = existing.homeScore;
-            document.getElementById('koAway90').value   = existing.awayScore;
-            document.getElementById('koBetAmount').value = existing.betAmount;
-            if (existing.knockoutPrediction) {
-                document.getElementById('koHomeET').value     = existing.knockoutPrediction.etHome ?? 0;
-                document.getElementById('koAwayET').value     = existing.knockoutPrediction.etAway ?? 0;
-                document.getElementById('penaltyWinner').value = existing.knockoutPrediction.penaltyWinner || '';
-            }
-        } else {
-            document.getElementById('koHome90').value    = 0;
-            document.getElementById('koAway90').value    = 0;
-            document.getElementById('koHomeET').value    = 0;
-            document.getElementById('koAwayET').value    = 0;
-            document.getElementById('penaltyWinner').value = '';
-            document.getElementById('koBetAmount').value = 50;
-        }
-
-        updateKoPayoutDisplay();
-        updateKoTabStates();
-        showKoTab('90');
-
+    document.getElementById('homeTeamLabel').textContent = match.homeTeam;
+    document.getElementById('awayTeamLabel').textContent = match.awayTeam;
+    document.getElementById('modalSuggestionScore').textContent = suggestion.suggestedScore;
+    document.getElementById('modalSuggestionResult').textContent = suggestion.resultLabel;
+    document.getElementById('modalSuggestionConfidence').textContent = suggestion.confidenceLabel;
+    document.getElementById('modalSuggestionReason').textContent = suggestion.rationale;
+    
+    // Check if user already has a prediction
+    const existingPrediction = predictions.find(p => 
+        p.userId === currentUser.id && p.matchId === match.id
+    );
+    
+    if (existingPrediction) {
+        document.getElementById('homeScore').value = existingPrediction.homeScore;
+        document.getElementById('awayScore').value = existingPrediction.awayScore;
+        document.getElementById('betAmount').value = existingPrediction.betAmount;
     } else {
-        // Standard match suggestion
-        const suggestion = ensureMatchSuggestion(match);
-        document.getElementById('homeTeamLabel').textContent              = match.homeTeam;
-        document.getElementById('awayTeamLabel').textContent              = match.awayTeam;
-        document.getElementById('modalSuggestionScore').textContent      = suggestion.suggestedScore;
-        document.getElementById('modalSuggestionResult').textContent     = suggestion.resultLabel;
-        document.getElementById('modalSuggestionConfidence').textContent = suggestion.confidenceLabel;
-        document.getElementById('modalSuggestionReason').textContent     = suggestion.rationale;
-
-        const existing = predictions.find(p => p.userId === currentUser.id && p.matchId === match.id);
-        if (existing) {
-            document.getElementById('homeScore').value  = existing.homeScore;
-            document.getElementById('awayScore').value  = existing.awayScore;
-            document.getElementById('betAmount').value  = existing.betAmount;
-        } else {
-            document.getElementById('homeScore').value  = 0;
-            document.getElementById('awayScore').value  = 0;
-            document.getElementById('betAmount').value  = 50;
-        }
-        updatePayoutDisplay();
+        document.getElementById('homeScore').value = 0;
+        document.getElementById('awayScore').value = 0;
+        document.getElementById('betAmount').value = 50;
     }
     
+    updatePayoutDisplay();
     document.getElementById('predictionModal').classList.add('active');
 }
 
@@ -2668,110 +2350,6 @@ function submitPrediction() {
     loadMatches();
     
     alert('New prediction submitted successfully!');
-}
-
-// Submit knockout prediction (Round of 32+)
-async function submitKnockoutPrediction() {
-    const match = matches.find(m => m.id === currentMatchId);
-    if (!match) { alert('Match not found'); return; }
-    if (isMatchLocked(match)) {
-        alert('This match is locked. Predictions cannot be changed after kickoff.');
-        closePredictionModal(); loadMatches(); return;
-    }
-
-    const home90  = parseInt(document.getElementById('koHome90').value);
-    const away90  = parseInt(document.getElementById('koAway90').value);
-    const homeET  = parseInt(document.getElementById('koHomeET').value);
-    const awayET  = parseInt(document.getElementById('koAwayET').value);
-    const penWin  = document.getElementById('penaltyWinner').value;
-    const betAmount = parseInt(document.getElementById('koBetAmount').value);
-
-    if (isNaN(home90) || isNaN(away90) || isNaN(homeET) || isNaN(awayET) || isNaN(betAmount)) {
-        alert('Please enter valid numbers in all fields'); return;
-    }
-    if (betAmount < 10 || betAmount > 500) {
-        alert('Bet amount must be between 10 and 500 coins'); return;
-    }
-
-    const is90Draw = home90 === away90;
-    const isETDraw = homeET === awayET;
-
-    // Validate: if 90-min draw, penalty winner must be chosen if ET also a draw
-    if (is90Draw && isETDraw && !penWin) {
-        alert('Both 90-min and extra time are draws — please select the penalty winner on the Penalties tab.');
-        showKoTab('Pen'); return;
-    }
-
-    const knockoutPrediction = {
-        etHome: homeET,
-        etAway: awayET,
-        penaltyWinner: (is90Draw && isETDraw) ? penWin : null
-    };
-
-    const existing = predictions.find(p => p.userId === currentUser.id && p.matchId === currentMatchId);
-
-    if (existing) {
-        const userChoice = confirm(
-            `You already have a knockout prediction for this match.\n\n` +
-            `90 min: ${existing.homeScore}-${existing.awayScore}\n` +
-            `ET: ${existing.knockoutPrediction?.etHome ?? '?'}-${existing.knockoutPrediction?.etAway ?? '?'}\n` +
-            `Bet: ${existing.betAmount} coins\n\n` +
-            `Click OK to MODIFY (no extra coins)\nClick CANCEL to place a NEW bet (${betAmount} coins deducted)`
-        );
-        if (userChoice) {
-            const betDiff = betAmount - existing.betAmount;
-            if (betDiff > 0 && currentUser.coins < betDiff) {
-                alert(`Insufficient coins to increase bet by ${betDiff}.`); return;
-            }
-            existing.homeScore = home90;
-            existing.awayScore = away90;
-            existing.betAmount = betAmount;
-            existing.knockoutPrediction = knockoutPrediction;
-            existing.modifiedAt = new Date().toISOString();
-            currentUser.coins -= betDiff;
-            addUserActivity(currentUser.id, 'prediction_edit', -betDiff, {
-                reason: 'Knockout prediction updated',
-                matchId: currentMatchId,
-                predictionScore: `${home90}-${away90} (90min)`,
-                balanceAfter: currentUser.coins
-            });
-            await updateUserInStorage();
-            await savePredictions();
-            renderCurrentUserActivity();
-            document.getElementById('userCoins').textContent = currentUser.coins;
-            closePredictionModal(); loadMatches();
-            alert('Knockout prediction modified!'); return;
-        }
-    }
-
-    if (currentUser.coins < betAmount) { alert('Insufficient coins!'); return; }
-
-    predictions.push({
-        id: Date.now(),
-        userId: currentUser.id,
-        matchId: currentMatchId,
-        homeScore: home90,
-        awayScore: away90,
-        betAmount,
-        knockoutPrediction,
-        createdAt: new Date().toISOString()
-    });
-
-    currentUser.coins -= betAmount;
-    currentUser.totalPredictions = (currentUser.totalPredictions || 0) + 1;
-    addUserActivity(currentUser.id, 'prediction_bet', -betAmount, {
-        reason: 'Knockout prediction placed',
-        matchId: currentMatchId,
-        predictionScore: `${home90}-${away90} (90min)`,
-        balanceAfter: currentUser.coins
-    });
-
-    await updateUserInStorage();
-    await savePredictions();
-    renderCurrentUserActivity();
-    document.getElementById('userCoins').textContent = currentUser.coins;
-    closePredictionModal(); loadMatches();
-    alert('Knockout prediction submitted!');
 }
 
 // Pools Functions
@@ -3108,136 +2686,6 @@ function getUserNickname(userId) {
     return user ? user.nickname : 'Unknown';
 }
 
-// ── Knockout helpers ────────────────────────────────────────────────────────
-
-function isKnockout(match) {
-    return match && match.stage && match.stage.startsWith('Round of');
-}
-
-// Generate Bob's full knockout suggestion (90min + ET + penalties)
-function getKnockoutSuggestion(match) {
-    const base = getMatchSuggestion(match); // reuse existing strength model
-
-    // 90-min suggestion: same as base
-    const score90 = `${base.suggestedHomeScore}-${base.suggestedAwayScore}`;
-    const is90Draw = base.suggestedHomeScore === base.suggestedAwayScore;
-
-    // Extra-time suggestion: if 90-min is a draw, pick a winner in ET
-    let etHome = base.suggestedHomeScore;
-    let etAway = base.suggestedAwayScore;
-    let etLabel = '—';
-    let penaltyWinner = null;
-    let penaltyLabel = '—';
-    let rationale = base.rationale;
-
-    if (is90Draw) {
-        // Slight nudge to the stronger team in ET
-        const homeStrength = getTeamStrength(match.homeTeam);
-        const awayStrength = getTeamStrength(match.awayTeam);
-        if (homeStrength >= awayStrength) {
-            etHome = base.suggestedHomeScore + 1;
-            etAway = base.suggestedAwayScore;
-        } else {
-            etHome = base.suggestedHomeScore;
-            etAway = base.suggestedAwayScore + 1;
-        }
-        // If still equal (same strength), suggest penalties
-        if (etHome === etAway) {
-            etLabel = `${etHome}-${etAway} (Draw → Penalties)`;
-            penaltyWinner = homeStrength >= awayStrength ? 'home' : 'away';
-            penaltyLabel = penaltyWinner === 'home' ? `${match.homeTeam} wins` : `${match.awayTeam} wins`;
-            rationale += ` Very even match — Bob tips ${penaltyWinner === 'home' ? match.homeTeam : match.awayTeam} in the shootout.`;
-        } else {
-            etLabel = `${etHome}-${etAway}`;
-            penaltyLabel = '— (no penalties needed)';
-            rationale += ` Narrow extra-time winner predicted.`;
-        }
-    } else {
-        etLabel = '— (no ET needed)';
-        penaltyLabel = '— (no penalties needed)';
-    }
-
-    return {
-        score90,
-        is90Draw,
-        etScore: `${etHome}-${etAway}`,
-        etLabel,
-        etHome,
-        etAway,
-        penaltyWinner,
-        penaltyLabel,
-        resultLabel: base.resultLabel,
-        confidenceLabel: base.confidenceLabel,
-        rationale,
-        sourceNote: base.sourceNote
-    };
-}
-
-// ── Modal: tab switching for knockout form ───────────────────────────────────
-
-function showKoTab(tab) {
-    ['90', 'ET', 'Pen'].forEach(t => {
-        document.getElementById(`koTab${t}`).classList.remove('active');
-        document.getElementById(`koPanel${t}`).classList.remove('active');
-    });
-    document.getElementById(`koTab${tab}`).classList.add('active');
-    document.getElementById(`koPanel${tab}`).classList.add('active');
-}
-
-// Update ET/Penalty tab visual states based on 90-min prediction
-function updateKoTabStates() {
-    const h90 = parseInt(document.getElementById('koHome90').value) || 0;
-    const a90 = parseInt(document.getElementById('koAway90').value) || 0;
-    const is90Draw = h90 === a90;
-
-    const hET = parseInt(document.getElementById('koHomeET').value) || 0;
-    const aET = parseInt(document.getElementById('koAwayET').value) || 0;
-    const isETDraw = hET === aET;
-
-    // ET tab hint
-    const etNote = document.getElementById('etNotNeededNote');
-    etNote.style.display = is90Draw ? 'none' : 'block';
-
-    // Penalty tab hint + select
-    const penNote = document.getElementById('penNotNeededNote');
-    const penSelect = document.getElementById('penWinnerSelect');
-    const needsPen = is90Draw && isETDraw;
-    penNote.style.display = needsPen ? 'none' : 'block';
-    penSelect.style.display = needsPen ? 'block' : 'none';
-}
-
-// Adopt Bob's full knockout prediction into the form fields
-function adoptBobPrediction() {
-    const match = matches.find(m => m.id === currentMatchId);
-    if (!match) return;
-    const s = getKnockoutSuggestion(match);
-
-    // Fill 90-min
-    document.getElementById('koHome90').value = s.etHome !== undefined ? parseInt(s.score90.split('-')[0]) : 0;
-    document.getElementById('koAway90').value = parseInt(s.score90.split('-')[1]) || 0;
-
-    // Fill ET
-    document.getElementById('koHomeET').value = s.etHome;
-    document.getElementById('koAwayET').value = s.etAway;
-
-    // Fill penalty
-    if (s.penaltyWinner) {
-        document.getElementById('penaltyWinner').value = s.penaltyWinner;
-    }
-
-    updateKoTabStates();
-    showKoTab('90');
-}
-
-// Knockout payout display
-function updateKoPayoutDisplay() {
-    const bet = parseInt(document.getElementById('koBetAmount').value) || 0;
-    document.getElementById('koPayout90Exact').textContent  = bet * 5;
-    document.getElementById('koPayout90Result').textContent = bet * 2;
-}
-
-// ── Calculate payout (standard + knockout) ──────────────────────────────────
-
 // Calculate payout for a prediction
 function calculatePayout(prediction, finalScore) {
     const predictedHome = prediction.homeScore;
@@ -3263,45 +2711,6 @@ function calculatePayout(prediction, finalScore) {
     
     // Incorrect prediction
     return 0;
-}
-
-// Calculate knockout bonus payout (ET + penalty predictions)
-// Returns extra coins to add on top of the 90-min payout
-function calculateKnockoutBonusPayout(prediction, match) {
-    const ko = prediction.knockoutPrediction;
-    const fs = match.finalScore;
-    if (!ko || !fs) return 0;
-
-    let bonus = 0;
-    const bet = prediction.betAmount;
-    const actual90Draw = fs.home === fs.away;
-
-    // ET bonus (only meaningful if 90-min was actually a draw)
-    if (actual90Draw && match.finalScore.et && ko.etHome !== undefined && ko.etAway !== undefined) {
-        const etActualHome = match.finalScore.et.home;
-        const etActualAway = match.finalScore.et.away;
-        if (ko.etHome === etActualHome && ko.etAway === etActualAway) {
-            bonus += bet * 5; // exact ET score
-        } else {
-            const predETResult = ko.etHome > ko.etAway ? 'home' : ko.etHome < ko.etAway ? 'away' : 'draw';
-            const actETResult  = etActualHome > etActualAway ? 'home' : etActualHome < etActualAway ? 'away' : 'draw';
-            if (predETResult === actETResult) bonus += bet * 2; // correct ET result
-        }
-    }
-
-    // Penalty bonus (only meaningful if ET ended in a draw)
-    if (actual90Draw && match.finalScore.et) {
-        const etActualHome = match.finalScore.et.home;
-        const etActualAway = match.finalScore.et.away;
-        const actualETDraw = etActualHome === etActualAway;
-        if (actualETDraw && match.finalScore.penaltyWinner && ko.penaltyWinner) {
-            if (ko.penaltyWinner === match.finalScore.penaltyWinner) {
-                bonus += bet * 3; // correct penalty winner
-            }
-        }
-    }
-
-    return bonus;
 }
 
 // Backup all data to downloadable JSON file (Admin only)
@@ -3437,35 +2846,33 @@ function processFinishedMatches() {
                 if (prediction.processed) return;
                 
                 const payout = calculatePayout(prediction, match.finalScore);
-                const koBonusPayout = isKnockout(match) ? calculateKnockoutBonusPayout(prediction, match) : 0;
-                const totalMatchPayout = payout + koBonusPayout;
                 const user = users.find(u => u.id === prediction.userId);
                 
                 if (user) {
-                    user.coins += totalMatchPayout;
+                    // Award payout
+                    user.coins += payout;
 
-                    const fsLabel = match.finalScore.et
-                        ? `${match.finalScore.home}-${match.finalScore.away} (90min), ET: ${match.finalScore.et.home}-${match.finalScore.et.away}${match.finalScore.penaltyWinner ? `, Pen: ${match.finalScore.penaltyWinner}` : ''}`
-                        : `${match.finalScore.home}-${match.finalScore.away}`;
-
-                    addUserActivity(user.id, 'payout', totalMatchPayout, {
-                        reason: totalMatchPayout > 0 ? 'Prediction payout processed' : 'Prediction processed with no winnings',
+                    addUserActivity(user.id, 'payout', payout, {
+                        reason: payout > 0 ? 'Prediction payout processed' : 'Prediction processed with no winnings',
                         matchId: match.id,
                         predictionScore: `${prediction.homeScore} - ${prediction.awayScore}`,
-                        finalScore: fsLabel
+                        finalScore: `${match.finalScore.home} - ${match.finalScore.away}`
                     });
                     
-                    if (totalMatchPayout > 0) {
+                    // Update stats
+                    if (payout > 0) {
                         user.correctPredictions = (user.correctPredictions || 0) + 1;
                         if (payout === prediction.betAmount * 5) {
                             user.exactScores = (user.exactScores || 0) + 1;
                         }
                     }
                     
+                    // Mark prediction as processed
                     prediction.processed = true;
-                    prediction.payout = totalMatchPayout;
+                    prediction.payout = payout;
+                    
                     processedCount++;
-                    totalPayout += totalMatchPayout;
+                    totalPayout += payout;
                 }
             });
         }
@@ -3677,31 +3084,16 @@ function loadAdminMatches() {
         const matchDate = new Date(match.kickoff);
         const isFinished = match.status === 'finished';
         const hasStarted = hasMatchStarted(match);
-        const ko = isKnockout(match);
-
-        // Build final score display (with ET/penalties for knockout matches)
-        let scoreDisplay = '';
-        if (isFinished && match.finalScore) {
-            scoreDisplay = `<br><small>90 min: ${match.finalScore.home} - ${match.finalScore.away}`;
-            if (ko && match.finalScore.et) {
-                scoreDisplay += ` | ET: ${match.finalScore.et.home} - ${match.finalScore.et.away}`;
-            }
-            if (ko && match.finalScore.penaltyWinner) {
-                scoreDisplay += ` | Pen: ${match.finalScore.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam}`;
-            }
-            scoreDisplay += `</small>`;
-        }
         
         matchItem.innerHTML = `
             <div>
                 <strong>${match.homeTeam} vs ${match.awayTeam}</strong>
-                ${ko ? `<span style="font-size:11px;background:#e67e22;color:#fff;border-radius:4px;padding:1px 6px;margin-left:6px;">KO</span>` : ''}
                 <br>
                 <small>${matchDate.toLocaleString()} | ${match.stage}</small>
                 <br>
                 <small>Status: <span style="color: ${isFinished ? '#28a745' : hasStarted ? '#dc3545' : '#ffc107'}">${isFinished ? 'FINISHED' : hasStarted ? 'LOCKED' : match.status.toUpperCase()}</span></small>
                 ${hasStarted && !isFinished ? `<br><small>Predictions frozen until admin enters the final score.</small>` : ''}
-                ${scoreDisplay}
+                ${isFinished && match.finalScore ? `<br><small>Final Score: ${match.finalScore.home} - ${match.finalScore.away}</small>` : ''}
             </div>
             <div>
                 ${!isFinished ? `
@@ -3726,10 +3118,10 @@ async function enterMatchResult(matchId) {
     const match = matches.find(m => m.id === matchId);
     if (!match) return;
     
-    const homeScore = prompt(`Enter result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nHome team (${match.homeTeam}) score (90 min):`, '0');
+    const homeScore = prompt(`Enter result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nHome team (${match.homeTeam}) score:`, '0');
     if (homeScore === null) return;
     
-    const awayScore = prompt(`Away team (${match.awayTeam}) score (90 min):`, '0');
+    const awayScore = prompt(`Away team (${match.awayTeam}) score:`, '0');
     if (awayScore === null) return;
     
     const home = parseInt(homeScore);
@@ -3739,43 +3131,18 @@ async function enterMatchResult(matchId) {
         alert('Invalid scores!');
         return;
     }
-
-    let finalScore = { home, away };
-
-    // For knockout matches, also collect ET and penalty if 90-min ends in a draw
-    if (isKnockout(match) && home === away) {
-        const etHomeStr = prompt(`90-min ended ${home}-${away} (draw).\n\nExtra Time — ${match.homeTeam} score:`, '0');
-        if (etHomeStr === null) return;
-        const etAwayStr = prompt(`Extra Time — ${match.awayTeam} score:`, '0');
-        if (etAwayStr === null) return;
-        const etHome = parseInt(etHomeStr);
-        const etAway = parseInt(etAwayStr);
-        if (isNaN(etHome) || isNaN(etAway) || etHome < 0 || etAway < 0) { alert('Invalid ET scores!'); return; }
-        finalScore.et = { home: etHome, away: etAway };
-
-        if (etHome === etAway) {
-            const penStr = prompt(`ET ended ${etHome}-${etAway} (draw) — goes to penalties!\n\nWho wins on penalties?\nEnter "1" for ${match.homeTeam}\nEnter "2" for ${match.awayTeam}`, '1');
-            if (penStr === null) return;
-            if (penStr !== '1' && penStr !== '2') { alert('Enter 1 or 2 for penalty winner.'); return; }
-            finalScore.penaltyWinner = penStr === '1' ? 'home' : 'away';
-        }
-    }
     
     // Update match
     match.status = 'finished';
-    match.finalScore = finalScore;
+    match.finalScore = { home, away };
     
     // Save to Firebase/localStorage
     await saveMatches();
     
     loadAdminMatches();
     loadMatches(); // Refresh main matches view
-
-    let summary = `${match.homeTeam} ${home} - ${away} ${match.awayTeam}`;
-    if (finalScore.et) summary += `\nET: ${finalScore.et.home}-${finalScore.et.away}`;
-    if (finalScore.penaltyWinner) summary += `\nPenalties: ${finalScore.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam} wins`;
     
-    alert(`Match result saved!\n${summary}\n\nDon't forget to click "Process Results" to award payouts!`);
+    alert(`Match result saved!\n${match.homeTeam} ${home} - ${away} ${match.awayTeam}\n\nDon't forget to click "Process Results" to award payouts!`);
 }
 
 // Admin: Edit match result
@@ -3784,15 +3151,11 @@ async function editMatchResult(matchId) {
     
     const match = matches.find(m => m.id === matchId);
     if (!match || !match.finalScore) return;
-
-    const currentET = match.finalScore.et ? `ET ${match.finalScore.et.home}-${match.finalScore.et.away}` : '';
-    const currentPen = match.finalScore.penaltyWinner ? `Pen: ${match.finalScore.penaltyWinner}` : '';
-    const currentExtra = [currentET, currentPen].filter(Boolean).join(' | ');
     
-    const homeScore = prompt(`Edit result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nCurrent: ${match.finalScore.home} - ${match.finalScore.away}${currentExtra ? ' | ' + currentExtra : ''}\n\nHome team (${match.homeTeam}) score (90 min):`, match.finalScore.home);
+    const homeScore = prompt(`Edit result for:\n${match.homeTeam} vs ${match.awayTeam}\n\nCurrent: ${match.finalScore.home} - ${match.finalScore.away}\n\nHome team (${match.homeTeam}) score:`, match.finalScore.home);
     if (homeScore === null) return;
     
-    const awayScore = prompt(`Away team (${match.awayTeam}) score (90 min):`, match.finalScore.away);
+    const awayScore = prompt(`Away team (${match.awayTeam}) score:`, match.finalScore.away);
     if (awayScore === null) return;
     
     const home = parseInt(homeScore);
@@ -3802,31 +3165,9 @@ async function editMatchResult(matchId) {
         alert('Invalid scores!');
         return;
     }
-
-    let finalScore = { home, away };
-
-    // For knockout matches, also collect ET and penalty if 90-min ends in a draw
-    if (isKnockout(match) && home === away) {
-        const etHomeStr = prompt(`90-min ended ${home}-${away} (draw).\n\nExtra Time — ${match.homeTeam} score:`, match.finalScore.et?.home ?? '0');
-        if (etHomeStr === null) return;
-        const etAwayStr = prompt(`Extra Time — ${match.awayTeam} score:`, match.finalScore.et?.away ?? '0');
-        if (etAwayStr === null) return;
-        const etHome = parseInt(etHomeStr);
-        const etAway = parseInt(etAwayStr);
-        if (isNaN(etHome) || isNaN(etAway) || etHome < 0 || etAway < 0) { alert('Invalid ET scores!'); return; }
-        finalScore.et = { home: etHome, away: etAway };
-
-        if (etHome === etAway) {
-            const currentPenWin = match.finalScore.penaltyWinner === 'home' ? '1' : '2';
-            const penStr = prompt(`ET ended ${etHome}-${etAway} — goes to penalties!\n\nWho wins on penalties?\nEnter "1" for ${match.homeTeam}\nEnter "2" for ${match.awayTeam}`, currentPenWin);
-            if (penStr === null) return;
-            if (penStr !== '1' && penStr !== '2') { alert('Enter 1 or 2 for penalty winner.'); return; }
-            finalScore.penaltyWinner = penStr === '1' ? 'home' : 'away';
-        }
-    }
     
     // Update match
-    match.finalScore = finalScore;
+    match.finalScore = { home, away };
     
     // Mark all predictions for this match as unprocessed so they can be recalculated
     predictions.forEach(p => {
@@ -3841,12 +3182,8 @@ async function editMatchResult(matchId) {
     
     loadAdminMatches();
     loadMatches();
-
-    let summary = `${match.homeTeam} ${home} - ${away} ${match.awayTeam}`;
-    if (finalScore.et) summary += `\nET: ${finalScore.et.home}-${finalScore.et.away}`;
-    if (finalScore.penaltyWinner) summary += `\nPenalties: ${finalScore.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam} wins`;
     
-    alert(`Match result updated!\n${summary}\n\nPredictions marked as unprocessed. Click "Process Results" to recalculate payouts.`);
+    alert(`Match result updated!\n${match.homeTeam} ${home} - ${away} ${match.awayTeam}\n\nPredictions marked as unprocessed. Click "Process Results" to recalculate payouts.`);
 }
 
 async function updateUserInStorage() {
