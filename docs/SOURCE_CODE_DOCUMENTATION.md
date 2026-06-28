@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.2.0
+**Version:** 3.2.1
 **Last Updated:** June 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,400
+**Total Lines of Code:** ~4,430
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,18 +20,17 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.2.0
+**Version:** 3.2.1
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
 **Lines of Code:** ~2,800 (JavaScript), ~1,600 (CSS), ~380 (HTML)
 
-**v3.2.0 Major Features:**
-- Knockout 3-stage prediction system: separate tabs for 90 min, Extra Time, and Penalties
-- Bob AI suggestions cover all 3 stages with "Adopt Bob's Prediction" one-tap button
-- Admin result entry and editing extended to capture ET score and penalty winner
-- Admin match list shows KO badge + ET/penalty result for finished knockout matches
-- Payout logic: 90-min unchanged; ET exact=+5x, ET correct result=+2x; Penalty winner=+3x
-- 88 matches total: 72 Group Stage + 16 Round of 32 (28 Jun – 4 Jul 2026, Cyprus time)
+**v3.2.1 — Match Card Prediction Display:**
+- All match cards in Predictions tab now show the full prediction breakdown
+- ⚽ 90 min score always shown with label
+- ⏱ ET and 🥅 Penalty rows shown for knockout matches (shows `—` if not applicable)
+- History tab and grid/list views updated with the same full display
+- Performance fix: prediction submit now writes only the changed record (was: all predictions)
 
 ---
 

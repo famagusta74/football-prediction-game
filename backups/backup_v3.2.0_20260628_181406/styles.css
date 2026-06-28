@@ -1041,26 +1041,8 @@ input:focus, textarea:focus, select:focus {
     padding-top: 15px;
     border-top: 1px solid #ddd;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.prediction-info-row {
-    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-}
-
-.prediction-info-row--sub {
-    opacity: 0.82;
-}
-
-.prediction-stage-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: #1e3c72;
-    min-width: 52px;
-    flex-shrink: 0;
 }
 
 .match-suggestion {

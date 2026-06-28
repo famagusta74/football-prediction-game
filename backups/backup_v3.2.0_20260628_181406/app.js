@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.2.1"; // v3.2.1: Match cards show full prediction (90min + ET + Penalties)
+const APP_VERSION = "v3.2.0"; // v3.2.0: Knockout 3-stage prediction system (90min/ET/Penalties) + Bob AI suggestions
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -2013,21 +2013,10 @@ function renderMatchCard(match, userPrediction, container, isTodaySection = fals
         </div>
         ${userPrediction ? `
             <div class="match-prediction">
-                <div class="prediction-info-row">
-                    <span class="prediction-stage-label">⚽ 90 min</span>
-                    <span class="prediction-info">${userPrediction.homeScore} - ${userPrediction.awayScore}</span>
-                    <span class="prediction-bet">${userPrediction.betAmount} 🪙</span>
-                </div>
-                ${isKnockout(match) ? `
-                <div class="prediction-info-row prediction-info-row--sub">
-                    <span class="prediction-stage-label">⏱ ET</span>
-                    <span class="prediction-info">${userPrediction.knockoutPrediction ? `${userPrediction.knockoutPrediction.etHome} - ${userPrediction.knockoutPrediction.etAway}` : '—'}</span>
-                </div>
-                <div class="prediction-info-row prediction-info-row--sub">
-                    <span class="prediction-stage-label">🥅 Pen</span>
-                    <span class="prediction-info">${userPrediction.knockoutPrediction?.penaltyWinner ? (userPrediction.knockoutPrediction.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam) : '—'}</span>
-                </div>
-                ` : ''}
+                <span class="prediction-info">
+                    Your prediction: ${userPrediction.homeScore} - ${userPrediction.awayScore}
+                </span>
+                <span class="prediction-bet">${userPrediction.betAmount} 🪙</span>
             </div>
         ` : ''}
         ${resultInfo}
@@ -2081,18 +2070,11 @@ function loadHistory() {
             const resultIcon = payout > 0 ? '🎉' : '❌';
             const resultText = payout > 0 ? `Won ${payout} coins!` : `Lost ${userPrediction.betAmount} coins`;
             
-            const koExtra = (isKnockout(match) && userPrediction.knockoutPrediction) ? `
-                <div style="font-size:12px;color:#666;margin-top:4px;">
-                    ⏱ ET: ${userPrediction.knockoutPrediction.etHome} - ${userPrediction.knockoutPrediction.etAway}
-                    &nbsp;|&nbsp;
-                    🥅 Pen: ${userPrediction.knockoutPrediction.penaltyWinner ? (userPrediction.knockoutPrediction.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam) : '—'}
-                </div>` : '';
             resultInfo = `
                 <div class="history-result" style="border-top: 2px solid ${resultColor}; margin-top: 15px; padding-top: 15px;">
                     <div style="text-align: center; margin-bottom: 8px;">
-                        <strong>⚽ 90 min: ${userPrediction.homeScore} - ${userPrediction.awayScore}</strong>
+                        <strong>Your Prediction: ${userPrediction.homeScore} - ${userPrediction.awayScore}</strong>
                         <span style="margin-left: 10px; color: #666;">(Bet: ${userPrediction.betAmount} 🪙)</span>
-                        ${koExtra}
                     </div>
                     <div style="text-align: center; color: ${resultColor}; font-weight: bold; font-size: 18px;">
                         ${resultIcon} ${resultText}
@@ -4461,15 +4443,8 @@ function createMatchCard(match) {
         </div>
         ${userPrediction ? `
             <div class="prediction-badge ${isHistorical ? 'historical' : ''}">
-                ${isHistorical ? '📜 ' : '✅ '}⚽ 90 min: ${userPrediction.homeScore}-${userPrediction.awayScore}
+                ${isHistorical ? '📜 ' : '✅ '}Predicted: ${userPrediction.homeScore}-${userPrediction.awayScore} 
                 (${userPrediction.betAmount} coins)
-                ${isKnockout(match) ? `
-                    <span style="display:block;font-size:11px;opacity:0.85;margin-top:2px;">
-                        ⏱ ET: ${userPrediction.knockoutPrediction ? `${userPrediction.knockoutPrediction.etHome}-${userPrediction.knockoutPrediction.etAway}` : '—'}
-                        &nbsp;|&nbsp;
-                        🥅 Pen: ${userPrediction.knockoutPrediction?.penaltyWinner ? (userPrediction.knockoutPrediction.penaltyWinner === 'home' ? match.homeTeam : match.awayTeam) : '—'}
-                    </span>
-                ` : ''}
                 ${isHistorical ? ' - View Only' : ''}
             </div>
         ` : ''}
