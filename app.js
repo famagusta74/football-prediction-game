@@ -2616,8 +2616,7 @@ function submitPrediction() {
                 balanceAfter: currentUser.coins
             });
             
-            updateUserInStorage();
-            savePredictions();
+            Promise.all([updateUserInStorage(), saveSinglePrediction(existingPrediction)]);
             renderCurrentUserActivity();
             
             document.getElementById('userCoins').textContent = currentUser.coins;
@@ -2637,7 +2636,7 @@ function submitPrediction() {
     }
     
     // Add new prediction
-    predictions.push({
+    const newStandardPrediction = {
         id: Date.now(),
         userId: currentUser.id,
         matchId: currentMatchId,
@@ -2645,7 +2644,8 @@ function submitPrediction() {
         awayScore: awayScore,
         betAmount: betAmount,
         createdAt: new Date().toISOString()
-    });
+    };
+    predictions.push(newStandardPrediction);
     
     // Deduct coins for new bet
     currentUser.coins -= betAmount;
@@ -2658,8 +2658,7 @@ function submitPrediction() {
         balanceAfter: currentUser.coins
     });
 
-    updateUserInStorage();
-    savePredictions();
+    Promise.all([updateUserInStorage(), saveSinglePrediction(newStandardPrediction)]);
     renderCurrentUserActivity();
     
     document.getElementById('userCoins').textContent = currentUser.coins;
@@ -2735,8 +2734,7 @@ async function submitKnockoutPrediction() {
                 predictionScore: `${home90}-${away90} (90min)`,
                 balanceAfter: currentUser.coins
             });
-            await updateUserInStorage();
-            await savePredictions();
+            await Promise.all([updateUserInStorage(), saveSinglePrediction(existing)]);
             renderCurrentUserActivity();
             document.getElementById('userCoins').textContent = currentUser.coins;
             closePredictionModal(); loadMatches();
@@ -2746,7 +2744,7 @@ async function submitKnockoutPrediction() {
 
     if (currentUser.coins < betAmount) { alert('Insufficient coins!'); return; }
 
-    predictions.push({
+    const newPrediction = {
         id: Date.now(),
         userId: currentUser.id,
         matchId: currentMatchId,
@@ -2755,7 +2753,8 @@ async function submitKnockoutPrediction() {
         betAmount,
         knockoutPrediction,
         createdAt: new Date().toISOString()
-    });
+    };
+    predictions.push(newPrediction);
 
     currentUser.coins -= betAmount;
     currentUser.totalPredictions = (currentUser.totalPredictions || 0) + 1;
@@ -2766,8 +2765,7 @@ async function submitKnockoutPrediction() {
         balanceAfter: currentUser.coins
     });
 
-    await updateUserInStorage();
-    await savePredictions();
+    await Promise.all([updateUserInStorage(), saveSinglePrediction(newPrediction)]);
     renderCurrentUserActivity();
     document.getElementById('userCoins').textContent = currentUser.coins;
     closePredictionModal(); loadMatches();
@@ -3853,17 +3851,20 @@ async function updateUserInStorage() {
     const userIndex = users.findIndex(u => u.id === currentUser.id);
     if (userIndex !== -1) {
         users[userIndex] = currentUser;
-        await saveUsers();
+        // Only save the single changed user, not every user in the collection
+        if (useFirebase) {
+            await FirebaseDB.saveUser(currentUser);
+        } else {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
     }
 }
 
 async function saveUsers() {
     if (useFirebase) {
-        // Save all users to Firebase
-        for (const user of users) {
-            await FirebaseDB.saveUser(user);
-        }
+        // Save all users to Firebase (used only for bulk operations)
+        await Promise.all(users.map(user => FirebaseDB.saveUser(user)));
     } else {
         localStorage.setItem('users', JSON.stringify(users));
     }
@@ -3882,10 +3883,17 @@ async function savePools() {
 
 async function savePredictions() {
     if (useFirebase) {
-        // Save all predictions to Firebase
-        for (const prediction of predictions) {
-            await FirebaseDB.savePrediction(prediction);
-        }
+        // Save all predictions to Firebase in parallel (bulk)
+        await Promise.all(predictions.map(p => FirebaseDB.savePrediction(p)));
+    } else {
+        localStorage.setItem('predictions', JSON.stringify(predictions));
+    }
+}
+
+// Save only a single prediction (fast path used by submit flows)
+async function saveSinglePrediction(prediction) {
+    if (useFirebase) {
+        await FirebaseDB.savePrediction(prediction);
     } else {
         localStorage.setItem('predictions', JSON.stringify(predictions));
     }
