@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.2.3"; // v3.2.3: England flag fixed; penalty correct winner pays 10x bet
+const APP_VERSION = "v3.2.2"; // v3.2.2: ET score must continue from 90-min score (validation)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -2147,7 +2147,7 @@ function getCountryFlag(teamName) {
         "Denmark": "🇩🇰",
         "Ecuador": "🇪🇨",
         "Egypt": "🇪🇬",
-        "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "England": "🏴",
         "France": "🇫🇷",
         "Germany": "🇩🇪",
         "Haiti": "🇭🇹",
@@ -3333,7 +3333,7 @@ function calculateKnockoutBonusPayout(prediction, match) {
         const actualETDraw = etActualHome === etActualAway;
         if (actualETDraw && match.finalScore.penaltyWinner && ko.penaltyWinner) {
             if (ko.penaltyWinner === match.finalScore.penaltyWinner) {
-                bonus += bet * 10; // correct penalty winner (10x — hardest prediction)
+                bonus += bet * 3; // correct penalty winner
             }
         }
     }

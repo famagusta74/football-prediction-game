@@ -1,6 +1,6 @@
-# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.2.3)
+# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.2.2)
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.2.3 fixes the England flag (🏴󠁧󠁢󠁥󠁮󠁧󠁿) and raises the penalty winner payout to **10× the bet** — the highest single-event reward in the game.
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.2.2 enforces that the **ET score must continue from the 90-min score** — both teams' ET goals must be ≥ their 90-min goals, with live warning and hard validation on submit.
 
 ## 🎮 Features
 
