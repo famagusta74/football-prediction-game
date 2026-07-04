@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.2.4
-**Last Updated:** June 2026
+**Version:** 3.3.0
+**Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,480
+**Total Lines of Code:** ~4,560
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,16 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.2.4
+**Version:** 3.3.0
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
-**Lines of Code:** ~2,800 (JavaScript), ~1,600 (CSS), ~380 (HTML)
+**Lines of Code:** ~2,880 (JavaScript), ~1,600 (CSS), ~380 (HTML)
+
+**v3.3.0 — Round of 16 Matches Added:**
+- 8 Round of 16 fixtures added (ids 89–96), covering 04–07 Jul 2026
+- All matches support the full 3-stage knockout prediction (90 min / ET / Penalties)
+- Times stored in EEST (Cyprus/Greece, UTC+3) as per all previous knockout rounds
+- Matches automatically sync to all users via Firebase version-based merge on next load
 
 **v3.2.4 — Live Lock & Auto-Refresh:**
 - Match cards show LIVE badge (pulsing red) once kickoff passes

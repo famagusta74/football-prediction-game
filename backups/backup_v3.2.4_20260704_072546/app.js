@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.3.0"; // v3.3.0: Added 8 Round of 16 matches (04-07 Jul 2026, EEST times)
+const APP_VERSION = "v3.2.4"; // v3.2.4: Live status badge, auto-refresh, clear prediction-closed UI
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1326,87 +1326,6 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "Round of 32",
         venue: "Kansas City Stadium (Kansas City)"
-    },
-    // ── Round of 16 ──
-    {
-        id: 89,
-        homeTeam: "Canada",
-        awayTeam: "Morocco",
-        kickoff: "2026-07-04T20:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "Houston Stadium (Houston)"
-    },
-    {
-        id: 90,
-        homeTeam: "Paraguay",
-        awayTeam: "France",
-        kickoff: "2026-07-05T00:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "Philadelphia Stadium (Philadelphia)"
-    },
-    {
-        id: 91,
-        homeTeam: "Brazil",
-        awayTeam: "Norway",
-        kickoff: "2026-07-05T23:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "New York/New Jersey Stadium (New Jersey)"
-    },
-    {
-        id: 92,
-        homeTeam: "Mexico",
-        awayTeam: "England",
-        kickoff: "2026-07-06T03:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "Mexico City Stadium (Mexico City)"
-    },
-    {
-        id: 93,
-        homeTeam: "Portugal",
-        awayTeam: "Spain",
-        kickoff: "2026-07-06T22:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "Dallas Stadium (Dallas)"
-    },
-    {
-        id: 94,
-        homeTeam: "USA",
-        awayTeam: "Belgium",
-        kickoff: "2026-07-07T03:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "Seattle Stadium (Seattle)"
-    },
-    {
-        id: 95,
-        homeTeam: "Argentina",
-        awayTeam: "Egypt",
-        kickoff: "2026-07-07T19:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "Atlanta Stadium (Atlanta)"
-    },
-    {
-        id: 96,
-        homeTeam: "Switzerland",
-        awayTeam: "Colombia",
-        kickoff: "2026-07-07T23:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Round of 16",
-        venue: "BC Place Vancouver (Vancouver)"
     },
 ];
 

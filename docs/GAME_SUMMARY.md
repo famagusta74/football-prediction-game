@@ -124,10 +124,10 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v1.14.0 adds Bob suggestion KPI tracking:
+Version v3.3.0 adds 8 Round of 16 fixtures:
 
-- Each match now keeps Bob's original suggestion on the match record instead of recalculating it only for display
-- When an admin enters a final score and processes results, Bob's suggestion is evaluated for exact-score accuracy and correct-result accuracy
-- The top of the Predictions page now shows a Bob KPI summary with finished matches scored, correct result calls, exact hits, and hit rates
-- Finished match cards now show whether Bob nailed the exact score, got only the result right, or missed the fixture
-- Core gameplay for user predictions, payouts, leaderboard rules, and pool competition remains unchanged
+- Matches 89–96 cover the Round of 16 stage from 04–07 July 2026
+- All times stored in EEST (Cyprus/Greece, UTC+3)
+- Fixtures: Canada vs Morocco, Paraguay vs France, Brazil vs Norway, Mexico vs England, Portugal vs Spain, USA vs Belgium, Argentina vs Egypt, Switzerland vs Colombia
+- All matches support the full 3-stage knockout prediction system (90 min / Extra Time / Penalties)
+- Matches automatically merge into Firebase for all users on next page load — no manual action required
