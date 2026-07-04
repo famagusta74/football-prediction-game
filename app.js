@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.3.0"; // v3.3.0: Added 8 Round of 16 matches (04-07 Jul 2026, EEST times)
+const APP_VERSION = "v3.3.1"; // v3.3.1: Modal max-height fix — Submit button now always visible on desktop
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;

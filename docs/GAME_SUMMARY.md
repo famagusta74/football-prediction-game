@@ -124,10 +124,8 @@ For each change made to the game:
 6. Verify the GitHub Pages deployment after push
 
 ## Latest Update Summary
-Version v3.3.0 adds 8 Round of 16 fixtures:
+Version v3.3.1 fixes the prediction modal on desktop:
 
-- Matches 89–96 cover the Round of 16 stage from 04–07 July 2026
-- All times stored in EEST (Cyprus/Greece, UTC+3)
-- Fixtures: Canada vs Morocco, Paraguay vs France, Brazil vs Norway, Mexico vs England, Portugal vs Spain, USA vs Belgium, Argentina vs Egypt, Switzerland vs Colombia
-- All matches support the full 3-stage knockout prediction system (90 min / Extra Time / Penalties)
-- Matches automatically merge into Firebase for all users on next page load — no manual action required
+- The knockout prediction popup now caps at 90% of screen height and scrolls internally
+- The "Submit Knockout Prediction" button is always reachable regardless of screen size
+- No match data or game logic changes

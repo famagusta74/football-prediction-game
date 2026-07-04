@@ -1503,6 +1503,8 @@ input:focus, textarea:focus, select:focus {
     position: relative;
     animation: slideUp 0.3s;
     box-shadow: 0 24px 48px rgba(15, 44, 95, 0.18);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .prediction-explainer {

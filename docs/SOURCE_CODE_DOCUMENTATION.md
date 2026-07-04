@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.3.0
+**Version:** 3.3.1
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,560
+**Total Lines of Code:** ~4,562
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,15 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.3.0
+**Version:** 3.3.1
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
-**Lines of Code:** ~2,880 (JavaScript), ~1,600 (CSS), ~380 (HTML)
+**Lines of Code:** ~2,880 (JavaScript), ~1,602 (CSS), ~380 (HTML)
+
+**v3.3.1 — Modal Scroll Fix:**
+- Prediction modal on desktop now has `max-height: 90vh` and `overflow-y: auto`
+- Submit Knockout Prediction button is always visible and reachable on all screen sizes
+- No logic or data changes
 
 **v3.3.0 — Round of 16 Matches Added:**
 - 8 Round of 16 fixtures added (ids 89–96), covering 04–07 Jul 2026
