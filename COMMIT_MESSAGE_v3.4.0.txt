@@ -1,0 +1,12 @@
+v3.4.0 — Add Quarter-final fixtures (QF1–QF4)
+
+Add 4 FIFA World Cup 2026 Quarter-final matches to the schedule:
+
+- QF1 (ID 97): France vs Morocco — Thu 9 Jul, 23:00, Boston Stadium
+- QF2 (ID 98): Spain vs Belgium — Fri 10 Jul, 22:00, Los Angeles Stadium
+- QF3 (ID 99): Norway vs England — Sun 12 Jul, 00:00, Miami Stadium
+- QF4 (ID 100): Argentina vs Switzerland — Sun 12 Jul, 04:00, Kansas City Stadium
+
+All times kept as provided. All matches set to status: upcoming.
+Version bumped v3.3.1 → v3.4.0.
+Backup saved to backups/backup_v3.3.1_20260708_040616/.

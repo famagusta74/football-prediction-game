@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.4.0"; // v3.4.0: Quarter-final matches added (QF1–QF4)
+const APP_VERSION = "v3.3.1"; // v3.3.1: Modal max-height fix — Submit button now always visible on desktop
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1407,47 +1407,6 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "Round of 16",
         venue: "BC Place Vancouver (Vancouver)"
-    },
-    // ── Quarter-finals ──
-    {
-        id: 97,
-        homeTeam: "France",
-        awayTeam: "Morocco",
-        kickoff: "2026-07-09T23:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Quarter-final",
-        venue: "Boston Stadium (Boston)"
-    },
-    {
-        id: 98,
-        homeTeam: "Spain",
-        awayTeam: "Belgium",
-        kickoff: "2026-07-10T22:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Quarter-final",
-        venue: "Los Angeles Stadium (Los Angeles)"
-    },
-    {
-        id: 99,
-        homeTeam: "Norway",
-        awayTeam: "England",
-        kickoff: "2026-07-12T00:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Quarter-final",
-        venue: "Miami Stadium (Miami)"
-    },
-    {
-        id: 100,
-        homeTeam: "Argentina",
-        awayTeam: "Switzerland",
-        kickoff: "2026-07-12T04:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Quarter-final",
-        venue: "Kansas City Stadium (Kansas City)"
     },
 ];
 
