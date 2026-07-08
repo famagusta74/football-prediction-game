@@ -25,6 +25,14 @@
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
 **Lines of Code:** ~2,880 (JavaScript), ~1,602 (CSS), ~380 (HTML)
 
+**v3.4.0 — Quarter-final Matches Added:**
+- 4 Quarter-final fixtures added (ids 97–100), covering 09–12 Jul 2026
+- QF1: France vs Morocco — Thu 9 Jul, 23:00, Boston Stadium
+- QF2: Spain vs Belgium — Fri 10 Jul, 22:00, Los Angeles Stadium
+- QF3: Norway vs England — Sun 12 Jul, 00:00, Miami Stadium
+- QF4: Argentina vs Switzerland — Sun 12 Jul, 04:00, Kansas City Stadium
+- Matches automatically sync to all users via Firebase version-based merge on next load
+
 **v3.3.1 — Modal Scroll Fix:**
 - Prediction modal on desktop now has `max-height: 90vh` and `overflow-y: auto`
 - Submit Knockout Prediction button is always visible and reachable on all screen sizes
