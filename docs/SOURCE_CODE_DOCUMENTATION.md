@@ -25,6 +25,12 @@
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
 **Lines of Code:** ~2,880 (JavaScript), ~1,602 (CSS), ~380 (HTML)
 
+**v3.4.1 — Knockout Form for Quarter-finals, Semi-finals & Final:**
+- `isKnockout()` extended to return `true` for `Quarter-final`, `Semi-final`, and `Final` stages
+- All 4 Quarter-final matches (ids 97–100) now show the full 3-tab knockout prediction form (90 min / ET / Penalties)
+- Semi-final and Final stages are also future-proofed with this change
+- No match data or scoring logic changed
+
 **v3.4.0 — Quarter-final Matches Added:**
 - 4 Quarter-final fixtures added (ids 97–100), covering 09–12 Jul 2026
 - QF1: France vs Morocco — Thu 9 Jul, 23:00, Boston Stadium

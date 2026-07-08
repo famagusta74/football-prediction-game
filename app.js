@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.4.0"; // v3.4.0: Quarter-final matches added (QF1–QF4)
+const APP_VERSION = "v3.4.1"; // v3.4.1: Quarter-finals, Semi-finals & Final use knockout form (ET + penalties)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -3289,7 +3289,11 @@ function getUserNickname(userId) {
 // ── Knockout helpers ────────────────────────────────────────────────────────
 
 function isKnockout(match) {
-    return match && match.stage && match.stage.startsWith('Round of');
+    if (!match || !match.stage) return false;
+    return match.stage.startsWith('Round of') ||
+           match.stage === 'Quarter-final' ||
+           match.stage === 'Semi-final' ||
+           match.stage === 'Final';
 }
 
 // Generate Bob's full knockout suggestion (90min + ET + penalties)

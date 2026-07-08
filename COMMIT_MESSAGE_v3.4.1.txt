@@ -1,0 +1,12 @@
+v3.4.1 — Knockout form (ET + penalties) enabled for Quarter-finals, Semi-finals & Final
+
+Extended isKnockout() to return true for 'Quarter-final', 'Semi-final',
+and 'Final' stages — previously only matched 'Round of *' stages.
+
+All 4 Quarter-final matches (ids 97–100) now show the full 3-tab
+knockout prediction form (90 min / ET / Penalties) and Bob's knockout
+suggestion with the "Adopt" button.
+
+Semi-final and Final stages are also future-proofed by this change.
+
+Version bumped v3.4.0 → v3.4.1.
