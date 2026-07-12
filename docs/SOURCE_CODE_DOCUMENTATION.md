@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.4.2
+**Version:** 4.0.0
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,600
+**Total Lines of Code:** ~5,100
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,23 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.4.2
+**Version:** 4.0.0
 **Built by:** IBM Bob AI Assistant
-**Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
-**Lines of Code:** ~2,900 (JavaScript), ~1,602 (CSS), ~380 (HTML)
+**Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
+**Lines of Code:** ~3,280 (JavaScript), ~1,820 (CSS), ~420 (HTML)
+
+**v4.0.0 — Chat & Email Service:**
+- Real-time Global Chat: all logged-in players can send/receive messages in a shared chat room, powered by Firebase Realtime Database live subscriptions
+- Pool Chat: each pool has its own private chat room, only visible to pool members
+- Chat UI: message bubbles (your messages right-aligned navy, others left-aligned white), sender name, timestamp, auto-scroll to latest
+- Mobile friendly: Chat tab in mobile bottom nav (💬)
+- Admin Email Panel: admin can send emails to all players or individual users from the Users tab (requires EmailJS setup)
+- Email Verification: new users get an "Unverified" notice in the Chat tab with a "Send verification email →" button; clicking a verification link in the email marks the account as verified
+- Existing users: shown an "Unverified" notice; no forced re-registration needed
+- emailVerified field added to user objects (false for new/existing, true after verification)
+- EmailJS integration: free browser-side email service — see RELEASE_NOTES_v4.0.0.md for setup steps
+- Firebase paths added: globalChat/, poolChat/{poolId}/
+- All changes automatically propagate to all users via Firebase real-time sync
 
 **v3.4.2 — Semi-final Matches Added:**
 - 2 Semi-final fixtures added (ids 101–102), covering 14–15 Jul 2026

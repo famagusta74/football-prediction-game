@@ -10,9 +10,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="firebase-config.js"></script>
-
-    <!-- EmailJS SDK (free email sending from browser) -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -21,7 +18,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v4.0.0 - Chat & Email service</div>
+            <div class="version-header">v3.4.2 - Semi-final matches added</div>
             <div class="landing-shell">
                 <div class="hero-banner hero-banner--revamp">
                     <div class="hero-overlay"></div>
@@ -133,7 +130,7 @@
                         <button onclick="showRegister()" class="btn-secondary">Create Account</button>
                         <!-- Mobile-only footer: version + Bob credit -->
                         <div class="login-form-footer">
-                            <span class="login-form-version">v4.0.0</span>
+                            <span class="login-form-version">v3.4.2</span>
                             <a href="https://bob.ibm.com/" target="_blank" class="login-form-bob">
                                 <img src="bobimage.jpeg" alt="IBM Bob">
                                 <span>Powered by IBM Bob</span>
@@ -235,7 +232,7 @@
                             <span class="coin-icon">🪙</span>
                             <span id="userCoins">1000</span>
                         </div>
-                        <div class="version-badge">v4.0.0</div>
+                        <div class="version-badge">v3.4.2</div>
                     </div>
                     <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
                 </div>
@@ -270,10 +267,6 @@
             <button class="tab" onclick="showTab('pools')">My Pools</button>
             <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
             <button class="tab" onclick="showTab('activity')">Activity</button>
-            <button class="tab" onclick="showTab('chat')">
-                💬 Chat
-                <span id="chatUnreadBadge" class="notification-badge" style="display: none;">•</span>
-            </button>
             <button class="tab" onclick="showTab('matches')" style="display: none;">
                 ⚙️ Matches
             </button>
@@ -297,9 +290,9 @@
                 <span class="mobile-nav-icon">👥</span>
                 <span class="mobile-nav-label">Pools</span>
             </button>
-            <button class="mobile-nav-btn" onclick="showTab('chat')" data-tab="chat">
-                <span class="mobile-nav-icon">💬</span>
-                <span class="mobile-nav-label">Chat</span>
+            <button class="mobile-nav-btn" onclick="showTab('history')" data-tab="history">
+                <span class="mobile-nav-icon">📜</span>
+                <span class="mobile-nav-label">History</span>
             </button>
             <button class="mobile-nav-btn" onclick="showTab('activity')" data-tab="activity">
                 <span class="mobile-nav-icon">🪙</span>
@@ -471,74 +464,10 @@
             </div>
         </div>
 
-        <!-- Chat Tab -->
-        <div id="chatTab" class="tab-content">
-            <div class="container">
-                <div class="section-heading">
-                    <div>
-                        <h2>💬 Chat</h2>
-                        <p class="section-subtitle">Talk with all players globally, or chat privately within your pools.</p>
-                    </div>
-                    <div class="section-badge">💬 Community</div>
-                </div>
-
-                <!-- Chat sub-tabs -->
-                <div class="chat-subtabs">
-                    <button class="chat-subtab active" id="chatSubGlobal" onclick="switchChatTab('global')">🌍 Global Chat</button>
-                    <div id="poolChatSubtabs"></div>
-                </div>
-
-                <!-- Email verification notice (shown if unverified) -->
-                <div id="emailVerifyNotice" class="email-verify-notice" style="display:none;">
-                    ⚠️ Your email is <strong>unverified</strong>. Chat and emails work, but verifying your email keeps your account secure.
-                    <button onclick="sendVerificationEmail()" class="btn-link">Send verification email →</button>
-                </div>
-
-                <!-- Global Chat Panel -->
-                <div id="globalChatPanel" class="chat-panel active">
-                    <div id="globalChatMessages" class="chat-messages"></div>
-                    <div class="chat-input-row">
-                        <input type="text" id="globalChatInput" class="chat-input" placeholder="Type a message…" maxlength="300" onkeydown="if(event.key==='Enter') sendGlobalChat()">
-                        <button class="btn-primary chat-send-btn" onclick="sendGlobalChat()">Send</button>
-                    </div>
-                </div>
-
-                <!-- Pool Chat Panels (generated dynamically) -->
-                <div id="poolChatPanels"></div>
-            </div>
-        </div>
-
         <!-- Users Tab (Admin Only) -->
         <div id="usersTab" class="tab-content">
             <div class="container">
                 <h2>👑 Admin: User Management</h2>
-
-                <!-- Admin: Send Email Panel -->
-                <div class="admin-email-panel" id="adminEmailPanel">
-                    <h3>📧 Send Email to Players</h3>
-                    <p class="admin-email-desc">Send a notification email to all users or a specific user. Use this for match result announcements, updates, and reminders.</p>
-                    <div class="admin-email-form">
-                        <div class="admin-email-row">
-                            <label>To:</label>
-                            <select id="emailRecipient">
-                                <option value="all">📢 All Players</option>
-                            </select>
-                        </div>
-                        <div class="admin-email-row">
-                            <label>Subject:</label>
-                            <input type="text" id="emailSubject" placeholder="e.g. Match Results — Quarter-finals" maxlength="100">
-                        </div>
-                        <div class="admin-email-row">
-                            <label>Message:</label>
-                            <textarea id="emailBody" rows="5" placeholder="Write your message here…" maxlength="2000"></textarea>
-                        </div>
-                        <div class="admin-email-actions">
-                            <button class="btn-primary" onclick="adminSendEmail()">📤 Send Email</button>
-                            <span id="emailSendStatus" class="email-send-status"></span>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="usersList"></div>
                 <div id="adminActivityViewer" style="margin-top: 30px;"></div>
             </div>

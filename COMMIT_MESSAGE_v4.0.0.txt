@@ -1,0 +1,14 @@
+v4.0.0: Add Chat system (global + pool) and Email service
+
+- Real-time Global Chat for all players (Firebase live subscriptions)
+- Pool Chat: private chat per pool, visible to members only
+- Chat tab added to desktop nav and mobile bottom nav
+- Admin email panel in Users tab: send to all players or individual user (EmailJS)
+- Email verification: new users flagged unverified, self-verify via email link
+- emailVerified field added to user objects at registration
+- checkVerifyToken() handles email verification link clicks at init
+- Firebase paths added: globalChat/, poolChat/{poolId}/
+- EmailJS setup required — see RELEASE_NOTES_v4.0.0.md for 5-step guide
+- All features propagate to all users via Firebase real-time sync
+- Backup: backups/backup_v3.4.2_20260712_080111/
+- Docs updated: SOURCE_CODE_DOCUMENTATION.md, README.md, docs/index.html

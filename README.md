@@ -1,6 +1,6 @@
-# ⚽ Football Prediction Game - FIFA World Cup 2026 (v3.4.2)
+# ⚽ Football Prediction Game - FIFA World Cup 2026 (v4.0.0)
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v3.4.2 adds the Semi-final fixtures (France vs Spain & England vs Argentina) with full knockout prediction form (90 min / ET / Penalties).
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v4.0.0 adds a real-time Chat system (global + per-pool) and an Email service (admin notifications, email verification).
 
 ## 🎮 Features
 

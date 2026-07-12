@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.0.0"; // v4.0.0: Chat (global + pool) and Email service added
+const APP_VERSION = "v3.4.2"; // v3.4.2: Semi-final matches added (IDs 101-102)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1476,9 +1476,6 @@ const sampleMatches = [
 async function init() {
     // Initialize Firebase and load data
     await initializeApp();
-
-    // v4.0.0: Check for email verification token in URL
-    await checkVerifyToken();
     
     const savedUser = localStorage.getItem('currentUser');
     
@@ -1708,7 +1705,6 @@ async function register() {
         id: Date.now(),
         nickname: nickname,
         email: email,
-        emailVerified: false,
         pin: pin,
         coins: 1000,
         totalPredictions: 0,
@@ -1940,7 +1936,6 @@ function showDashboard() {
     
     loadMatches();
     loadPools();
-    showEmailVerifyNotice();
     
     // Set default leaderboard to first pool if user has pools, otherwise hide global option
     const userPools = pools.filter(p => p.members.includes(currentUser.id));
@@ -1985,8 +1980,6 @@ function showTab(tabName) {
         renderCurrentUserActivity();
     } else if (tabName === 'history') {
         loadHistory();
-    } else if (tabName === 'chat') {
-        initChatTab();
     }
 }
 
@@ -4240,12 +4233,7 @@ async function loadUsersTab() {
                                     ` : ''}
                                 </div>
                             </td>
-                            <td>
-                                ${user.email}
-                                ${user.emailVerified
-                                    ? '<span class="email-verified-badge">✓ Verified</span>'
-                                    : '<span class="email-unverified-badge">Unverified</span>'}
-                            </td>
+                            <td>${user.email}</td>
                             <td>${user.coins} 🪙</td>
                             <td>${user.totalPredictions || 0}</td>
                             <td>${user.totalPredictions ? Math.round((user.correctPredictions / user.totalPredictions) * 100) : 0}%</td>
@@ -4258,7 +4246,6 @@ async function loadUsersTab() {
     `;
 
     renderAdminActivityViewer();
-    populateEmailRecipientDropdown();
 }
 
 // Initialize app when page loads
@@ -4701,364 +4688,3 @@ function createMatchCard(match) {
 }
 
 // Made with Bob
-
-
-// ============================================================
-// v4.0.0 — CHAT SYSTEM
-// ============================================================
-
-// EmailJS public key — admin must set up a free EmailJS account and replace these values
-// See: https://www.emailjs.com  →  Service ID / Template ID / Public Key
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // replace after EmailJS setup
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // replace after EmailJS setup
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // replace after EmailJS setup
-
-// Active Firebase real-time listeners (so we can unsubscribe on tab change)
-let globalChatListener = null;
-let poolChatListeners  = {};
-let activeChatPoolId   = null;
-// Track messages already rendered (avoid duplicates from subscription)
-const renderedGlobalMsgIds = new Set();
-const renderedPoolMsgIds   = {};
-
-// ── initChatTab ────────────────────────────────────────────
-function initChatTab() {
-    // Show / hide email verification notice
-    showEmailVerifyNotice();
-
-    // Build pool chat sub-tabs (only pools user belongs to)
-    const userPools = pools.filter(p => p.members && p.members.includes(currentUser.id));
-    const subtabsContainer = document.getElementById('poolChatSubtabs');
-    const panelsContainer  = document.getElementById('poolChatPanels');
-
-    subtabsContainer.innerHTML = '';
-    panelsContainer.innerHTML  = '';
-
-    userPools.forEach(pool => {
-        // Sub-tab button
-        const btn = document.createElement('button');
-        btn.className = 'chat-subtab';
-        btn.id = 'chatSub_' + pool.id;
-        btn.textContent = '🏆 ' + pool.name;
-        btn.onclick = () => switchChatTab(pool.id);
-        subtabsContainer.appendChild(btn);
-
-        // Panel
-        const panel = document.createElement('div');
-        panel.id = 'poolChatPanel_' + pool.id;
-        panel.className = 'chat-panel';
-        panel.innerHTML = `
-            <div id="poolChatMessages_${pool.id}" class="chat-messages"></div>
-            <div class="chat-input-row">
-                <input type="text" id="poolChatInput_${pool.id}" class="chat-input"
-                    placeholder="Message your pool…" maxlength="300"
-                    onkeydown="if(event.key==='Enter') sendPoolChat('${pool.id}')">
-                <button class="btn-primary chat-send-btn" onclick="sendPoolChat('${pool.id}')">Send</button>
-            </div>
-        `;
-        panelsContainer.appendChild(panel);
-    });
-
-    // Default: show global chat
-    switchChatTab('global');
-}
-
-// ── switchChatTab ──────────────────────────────────────────
-function switchChatTab(target) {
-    // Update subtab button styles
-    document.querySelectorAll('.chat-subtab').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.getElementById(target === 'global' ? 'chatSubGlobal' : 'chatSub_' + target);
-    if (activeBtn) activeBtn.classList.add('active');
-
-    // Hide all panels, show target
-    document.getElementById('globalChatPanel').classList.remove('active');
-    document.querySelectorAll('[id^="poolChatPanel_"]').forEach(p => p.classList.remove('active'));
-
-    if (target === 'global') {
-        document.getElementById('globalChatPanel').classList.add('active');
-        loadGlobalChat();
-    } else {
-        const panel = document.getElementById('poolChatPanel_' + target);
-        if (panel) panel.classList.add('active');
-        activeChatPoolId = target;
-        loadPoolChat(target);
-    }
-}
-
-// ── loadGlobalChat ─────────────────────────────────────────
-async function loadGlobalChat() {
-    const container = document.getElementById('globalChatMessages');
-    if (!container) return;
-
-    // Unsubscribe any previous listener
-    if (globalChatListener) {
-        FirebaseDB.unsubscribeRef(globalChatListener);
-        globalChatListener = null;
-    }
-
-    if (useFirebase) {
-        // Subscribe to real-time updates
-        globalChatListener = FirebaseDB.subscribeGlobalChat(msg => {
-            if (renderedGlobalMsgIds.has(msg.timestamp)) return;
-            renderedGlobalMsgIds.add(msg.timestamp);
-            appendChatBubble(container, msg);
-        });
-    } else {
-        // localStorage fallback
-        const msgs = JSON.parse(localStorage.getItem('globalChat')) || [];
-        container.innerHTML = '';
-        msgs.forEach(msg => appendChatBubble(container, msg));
-    }
-}
-
-// ── sendGlobalChat ─────────────────────────────────────────
-async function sendGlobalChat() {
-    const input = document.getElementById('globalChatInput');
-    const text  = input.value.trim();
-    if (!text) return;
-    input.value = '';
-
-    const msg = {
-        sender:    currentUser.nickname,
-        text:      text,
-        timestamp: Date.now()
-    };
-
-    if (useFirebase) {
-        await FirebaseDB.sendGlobalChatMessage(msg);
-    } else {
-        const msgs = JSON.parse(localStorage.getItem('globalChat')) || [];
-        msgs.push(msg);
-        if (msgs.length > 200) msgs.splice(0, msgs.length - 200);
-        localStorage.setItem('globalChat', JSON.stringify(msgs));
-        // Manually append since no subscription
-        if (!renderedGlobalMsgIds.has(msg.timestamp)) {
-            renderedGlobalMsgIds.add(msg.timestamp);
-            appendChatBubble(document.getElementById('globalChatMessages'), msg);
-        }
-    }
-}
-
-// ── loadPoolChat ───────────────────────────────────────────
-async function loadPoolChat(poolId) {
-    const container = document.getElementById('poolChatMessages_' + poolId);
-    if (!container) return;
-
-    // Unsubscribe any previous listener for this pool
-    if (poolChatListeners[poolId]) {
-        FirebaseDB.unsubscribeRef(poolChatListeners[poolId]);
-        delete poolChatListeners[poolId];
-    }
-    if (!renderedPoolMsgIds[poolId]) renderedPoolMsgIds[poolId] = new Set();
-
-    if (useFirebase) {
-        poolChatListeners[poolId] = FirebaseDB.subscribePoolChat(poolId, msg => {
-            if (renderedPoolMsgIds[poolId].has(msg.timestamp)) return;
-            renderedPoolMsgIds[poolId].add(msg.timestamp);
-            appendChatBubble(container, msg);
-        });
-    } else {
-        const msgs = JSON.parse(localStorage.getItem('poolChat_' + poolId)) || [];
-        container.innerHTML = '';
-        msgs.forEach(msg => appendChatBubble(container, msg));
-    }
-}
-
-// ── sendPoolChat ───────────────────────────────────────────
-async function sendPoolChat(poolId) {
-    const input = document.getElementById('poolChatInput_' + poolId);
-    const text  = input.value.trim();
-    if (!text) return;
-    input.value = '';
-
-    const msg = {
-        sender:    currentUser.nickname,
-        text:      text,
-        timestamp: Date.now()
-    };
-
-    if (useFirebase) {
-        await FirebaseDB.sendPoolChatMessage(poolId, msg);
-    } else {
-        const key  = 'poolChat_' + poolId;
-        const msgs = JSON.parse(localStorage.getItem(key)) || [];
-        msgs.push(msg);
-        if (msgs.length > 200) msgs.splice(0, msgs.length - 200);
-        localStorage.setItem(key, JSON.stringify(msgs));
-        if (!renderedPoolMsgIds[poolId]) renderedPoolMsgIds[poolId] = new Set();
-        if (!renderedPoolMsgIds[poolId].has(msg.timestamp)) {
-            renderedPoolMsgIds[poolId].add(msg.timestamp);
-            appendChatBubble(document.getElementById('poolChatMessages_' + poolId), msg);
-        }
-    }
-}
-
-// ── appendChatBubble ───────────────────────────────────────
-function appendChatBubble(container, msg) {
-    const isMe = msg.sender === currentUser.nickname;
-    const time  = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const bubble = document.createElement('div');
-    bubble.className = 'chat-bubble ' + (isMe ? 'me' : 'other');
-    bubble.innerHTML = `
-        ${!isMe ? `<div class="chat-sender">${escapeHtml(msg.sender)}</div>` : ''}
-        <div class="chat-text">${escapeHtml(msg.text)}</div>
-        <div class="chat-time">${time}</div>
-    `;
-    container.appendChild(bubble);
-    container.scrollTop = container.scrollHeight;
-}
-
-function escapeHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-// ============================================================
-// v4.0.0 — EMAIL SERVICE (EmailJS)
-// ============================================================
-
-// ── showEmailVerifyNotice ──────────────────────────────────
-// Shows the notice in the Chat tab for users whose email is unverified
-function showEmailVerifyNotice() {
-    const notice = document.getElementById('emailVerifyNotice');
-    if (!notice) return;
-    // Existing users without the field at all are treated as unverified
-    const verified = currentUser && currentUser.emailVerified === true;
-    notice.style.display = verified ? 'none' : 'flex';
-}
-
-// ── sendVerificationEmail ──────────────────────────────────
-// Sends a simple verification email via EmailJS.
-// After clicking the link in the email the admin marks the user verified
-// (or the user self-serves via the confirmation link pattern).
-async function sendVerificationEmail() {
-    if (!currentUser) return;
-
-    // Guard: EmailJS must be configured
-    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-        alert('Email service not yet configured.\nThe admin needs to set up EmailJS (see RELEASE_NOTES_v4.0.0.md).');
-        return;
-    }
-
-    const token = btoa(currentUser.id + ':' + currentUser.email + ':' + Date.now());
-    const verifyUrl = window.location.origin + window.location.pathname + '?verifyToken=' + token;
-
-    try {
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-            to_email:   currentUser.email,
-            to_name:    currentUser.nickname,
-            subject:    'Verify your Football Prediction Game email',
-            message:    `Hi ${currentUser.nickname},\n\nPlease verify your email by visiting:\n${verifyUrl}\n\nIf you did not request this, ignore this email.`,
-            reply_to:   'noreply@footballprediction.game'
-        });
-        alert('✅ Verification email sent to ' + currentUser.email + '!\nCheck your inbox.');
-    } catch (err) {
-        console.error('EmailJS error:', err);
-        alert('Failed to send email. Please ask the admin to verify your account manually.');
-    }
-}
-
-// ── checkVerifyToken ───────────────────────────────────────
-// Called at app init — if URL has ?verifyToken= mark user as verified
-async function checkVerifyToken() {
-    const params = new URLSearchParams(window.location.search);
-    const token  = params.get('verifyToken');
-    if (!token) return;
-
-    try {
-        const decoded = atob(token);
-        const [userId, email] = decoded.split(':');
-        const user = users.find(u => String(u.id) === String(userId) && u.email === email);
-        if (user) {
-            user.emailVerified = true;
-            await saveUsers();
-            if (currentUser && currentUser.id === user.id) {
-                currentUser.emailVerified = true;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            }
-            // Clean URL
-            window.history.replaceState({}, '', window.location.pathname);
-            alert('✅ Email verified successfully! Your account is now fully verified.');
-        }
-    } catch (e) {
-        console.warn('Invalid verify token:', e);
-    }
-}
-
-// ── populateEmailRecipientDropdown ────────────────────────
-function populateEmailRecipientDropdown() {
-    const select = document.getElementById('emailRecipient');
-    if (!select) return;
-    // Reset to "All Players" option then add each user
-    select.innerHTML = '<option value="all">📢 All Players</option>';
-    users.forEach(u => {
-        const opt = document.createElement('option');
-        opt.value = u.id;
-        opt.textContent = u.nickname + ' <' + u.email + '>';
-        select.appendChild(opt);
-    });
-}
-
-// ── adminSendEmail ─────────────────────────────────────────
-async function adminSendEmail() {
-    if (!isAdmin()) return;
-
-    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-        alert('Email service not yet configured.\nSee RELEASE_NOTES_v4.0.0.md for EmailJS setup instructions.');
-        return;
-    }
-
-    const recipientValue = document.getElementById('emailRecipient').value;
-    const subject        = document.getElementById('emailSubject').value.trim();
-    const body           = document.getElementById('emailBody').value.trim();
-    const statusEl       = document.getElementById('emailSendStatus');
-
-    if (!subject || !body) {
-        alert('Please fill in both Subject and Message.');
-        return;
-    }
-
-    // Build recipient list
-    let recipients = [];
-    if (recipientValue === 'all') {
-        recipients = users.filter(u => u.email);
-    } else {
-        const u = users.find(u => String(u.id) === String(recipientValue));
-        if (u) recipients = [u];
-    }
-
-    if (recipients.length === 0) {
-        alert('No recipients found.');
-        return;
-    }
-
-    statusEl.textContent = '⏳ Sending…';
-    statusEl.style.color = '#888';
-
-    try {
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-        let sent = 0;
-        for (const user of recipients) {
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                to_email:   user.email,
-                to_name:    user.nickname,
-                subject:    subject,
-                message:    body,
-                reply_to:   currentUser.email
-            });
-            sent++;
-        }
-        statusEl.textContent = `✅ Sent to ${sent} player${sent !== 1 ? 's' : ''}`;
-        statusEl.style.color = '#28a745';
-        document.getElementById('emailSubject').value = '';
-        document.getElementById('emailBody').value    = '';
-    } catch (err) {
-        console.error('EmailJS admin send error:', err);
-        statusEl.textContent = '❌ Send failed — check EmailJS configuration';
-        statusEl.style.color = '#dc3545';
-    }
-}
