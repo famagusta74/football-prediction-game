@@ -1,0 +1,9 @@
+v3.4.2: Add Semi-final matches (France vs Spain & England vs Argentina)
+
+- ID 101: France vs Spain, Tue 14 Jul 2026 22:00, Dallas Stadium (Dallas)
+- ID 102: England vs Argentina, Wed 15 Jul 2026 22:00, Atlanta Stadium (Atlanta)
+- Both matches use the 3-tab knockout form (90 min / ET / Penalties)
+- isKnockout() already covers Semi-final from v3.4.1 — no logic change needed
+- All users auto-updated via Firebase version-based merge on next page load
+- Backup: backups/backup_v3.4.1_20260712_074431/
+- Docs updated: SOURCE_CODE_DOCUMENTATION.md

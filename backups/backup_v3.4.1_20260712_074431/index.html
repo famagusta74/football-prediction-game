@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Prediction Game</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <a href="docs/index.html" class="docs-link" target="_blank">
+            📚 Full Documentation
+        </a>
+        <div class="container">
+            <div class="version-header">v3.4.1 - Knockout form for QF/SF/Final</div>
+            <div class="landing-shell">
+                <div class="hero-banner hero-banner--revamp">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content hero-content--stacked">
+                        <div class="hero-main">
+                            <div class="hero-kicker">Football Prediction Game</div>
+                            <h1>Predict exact scores, win more coins, and lead your pool.</h1>
+                            <p class="subtitle">A simple football prediction game where every match gives you two ways to win: predict the exact score for the biggest payout, or predict the correct result to keep climbing the leaderboard.</p>
+                            <div class="hero-cta-row">
+                                <div class="hero-cta-card">
+                                    <span class="hero-cta-icon">🎯</span>
+                                    <div>
+                                        <strong>Exact score = biggest reward</strong>
+                                        <p>Hit the exact scoreline and earn the top payout.</p>
+                                    </div>
+                                </div>
+                                <div class="hero-cta-card">
+                                    <span class="hero-cta-icon">⚽</span>
+                                    <div>
+                                        <strong>Correct result still wins coins</strong>
+                                        <p>Pick win or draw correctly and stay competitive.</p>
+                                    </div>
+                                </div>
+                                <div class="hero-cta-card">
+                                    <span class="hero-cta-icon">🏆</span>
+                                    <div>
+                                        <strong>Compete as players and pools</strong>
+                                        <p>Climb the player leaderboard and help your team pool rise too.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-side-panel">
+                            <div class="hero-side-title">How it works</div>
+                            <div class="hero-steps">
+                                <div class="hero-step">
+                                    <span>1</span>
+                                    <p>Choose a match and enter your predicted score.</p>
+                                </div>
+                                <div class="hero-step">
+                                    <span>2</span>
+                                    <p>Bet coins and aim for exact score or correct result.</p>
+                                </div>
+                                <div class="hero-step">
+                                    <span>3</span>
+                                    <p>Track your winnings, leaderboard rank, and pool progress.</p>
+                                </div>
+                            </div>
+                            <div class="hero-flags" aria-label="Participating country flags">
+                                <span title="Argentina">🇦🇷</span>
+                                <span title="Brazil">🇧🇷</span>
+                                <span title="England">🏴</span>
+                                <span title="France">🇫🇷</span>
+                                <span title="Germany">🇩🇪</span>
+                                <span title="Spain">🇪🇸</span>
+                                <span title="Mexico">🇲🇽</span>
+                                <span title="USA">🇺🇸</span>
+                                <span title="Canada">🇨🇦</span>
+                                <span title="Japan">🇯🇵</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="https://bob.ibm.com/" target="_blank" class="builder-badge-link">
+                    <div class="builder-badge">
+                        <img src="bobimage.jpeg" alt="IBM Bob" class="builder-icon-img">
+                        <div class="builder-text">
+                            <strong>Built by IBM Bob</strong>
+                            <span>AI Development Assistant</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <div class="welcome-info welcome-info--revamp">
+                    <div class="info-card info-card--highlight">
+                        <div class="info-icon">💰</div>
+                        <h3>Win More with Exact Scores</h3>
+                        <p>Exact score predictions deliver the highest payout, so every smart pick can change the table fast.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">📈</div>
+                        <h3>Stay Alive with Correct Results</h3>
+                        <p>Even if you miss the exact score, correctly calling the match result still earns coins.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">👥</div>
+                        <h3>Compete with Friends and Pools</h3>
+                        <p>Challenge individual players and also push your pool up the pool leaderboard.</p>
+                    </div>
+                </div>
+                
+                <div class="tournament-strip">
+                    <div class="tournament-pill">🎯 Exact score pays the most</div>
+                    <div class="tournament-pill">⚽ Correct result still earns coins</div>
+                    <div class="tournament-pill">🏅 Player leaderboard by winnings</div>
+                    <div class="tournament-pill">🤝 Pool leaderboard by team winnings</div>
+                </div>
+                
+                <div class="auth-panel">
+                    <div class="auth-panel-copy">
+                        <h2>Start predicting in seconds</h2>
+                        <p>Log in to continue your tournament run, or create an account to join the competition and start building your coin total.</p>
+                    </div>
+                    <div class="auth-form auth-form--revamp">
+                        <input type="text" id="nickname" placeholder="Enter Nickname" maxlength="20">
+                        <input type="password" id="pin" placeholder="4-Digit PIN" maxlength="4" pattern="[0-9]*">
+                        <button onclick="login()" class="btn-primary">Login</button>
+                        <button onclick="showRegister()" class="btn-secondary">Create Account</button>
+                        <!-- Mobile-only footer: version + Bob credit -->
+                        <div class="login-form-footer">
+                            <span class="login-form-version">v3.4.1</span>
+                            <a href="https://bob.ibm.com/" target="_blank" class="login-form-bob">
+                                <img src="bobimage.jpeg" alt="IBM Bob">
+                                <span>Powered by IBM Bob</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Disclaimer Section -->
+            <div class="disclaimer-section">
+                <button class="disclaimer-toggle" onclick="toggleDisclaimer()">
+                    📋 Terms & Disclaimer
+                    <span id="disclaimerArrow">▼</span>
+                </button>
+                <div id="disclaimerContent" class="disclaimer-content">
+                    <h3>Community Game Disclaimer & Terms of Participation</h3>
+                    
+                    <p><strong>Welcome!</strong> This application has been created purely for entertainment, friendly competition, and the enjoyment of football among friends, colleagues, and communities. By creating an account, joining a pool, or participating in any game activity, you acknowledge and agree to the following:</p>
+                    
+                    <h4>1. FOR FUN ONLY</h4>
+                    <p>This game is intended solely for recreational and social purposes.</p>
+                    <ul>
+                        <li>No real money is involved.</li>
+                        <li>No prizes, valuables, or financial rewards are guaranteed or implied.</li>
+                        <li>Virtual coins have no monetary value.</li>
+                        <li>Virtual coins cannot be exchanged, sold, transferred, or redeemed for cash or any item of value.</li>
+                    </ul>
+                    
+                    <h4>2. FRIENDLY COMPETITION</h4>
+                    <p>The purpose of this platform is to encourage:</p>
+                    <ul>
+                        <li>Friendly competition</li>
+                        <li>Community engagement</li>
+                        <li>Good sportsmanship</li>
+                        <li>Fun conversations and laughter</li>
+                    </ul>
+                    <p>Participants are expected to treat each other with respect at all times. The game is designed to bring people together and should never negatively impact friendships, professional relationships, or personal interactions.</p>
+                    
+                    <h4>3. NO GAMBLING</h4>
+                    <p>This platform is not a gambling, betting, wagering, lottery, or gaming-for-money service. Participation does not create any right to receive money, prizes, goods, services, or any other item of value.</p>
+                    
+                    <h4>4. ACCEPTANCE OF TERMS</h4>
+                    <p>By joining a pool, accepting an invitation, creating an account, or participating in any game activity, you confirm that you have read, understood, and accepted these terms.</p>
+                    
+                    <h4>5. OPEN SOURCE PHILOSOPHY</h4>
+                    <p>The source code for this project is available to interested participants for transparency, learning, collaboration, and community contribution purposes.</p>
+                    
+                    <h4>6. TECHNOLOGY USED</h4>
+                    <p>This application was developed with the assistance of IBM Bob, an AI-powered software development platform. Individuals interested in IBM Bob can learn more at: <a href="https://bob.ibm.com" target="_blank">https://bob.ibm.com</a></p>
+                    
+                    <h4>7. INDEPENDENCE FROM IBM</h4>
+                    <p>This application is an independent personal project. It is not affiliated with, endorsed by, sponsored by, supported by, or officially connected to IBM Corporation, its subsidiaries, partners, products, or services. References to IBM Bob relate solely to the development tools used during the creation of this project.</p>
+                    
+                    <h4>8. FINAL PRINCIPLE</h4>
+                    <p><strong>Have fun. Enjoy football. Compete with friends. Share a laugh. Respect one another.</strong></p>
+                    <p><em>If the game stops being fun, we're doing it wrong.</em></p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
+                Version 3.3.1 - Modal scroll fix
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div id="registerScreen" class="screen">
+        <div class="container">
+            <div class="auth-panel auth-panel--register">
+                <div class="auth-panel-copy">
+                    <div class="hero-kicker">Create your player profile</div>
+                    <h2>Join the prediction game and represent your pool.</h2>
+                    <p>Use a nickname your friends will recognize, secure your account with a 4-digit PIN, and get ready to compete for coins and leaderboard position.</p>
+                </div>
+                <div class="auth-form auth-form--revamp">
+                    <input type="text" id="regNickname" placeholder="Choose Nickname" maxlength="20">
+                    <input type="email" id="regEmail" placeholder="Email Address">
+                    <input type="password" id="regPin" placeholder="Create 4-Digit PIN" maxlength="4" pattern="[0-9]*">
+                    <input type="password" id="regPinConfirm" placeholder="Confirm PIN" maxlength="4" pattern="[0-9]*">
+                    <button onclick="register()" class="btn-primary">Register</button>
+                    <button onclick="showLogin()" class="btn-secondary">Back to Login</button>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px;">
+                Version 3.3.1 - Modal scroll fix
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardScreen" class="screen">
+        <div class="header header--revamp">
+            <div class="dashboard-hero">
+                <div class="dashboard-identity">
+                    <div class="dashboard-kicker">Tournament Dashboard</div>
+                    <div class="user-info">
+                        <span id="userNickname">Player</span>
+                        <div class="coins">
+                            <span class="coin-icon">🪙</span>
+                            <span id="userCoins">1000</span>
+                        </div>
+                        <div class="version-badge">v3.4.1</div>
+                    </div>
+                    <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
+                </div>
+                <div class="dashboard-actions">
+                    <a href="https://bob.ibm.com/" target="_blank" class="header-bob-link">
+                        <div class="header-bob-badge">
+                            <span class="header-bob-prefix">Fully Developed by:</span>
+                            <img src="bobimage.jpeg" alt="IBM Bob" class="header-bob-img">
+                            <span class="header-bob-text">IBM Bob</span>
+                        </div>
+                    </a>
+                    <div class="header-action-row">
+                        <button onclick="processFinishedMatches()" class="btn-secondary btn-process">
+                            🧪 Process Results
+                        </button>
+                        <button onclick="backupAllData()" class="btn-secondary" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                            💾 Backup Data
+                        </button>
+                        <a href="docs/index.html" class="btn-docs" target="_blank">
+                            📚 Documentation
+                        </a>
+                        <button onclick="logout()" class="btn-logout">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Tabs (hidden on mobile) -->
+        <div class="tabs desktop-tabs">
+            <button class="tab active" onclick="showTab('predictions')">Predictions</button>
+            <button class="tab" onclick="showTab('history')">History</button>
+            <button class="tab" onclick="showTab('pools')">My Pools</button>
+            <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
+            <button class="tab" onclick="showTab('activity')">Activity</button>
+            <button class="tab" onclick="showTab('matches')" style="display: none;">
+                ⚙️ Matches
+            </button>
+            <button class="tab" onclick="showTab('users')" style="display: none;">
+                Users
+                <span id="adminNotificationBadge" class="notification-badge" style="display: none;">0</span>
+            </button>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-bottom-nav" id="mobileBottomNav">
+            <button class="mobile-nav-btn active" onclick="showTab('predictions')" data-tab="predictions">
+                <span class="mobile-nav-icon">⚽</span>
+                <span class="mobile-nav-label">Predict</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="showTab('leaderboard')" data-tab="leaderboard">
+                <span class="mobile-nav-icon">🏆</span>
+                <span class="mobile-nav-label">Leaderboard</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="showTab('pools')" data-tab="pools">
+                <span class="mobile-nav-icon">👥</span>
+                <span class="mobile-nav-label">Pools</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="showTab('history')" data-tab="history">
+                <span class="mobile-nav-icon">📜</span>
+                <span class="mobile-nav-label">History</span>
+            </button>
+            <button class="mobile-nav-btn" onclick="showTab('activity')" data-tab="activity">
+                <span class="mobile-nav-icon">🪙</span>
+                <span class="mobile-nav-label">Coins</span>
+            </button>
+        </nav>
+
+        <!-- Predictions Tab -->
+        <div id="predictionsTab" class="tab-content active">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <h2>Upcoming Matches</h2>
+                        <p class="section-subtitle">Pick exact scores for the biggest payout, or call the correct result to keep earning and stay in the race.</p>
+                    </div>
+                    <div class="section-badge">🌍 Tournament Matchday</div>
+                </div>
+                
+                <!-- View Toggle Buttons -->
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active" data-view="list" onclick="switchPredictionView('list')">
+                        <span class="view-icon">📋</span>
+                        <span class="view-label">List View</span>
+                    </button>
+                    <button class="view-toggle-btn" data-view="calendar" onclick="switchPredictionView('calendar')">
+                        <span class="view-icon">📅</span>
+                        <span class="view-label">Calendar View</span>
+                    </button>
+                    <button class="view-toggle-btn" data-view="teams" onclick="switchPredictionView('teams')">
+                        <span class="view-icon">🏴</span>
+                        <span class="view-label">Team Flags View</span>
+                    </button>
+                </div>
+                
+                <!-- List View (Original) -->
+                <div id="listView" class="prediction-view active">
+                    <div class="quick-guide">
+                        <div class="quick-guide-card">
+                            <span>1</span>
+                            <div>
+                                <strong>Choose a match</strong>
+                                <p>Open any available fixture and enter your score prediction.</p>
+                            </div>
+                        </div>
+                        <div class="quick-guide-card">
+                            <span>2</span>
+                            <div>
+                                <strong>Bet your coins</strong>
+                                <p>Higher confidence can mean bigger returns when you are right.</p>
+                            </div>
+                        </div>
+                        <div class="quick-guide-card">
+                            <span>3</span>
+                            <div>
+                                <strong>Win as player and pool</strong>
+                                <p>Your prediction winnings help both your personal rank and your pool total.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="prediction-note">✅ Cards with saved predictions already contain your pick. Open cards are ready for a new prediction, daily login still awards 100 coins, and Bob suggestions are optional guidance only.</p>
+                    <div id="bobSuggestionKpi"></div>
+                    <div id="matchesList" class="matches-list"></div>
+                </div>
+                
+                <!-- Calendar View -->
+                <div id="calendarView" class="prediction-view">
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" onclick="navigateCalendar(-1)">◀ Previous</button>
+                        <h3 id="calendarMonthYear">June 2026</h3>
+                        <button class="calendar-nav-btn" onclick="navigateCalendar(1)">Next ▶</button>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                    <div id="calendarMatchesList" class="matches-list"></div>
+                </div>
+                
+                <!-- Team Flags View -->
+                <div id="teamsView" class="prediction-view">
+                    <div class="teams-search">
+                        <input type="text" id="teamSearchInput" placeholder="🔍 Search teams..." onkeyup="filterTeams()">
+                    </div>
+                    <div id="teamsGrid" class="teams-grid"></div>
+                    <div id="teamMatchesList" class="matches-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="historyTab" class="tab-content">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <h2>Match History</h2>
+                        <p class="section-subtitle">Review your predictions and results for all processed matches.</p>
+                    </div>
+                    <div class="section-badge">📜 Past Results</div>
+                </div>
+                <div id="historyList" class="matches-list"></div>
+            </div>
+        </div>
+
+        <!-- Pools Tab -->
+        <div id="poolsTab" class="tab-content">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <h2>My Pools</h2>
+                        <p class="section-subtitle">Create a team, invite others, and compete together on total prediction winnings.</p>
+                    </div>
+                    <div class="section-badge">🤝 Team Competition</div>
+                </div>
+                <div class="action-strip">
+                    <button onclick="showCreatePool()" class="btn-primary">Create New Pool</button>
+                    <button onclick="showJoinPool()" class="btn-secondary">Join Pool</button>
+                </div>
+                <div id="poolsList" class="pools-list"></div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Tab -->
+        <div id="leaderboardTab" class="tab-content">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <h2>Leaderboard</h2>
+                        <p class="section-subtitle">See who is winning from predictions only, both as individual players and as pools.</p>
+                    </div>
+                    <div class="section-badge">🏆 Rankings</div>
+                </div>
+                <div class="leaderboard-intro">
+                    <div class="leaderboard-note-card">
+                        <strong>Player ranking rule</strong>
+                        <p>Only coins won from prediction payouts count toward rank. Starting coins and daily bonuses do not improve position.</p>
+                    </div>
+                    <div class="leaderboard-note-card">
+                        <strong>Pool ranking rule</strong>
+                        <p>Pools are ranked by the total prediction winnings earned by all members combined.</p>
+                    </div>
+                </div>
+                <select id="poolSelect" onchange="updateLeaderboard()">
+                    <option value="global">🌍 Global Leaderboard</option>
+                </select>
+                <div id="leaderboardList" class="leaderboard-list"></div>
+                <h3 class="subsection-title">🏆 Pool Leaderboard</h3>
+                <div id="poolLeaderboardList" class="leaderboard-list"></div>
+            </div>
+        </div>
+
+        <!-- Activity Tab -->
+        <div id="activityTab" class="tab-content">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <h2>My Activity</h2>
+                        <p class="section-subtitle">Follow every coin movement so it is easy to understand what you spent, what you won, and why.</p>
+                    </div>
+                    <div class="section-badge">📊 Coin History</div>
+                </div>
+                <div id="myActivitySummary" style="margin-bottom: 20px;"></div>
+                <div id="myActivityList"></div>
+            </div>
+        </div>
+
+        <!-- Matches Tab (Admin Only) -->
+        <div id="matchesTab" class="tab-content">
+            <div class="container">
+                <h2>⚙️ Admin: Match Management</h2>
+                <p style="color: #666; margin-bottom: 20px;">Enter match results here, then click "Process Results" button in the header to award payouts.</p>
+                <div id="adminMatchesList"></div>
+            </div>
+        </div>
+
+        <!-- Users Tab (Admin Only) -->
+        <div id="usersTab" class="tab-content">
+            <div class="container">
+                <h2>👑 Admin: User Management</h2>
+                <div id="usersList"></div>
+                <div id="adminActivityViewer" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Modal -->
+    <div id="predictionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePredictionModal()">&times;</span>
+            <h3 id="modalMatchTitle">Match Prediction</h3>
+
+            <!-- Standard explainer (hidden for knockout) -->
+            <div id="standardExplainer" class="prediction-explainer">
+                <div class="prediction-explainer-card">
+                    <strong>Exact score</strong>
+                    <p>Predict both team scores correctly for the highest payout.</p>
+                </div>
+                <div class="prediction-explainer-card">
+                    <strong>Correct result</strong>
+                    <p>If you correctly call win or draw, you still earn coins.</p>
+                </div>
+            </div>
+
+            <!-- Knockout explainer (shown for Round of 32+) -->
+            <div id="knockoutExplainer" class="knockout-explainer" style="display:none;">
+                <div class="knockout-explainer-pill">⚽ 90 min</div>
+                <div class="knockout-explainer-pill">⏱ Extra Time</div>
+                <div class="knockout-explainer-pill">🥅 Penalties</div>
+                <p>Knockout match — predict the score at 90 mins, then extra time if it's a draw, then penalty winner if extra time is also a draw.</p>
+            </div>
+
+            <!-- Bob suggestion box -->
+            <div class="modal-suggestion-box">
+                <div class="modal-suggestion-header">
+                    <strong>🤖 Bob's suggestion</strong>
+                    <span id="modalSuggestionConfidence" class="modal-suggestion-confidence">Balanced matchup</span>
+                </div>
+                <!-- Standard suggestion -->
+                <div id="bobStandardSuggestion">
+                    <div class="modal-suggestion-grid">
+                        <div>
+                            <div class="modal-suggestion-label">Suggested score</div>
+                            <div id="modalSuggestionScore" class="modal-suggestion-value">1-1</div>
+                        </div>
+                        <div>
+                            <div class="modal-suggestion-label">Suggested result</div>
+                            <div id="modalSuggestionResult" class="modal-suggestion-value">Draw</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Knockout suggestion -->
+                <div id="bobKnockoutSuggestion" style="display:none;">
+                    <div class="knockout-bob-grid">
+                        <div class="knockout-bob-cell">
+                            <div class="modal-suggestion-label">⚽ 90 min score</div>
+                            <div id="bobSuggest90" class="modal-suggestion-value">1-1</div>
+                        </div>
+                        <div class="knockout-bob-cell">
+                            <div class="modal-suggestion-label">⏱ Extra time score</div>
+                            <div id="bobSuggestET" class="modal-suggestion-value">—</div>
+                        </div>
+                        <div class="knockout-bob-cell">
+                            <div class="modal-suggestion-label">🥅 Penalty winner</div>
+                            <div id="bobSuggestPen" class="modal-suggestion-value">—</div>
+                        </div>
+                    </div>
+                </div>
+                <p id="modalSuggestionReason" class="modal-suggestion-text">Suggestion details appear here for the selected match.</p>
+                <div class="modal-suggestion-note" id="bobSuggestionNote">Use this suggestion only if you want to. Your own prediction remains fully in your control.</div>
+                <!-- Adopt Bob button (knockout only) -->
+                <button id="adoptBobBtn" onclick="adoptBobPrediction()" class="adopt-bob-btn" style="display:none;">
+                    🤖 Adopt Bob's Prediction
+                </button>
+            </div>
+
+            <!-- Standard prediction form -->
+            <div id="standardPredictionForm" class="prediction-form">
+                <div class="score-inputs">
+                    <div class="team-score">
+                        <label id="homeTeamLabel">Home</label>
+                        <input type="number" id="homeScore" min="0" max="20" value="0">
+                    </div>
+                    <span class="vs">VS</span>
+                    <div class="team-score">
+                        <label id="awayTeamLabel">Away</label>
+                        <input type="number" id="awayScore" min="0" max="20" value="0">
+                    </div>
+                </div>
+                <div class="bet-amount">
+                    <label>Bet Amount:</label>
+                    <input type="number" id="betAmount" min="10" max="500" value="50" step="10">
+                    <span class="coin-icon">🪙</span>
+                </div>
+                <div class="payout-info">
+                    <p>Exact Score: <strong id="exactPayout">250</strong> 🪙</p>
+                    <p>Correct Result: <strong id="resultPayout">100</strong> 🪙</p>
+                </div>
+                <button onclick="submitPrediction()" class="btn-primary">Submit Prediction</button>
+            </div>
+
+            <!-- Knockout prediction form -->
+            <div id="knockoutPredictionForm" style="display:none;" class="prediction-form">
+                <!-- Step tabs -->
+                <div class="ko-tabs">
+                    <button class="ko-tab active" id="koTab90" onclick="showKoTab('90')">⚽ 90 min</button>
+                    <button class="ko-tab" id="koTabET" onclick="showKoTab('ET')" id="koTabET">⏱ Extra Time</button>
+                    <button class="ko-tab" id="koTabPen" onclick="showKoTab('Pen')">🥅 Penalties</button>
+                </div>
+
+                <!-- 90-min score panel -->
+                <div id="koPanel90" class="ko-panel active">
+                    <p class="ko-panel-hint">Enter the score at the end of 90 minutes (including stoppage time). A draw is allowed.</p>
+                    <div class="score-inputs">
+                        <div class="team-score">
+                            <label id="koHomeLabel90">Home</label>
+                            <input type="number" id="koHome90" min="0" max="20" value="0" onchange="updateKoTabStates()">
+                        </div>
+                        <span class="vs">VS</span>
+                        <div class="team-score">
+                            <label id="koAwayLabel90">Away</label>
+                            <input type="number" id="koAway90" min="0" max="20" value="0" onchange="updateKoTabStates()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extra-time panel -->
+                <div id="koPanelET" class="ko-panel">
+                    <p class="ko-panel-hint">Enter the <strong>cumulative</strong> score at end of extra time (120 min) — it must be ≥ the 90-min score for both teams. A draw leads to penalties.</p>
+                    <div class="score-inputs">
+                        <div class="team-score">
+                            <label id="koHomeLabelET">Home</label>
+                            <input type="number" id="koHomeET" min="0" max="20" value="0" oninput="updateKoTabStates()">
+                        </div>
+                        <span class="vs">VS</span>
+                        <div class="team-score">
+                            <label id="koAwayLabelET">Away</label>
+                            <input type="number" id="koAwayET" min="0" max="20" value="0" oninput="updateKoTabStates()">
+                        </div>
+                    </div>
+                    <div id="etContinuationWarning" class="ko-panel-note ko-panel-note--error" style="display:none;">
+                        ⚠️ ET score must continue from the 90-min score — each team's ET goals cannot be less than their 90-min goals.
+                    </div>
+                    <div id="etNotNeededNote" class="ko-panel-note" style="display:none;">
+                        ℹ️ Extra time is only needed if 90-min result is a draw. Your 90-min prediction has a winner — you can skip this tab.
+                    </div>
+                </div>
+
+                <!-- Penalties panel -->
+                <div id="koPanelPen" class="ko-panel">
+                    <p class="ko-panel-hint">Penalties only happen if extra time also ends in a draw. Pick the winner — no draw possible in a shootout.</p>
+                    <div id="penWinnerSelect">
+                        <select id="penaltyWinner" class="ko-select">
+                            <option value="">— Select penalty winner —</option>
+                            <option id="penHome" value="home">Home team wins on penalties</option>
+                            <option id="penAway" value="away">Away team wins on penalties</option>
+                        </select>
+                    </div>
+                    <div id="penNotNeededNote" class="ko-panel-note" style="display:none;">
+                        ℹ️ Penalties are only needed if extra time ends in a draw. Adjust your 90-min or extra-time predictions if you expect a winner.
+                    </div>
+                </div>
+
+                <!-- Bet + submit -->
+                <div class="bet-amount" style="margin-top:16px;">
+                    <label>Bet Amount:</label>
+                    <input type="number" id="koBetAmount" min="10" max="500" value="50" step="10" oninput="updateKoPayoutDisplay()">
+                    <span class="coin-icon">🪙</span>
+                </div>
+                <div class="payout-info" id="koPayoutInfo">
+                    <p>90 min exact score: <strong id="koPayout90Exact">250</strong> 🪙</p>
+                    <p>90 min correct result: <strong id="koPayout90Result">100</strong> 🪙</p>
+                    <p style="font-size:12px;color:#5b6f96;">+ Bonus: ET exact score ×5 &nbsp;|&nbsp; ET correct result ×2 &nbsp;|&nbsp; 🥅 Penalty winner ×10</p>
+                </div>
+                <button onclick="submitKnockoutPrediction()" class="btn-primary" style="margin-top:8px;">Submit Knockout Prediction</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Pool Modal -->
+    <div id="createPoolModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreatePool()">&times;</span>
+            <h3>Create New Pool</h3>
+            <div class="pool-form">
+                <input type="text" id="poolName" placeholder="Pool Name" maxlength="30">
+                <textarea id="poolDescription" placeholder="Description (optional)" maxlength="200"></textarea>
+                <button onclick="createPool()" class="btn-primary">Create Pool</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Pool Modal -->
+    <div id="joinPoolModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeJoinPool()">&times;</span>
+            <h3>Join Pool</h3>
+            <div class="pool-form">
+                <input type="text" id="poolCode" placeholder="Enter Pool Code" maxlength="8">
+                <button onclick="joinPool()" class="btn-primary">Join Pool</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

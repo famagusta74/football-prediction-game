@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v3.4.2"; // v3.4.2: Semi-final matches added (IDs 101-102)
+const APP_VERSION = "v3.4.1"; // v3.4.1: Quarter-finals, Semi-finals & Final use knockout form (ET + penalties)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1448,27 +1448,6 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "Quarter-final",
         venue: "Kansas City Stadium (Kansas City)"
-    },
-    // ── Semi-finals ──
-    {
-        id: 101,
-        homeTeam: "France",
-        awayTeam: "Spain",
-        kickoff: "2026-07-14T22:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Semi-final",
-        venue: "Dallas Stadium (Dallas)"
-    },
-    {
-        id: 102,
-        homeTeam: "England",
-        awayTeam: "Argentina",
-        kickoff: "2026-07-15T22:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Semi-final",
-        venue: "Atlanta Stadium (Atlanta)"
     },
 ];
 

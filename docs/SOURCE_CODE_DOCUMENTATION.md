@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 3.3.1
+**Version:** 3.4.2
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~4,562
+**Total Lines of Code:** ~4,600
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,17 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 3.3.1
+**Version:** 3.4.2
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase
-**Lines of Code:** ~2,880 (JavaScript), ~1,602 (CSS), ~380 (HTML)
+**Lines of Code:** ~2,900 (JavaScript), ~1,602 (CSS), ~380 (HTML)
+
+**v3.4.2 — Semi-final Matches Added:**
+- 2 Semi-final fixtures added (ids 101–102), covering 14–15 Jul 2026
+- SF1: France vs Spain — Tue 14 Jul, 22:00, Dallas Stadium (Dallas)
+- SF2: England vs Argentina — Wed 15 Jul, 22:00, Atlanta Stadium (Atlanta)
+- Both matches use the full 3-tab knockout prediction form (90 min / ET / Penalties)
+- Matches automatically sync to all users via Firebase version-based merge on next load
 
 **v3.4.1 — Knockout Form for Quarter-finals, Semi-finals & Final:**
 - `isKnockout()` extended to return `true` for `Quarter-final`, `Semi-final`, and `Final` stages
