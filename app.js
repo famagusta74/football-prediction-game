@@ -4709,9 +4709,9 @@ function createMatchCard(match) {
 
 // EmailJS public key — admin must set up a free EmailJS account and replace these values
 // See: https://www.emailjs.com  →  Service ID / Template ID / Public Key
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // replace after EmailJS setup
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // replace after EmailJS setup
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // replace after EmailJS setup
+const EMAILJS_SERVICE_ID  = 'service_2f6gkzj';
+const EMAILJS_TEMPLATE_ID = 'template_ud1ny0j';
+const EMAILJS_PUBLIC_KEY  = '1qNJ2ikeCXYMw2qeK';
 
 // Active Firebase real-time listeners (so we can unsubscribe on tab change)
 let globalChatListener = null;
