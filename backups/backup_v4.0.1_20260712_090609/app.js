@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.0.2"; // v4.0.2: Fix EmailJS recipient address — send both email+to_email fields
+const APP_VERSION = "v4.0.1"; // v4.0.1: Email setup banner + robust error handling for EmailJS
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -4949,13 +4949,11 @@ async function sendVerificationEmail() {
     try {
         emailjs.init(EMAILJS_PUBLIC_KEY);
         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-            email:      currentUser.email,
             to_email:   currentUser.email,
-            name:       currentUser.nickname,
             to_name:    currentUser.nickname,
             subject:    'Verify your Football Prediction Game email',
             message:    `Hi ${currentUser.nickname},\n\nPlease verify your email by visiting:\n${verifyUrl}\n\nIf you did not request this, ignore this email.`,
-            reply_to:   currentUser.email
+            reply_to:   'noreply@footballprediction.game'
         });
         alert('✅ Verification email sent to ' + currentUser.email + '!\nCheck your inbox.');
     } catch (err) {
@@ -5083,9 +5081,7 @@ async function adminSendEmail() {
         let sent = 0;
         for (const user of recipients) {
             await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                email:      user.email,
                 to_email:   user.email,
-                name:       user.nickname,
                 to_name:    user.nickname,
                 subject:    subject,
                 message:    body,

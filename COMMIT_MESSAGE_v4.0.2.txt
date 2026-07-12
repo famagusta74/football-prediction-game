@@ -1,0 +1,6 @@
+v4.0.2: Fix EmailJS "recipients address corrupted" error
+
+- Send both email+to_email and name+to_name fields to cover all EmailJS template variable names
+- reply_to on verification email fixed (was noreply placeholder, now uses sender's real email)
+- Version bumped to v4.0.2 in all files
+- Backup: backups/backup_v4.0.1_20260712_090609/
