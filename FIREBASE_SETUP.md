@@ -65,7 +65,19 @@ const firebaseConfig = {
       ".read": true,
       ".write": true
     },
+    "matches": {
+      ".read": true,
+      ".write": true
+    },
     "adminNotifications": {
+      ".read": true,
+      ".write": true
+    },
+    "globalChat": {
+      ".read": true,
+      ".write": true
+    },
+    "poolChat": {
       ".read": true,
       ".write": true
     }

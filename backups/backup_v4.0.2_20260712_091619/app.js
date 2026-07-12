@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.0.3"; // v4.0.3: Fix chat — Firebase rules for globalChat/poolChat + rendering fix
+const APP_VERSION = "v4.0.2"; // v4.0.2: Fix EmailJS recipient address — send both email+to_email fields
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -4790,17 +4790,14 @@ async function loadGlobalChat() {
     const container = document.getElementById('globalChatMessages');
     if (!container) return;
 
-    // Unsubscribe any previous listener and clear the chat window
+    // Unsubscribe any previous listener
     if (globalChatListener) {
         FirebaseDB.unsubscribeRef(globalChatListener);
         globalChatListener = null;
     }
-    // Clear rendered-IDs set so every fresh subscribe shows all messages cleanly
-    renderedGlobalMsgIds.clear();
-    container.innerHTML = '';
 
     if (useFirebase) {
-        // Subscribe: child_added fires once per existing message then again for new ones
+        // Subscribe to real-time updates
         globalChatListener = FirebaseDB.subscribeGlobalChat(msg => {
             if (renderedGlobalMsgIds.has(msg.timestamp)) return;
             renderedGlobalMsgIds.add(msg.timestamp);
@@ -4809,6 +4806,7 @@ async function loadGlobalChat() {
     } else {
         // localStorage fallback
         const msgs = JSON.parse(localStorage.getItem('globalChat')) || [];
+        container.innerHTML = '';
         msgs.forEach(msg => appendChatBubble(container, msg));
     }
 }
@@ -4846,13 +4844,12 @@ async function loadPoolChat(poolId) {
     const container = document.getElementById('poolChatMessages_' + poolId);
     if (!container) return;
 
-    // Unsubscribe previous listener, clear window and ID set for a clean reload
+    // Unsubscribe any previous listener for this pool
     if (poolChatListeners[poolId]) {
         FirebaseDB.unsubscribeRef(poolChatListeners[poolId]);
         delete poolChatListeners[poolId];
     }
-    renderedPoolMsgIds[poolId] = new Set();
-    container.innerHTML = '';
+    if (!renderedPoolMsgIds[poolId]) renderedPoolMsgIds[poolId] = new Set();
 
     if (useFirebase) {
         poolChatListeners[poolId] = FirebaseDB.subscribePoolChat(poolId, msg => {
@@ -4862,6 +4859,7 @@ async function loadPoolChat(poolId) {
         });
     } else {
         const msgs = JSON.parse(localStorage.getItem('poolChat_' + poolId)) || [];
+        container.innerHTML = '';
         msgs.forEach(msg => appendChatBubble(container, msg));
     }
 }

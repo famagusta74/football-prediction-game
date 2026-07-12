@@ -1,0 +1,7 @@
+v4.0.3: Fix chat — add globalChat/poolChat Firebase rules + rendering fix
+
+- Root cause: globalChat and poolChat paths had no Firebase rules (default = denied)
+- Fix: FIREBASE_SETUP.md updated with complete rules incl globalChat, poolChat, matches
+- Fix: loadGlobalChat/loadPoolChat clear rendered-IDs set on each fresh subscribe
+- ACTION REQUIRED: update Firebase rules manually (see RELEASE_NOTES_v4.0.3.md)
+- Backup: backups/backup_v4.0.2_20260712_091619/

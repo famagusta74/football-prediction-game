@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 4.0.2
+**Version:** 4.0.3
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~5,100
@@ -20,10 +20,16 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 4.0.2
+**Version:** 4.0.3
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
 **Lines of Code:** ~3,280 (JavaScript), ~1,820 (CSS), ~420 (HTML)
+
+**v4.0.3 — Fix Chat: Firebase Rules + Message Rendering:**
+- Root cause: `globalChat` and `poolChat` paths were missing from Firebase Realtime Database rules — all reads and writes were silently denied
+- Fix: `FIREBASE_SETUP.md` updated with complete rules including `globalChat`, `poolChat`, and `matches`
+- Fix: `loadGlobalChat()` and `loadPoolChat()` now clear the rendered-IDs set and the message window on each fresh subscription, so messages always appear correctly on tab re-open
+- Admin must update Firebase rules manually (one-time step — see RELEASE_NOTES_v4.0.3.md)
 
 **v4.0.2 — Fix EmailJS "Recipients address is corrupted":**
 - Send both `email`+`to_email` and `name`+`to_name` fields so template works regardless of which variable name is used in EmailJS
