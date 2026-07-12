@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 4.0.0
+**Version:** 4.0.1
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~5,100
@@ -20,10 +20,18 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 4.0.0
+**Version:** 4.0.1
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
 **Lines of Code:** ~3,280 (JavaScript), ~1,820 (CSS), ~420 (HTML)
+
+**v4.0.1 — EmailJS Setup Banner & Error Diagnostics:**
+- Setup banner now shown in admin email panel whenever EmailJS is not yet configured
+- `adminSendEmail()` checks for missing SDK (`typeof emailjs === 'undefined'`) and shows a clear red error message instead of silently doing nothing
+- Progress counter shown while sending ("⏳ Sent 2 / 5…")
+- Detailed error message on failure (shows EmailJS error text, not generic message)
+- `isEmailJSConfigured()` helper centralises all configuration checks
+- `showEmailSetupBanner()` called automatically when the Users tab loads
 
 **v4.0.0 — Chat & Email Service:**
 - Real-time Global Chat: all logged-in players can send/receive messages in a shared chat room, powered by Firebase Realtime Database live subscriptions

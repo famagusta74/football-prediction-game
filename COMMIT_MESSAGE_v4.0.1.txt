@@ -1,0 +1,11 @@
+v4.0.1: EmailJS setup banner + robust send diagnostics
+
+- Setup banner shown in admin email panel when EmailJS not yet configured
+- adminSendEmail() checks typeof emailjs === 'undefined' and shows red error
+- isEmailJSConfigured() helper centralises all three credential checks
+- showEmailSetupBanner() called automatically when Users tab loads
+- Progress counter while sending: "Sent 2 / 5…"
+- Detailed error text on send failure (shows EmailJS error.text)
+- sendVerificationEmail() guard updated to use isEmailJSConfigured()
+- RELEASE_NOTES_v4.0.1.md: full step-by-step EmailJS setup guide
+- Backup: backups/backup_v4.0.0_20260712_081142/

@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.0.1"; // v4.0.1: Email setup banner + robust error handling for EmailJS
+const APP_VERSION = "v4.0.0"; // v4.0.0: Chat (global + pool) and Email service added
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -4938,8 +4938,8 @@ async function sendVerificationEmail() {
     if (!currentUser) return;
 
     // Guard: EmailJS must be configured
-    if (!isEmailJSConfigured()) {
-        alert('Email service not yet configured by the admin.\n\nThe admin needs to set up EmailJS — see RELEASE_NOTES_v4.0.1.md for the step-by-step guide.');
+    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+        alert('Email service not yet configured.\nThe admin needs to set up EmailJS (see RELEASE_NOTES_v4.0.0.md).');
         return;
     }
 
@@ -5001,58 +5001,21 @@ function populateEmailRecipientDropdown() {
         opt.textContent = u.nickname + ' <' + u.email + '>';
         select.appendChild(opt);
     });
-    // Show/hide the "not configured" banner
-    showEmailSetupBanner();
-}
-
-// ── isEmailJSConfigured ────────────────────────────────────
-function isEmailJSConfigured() {
-    // Check both: placeholders not replaced AND SDK object exists in window
-    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY' ||
-        EMAILJS_SERVICE_ID  === 'YOUR_SERVICE_ID' ||
-        EMAILJS_TEMPLATE_ID === 'YOUR_TEMPLATE_ID') {
-        return false;
-    }
-    if (typeof emailjs === 'undefined') {
-        return false;
-    }
-    return true;
-}
-
-// ── showEmailSetupBanner ───────────────────────────────────
-function showEmailSetupBanner() {
-    const banner = document.getElementById('emailSetupBanner');
-    if (!banner) return;
-    if (!isEmailJSConfigured()) {
-        banner.style.display = 'block';
-    } else {
-        banner.style.display = 'none';
-    }
 }
 
 // ── adminSendEmail ─────────────────────────────────────────
 async function adminSendEmail() {
     if (!isAdmin()) return;
 
-    const statusEl = document.getElementById('emailSendStatus');
-
-    // Check SDK exists in window
-    if (typeof emailjs === 'undefined') {
-        statusEl.textContent = '❌ EmailJS SDK failed to load. Check your internet connection and reload the page.';
-        statusEl.style.color = '#dc3545';
-        return;
-    }
-
-    // Check placeholders not replaced
-    if (!isEmailJSConfigured()) {
-        statusEl.textContent = '❌ EmailJS not configured — see the setup banner above.';
-        statusEl.style.color = '#dc3545';
+    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+        alert('Email service not yet configured.\nSee RELEASE_NOTES_v4.0.0.md for EmailJS setup instructions.');
         return;
     }
 
     const recipientValue = document.getElementById('emailRecipient').value;
     const subject        = document.getElementById('emailSubject').value.trim();
     const body           = document.getElementById('emailBody').value.trim();
+    const statusEl       = document.getElementById('emailSendStatus');
 
     if (!subject || !body) {
         alert('Please fill in both Subject and Message.');
@@ -5073,7 +5036,7 @@ async function adminSendEmail() {
         return;
     }
 
-    statusEl.textContent = `⏳ Sending to ${recipients.length} player${recipients.length !== 1 ? 's' : ''}…`;
+    statusEl.textContent = '⏳ Sending…';
     statusEl.style.color = '#888';
 
     try {
@@ -5088,7 +5051,6 @@ async function adminSendEmail() {
                 reply_to:   currentUser.email
             });
             sent++;
-            statusEl.textContent = `⏳ Sent ${sent} / ${recipients.length}…`;
         }
         statusEl.textContent = `✅ Sent to ${sent} player${sent !== 1 ? 's' : ''}`;
         statusEl.style.color = '#28a745';
@@ -5096,7 +5058,7 @@ async function adminSendEmail() {
         document.getElementById('emailBody').value    = '';
     } catch (err) {
         console.error('EmailJS admin send error:', err);
-        statusEl.textContent = '❌ Send failed: ' + (err.text || err.message || 'check EmailJS dashboard for details');
+        statusEl.textContent = '❌ Send failed — check EmailJS configuration';
         statusEl.style.color = '#dc3545';
     }
 }
