@@ -1,6 +1,6 @@
-# ⚽ Football Prediction Game - FIFA World Cup 2026 (v4.1.2)
+# ⚽ Football Prediction Game - FIFA World Cup 2026 (v4.1.3)
 
-A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v4.1.2 fixes the chat unread badge — only new messages arriving after login trigger the indicator, with a pulsing red badge on desktop and a pulsing red dot on mobile.
+A social football prediction game where friends compete by predicting FIFA World Cup 2026 match results using virtual coins. v4.1.3 fixes the chat unread badge — it now appears on login if messages arrived in Global or pool chats since the user's last session.
 
 ## 🎮 Features
 

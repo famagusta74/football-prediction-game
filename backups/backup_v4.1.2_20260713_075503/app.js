@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.1.3"; // v4.1.3: Chat badge shown on login if messages arrived since last session
+const APP_VERSION = "v4.1.2"; // v4.1.2: Chat unread badge fix — only messages received AFTER login trigger badge
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -4753,64 +4753,50 @@ let chatUnreadListenersPool  = {};
 
 async function startChatUnreadWatcher() {
     if (!useFirebase) return;
-    stopChatUnreadWatcher();
+    stopChatUnreadWatcher(); // clean up any previous listeners
 
-    const nowTs    = Date.now();
-    const seen     = getChatLastSeen(); // what the user last read per channel (persisted across sessions)
-    const userPools = pools.filter(p => p.members && p.members.includes(currentUser.id));
+    const loginTs = Date.now(); // only messages AFTER this moment count as unread
 
-    // ── STEP 1: Check on login whether unread messages already exist ──
-    // For each channel, fetch the latest message. If its timestamp > lastSeen
-    // for that channel, the badge should fire immediately on login.
-
-    // Global
+    // ── Seed lastSeen for global chat with the newest existing message ──
+    // This prevents historical messages from triggering the badge on login.
     try {
         const gSnap = await database.ref('globalChat').orderByKey().limitToLast(1).once('value');
-        gSnap.forEach(c => {
-            const m = c.val();
-            if (!m || m.sender === currentUser.nickname) return;
-            const lastSeen = seen['global'] || 0;
-            if (m.timestamp > lastSeen) markChatUnread('global');
-        });
-    } catch(e) {}
+        let latestGlobalTs = loginTs;
+        gSnap.forEach(c => { const m = c.val(); if (m && m.timestamp) latestGlobalTs = Math.max(latestGlobalTs, m.timestamp); });
+        setChatLastSeen('global', latestGlobalTs);
+    } catch(e) { setChatLastSeen('global', loginTs); }
 
-    // Each pool
-    for (const pool of userPools) {
-        const poolKey = String(pool.id);
-        try {
-            const pSnap = await database.ref('poolChat/' + pool.id).orderByKey().limitToLast(1).once('value');
-            pSnap.forEach(c => {
-                const m = c.val();
-                if (!m || m.sender === currentUser.nickname) return;
-                const lastSeen = seen[poolKey] || 0;
-                if (m.timestamp > lastSeen) markChatUnread(poolKey);
-            });
-        } catch(e) {}
-    }
-
-    // ── STEP 2: Attach live listeners for NEW messages that arrive while logged in ──
-    // Use nowTs as the threshold so only genuinely new messages (after login) fire
-    // additional badge updates — the on-login check above already handled history.
-
-    // Global live watcher
+    // ── Global chat watcher — only fires for messages arriving after subscribe ──
     const gRef = database.ref('globalChat').orderByKey().limitToLast(1);
     chatUnreadListenerGlobal = gRef;
     gRef.on('child_added', snap => {
         const msg = snap.val();
         if (!msg || msg.sender === currentUser.nickname) return;
-        if (msg.timestamp <= nowTs) return; // already handled by the on-login check
+        const seen = getChatLastSeen();
+        // Ignore any message that arrived before (or at) our seeded lastSeen
+        if (msg.timestamp <= (seen['global'] || loginTs)) return;
         markChatUnread('global');
     });
 
-    // Pool live watchers
+    // ── Pool chat watchers ──
+    const userPools = pools.filter(p => p.members && p.members.includes(currentUser.id));
     for (const pool of userPools) {
         const poolKey = String(pool.id);
+        // Seed lastSeen for this pool
+        try {
+            const pSnap = await database.ref('poolChat/' + pool.id).orderByKey().limitToLast(1).once('value');
+            let latestPoolTs = loginTs;
+            pSnap.forEach(c => { const m = c.val(); if (m && m.timestamp) latestPoolTs = Math.max(latestPoolTs, m.timestamp); });
+            setChatLastSeen(poolKey, latestPoolTs);
+        } catch(e) { setChatLastSeen(poolKey, loginTs); }
+
         const pRef = database.ref('poolChat/' + pool.id).orderByKey().limitToLast(1);
         chatUnreadListenersPool[pool.id] = pRef;
         pRef.on('child_added', snap => {
             const msg = snap.val();
             if (!msg || msg.sender === currentUser.nickname) return;
-            if (msg.timestamp <= nowTs) return;
+            const seen = getChatLastSeen();
+            if (msg.timestamp <= (seen[poolKey] || loginTs)) return;
             markChatUnread(poolKey);
         });
     }

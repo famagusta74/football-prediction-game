@@ -1,6 +1,6 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 4.1.2
+**Version:** 4.1.3
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
 **Total Lines of Code:** ~5,420
@@ -20,17 +20,22 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 4.1.2
+**Version:** 4.1.3
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
 **Lines of Code:** ~3,590 (JavaScript), ~2,040 (CSS), ~460 (HTML)
 
+**v4.1.3 — Chat Badge on Login (correct behaviour):**
+- Badge now appears immediately on login if messages arrived since the user's last session
+- Two-phase logic in `startChatUnreadWatcher()`:
+  - **Phase 1 (on-login check):** fetch latest message per channel via `once('value')`; compare its timestamp against the stored `chatLastSeen` value for that channel; if newer → `markChatUnread()` fires immediately
+  - **Phase 2 (live watcher):** attach `child_added` listener using `nowTs` (login moment) as threshold; only genuinely new messages arriving after login trigger further badge updates
+- `chatLastSeen` per channel is written to `localStorage` when the user opens/reads a channel — persists across sessions and page reloads
+- First-time users (no `chatLastSeen` stored) always see badge if any message exists
+
 **v4.1.2 — Chat Unread Badge Fix:**
-- Root cause: Firebase `child_added` fires immediately for the *last existing message* when the listener attaches, causing a false badge on every login
-- Fix: `startChatUnreadWatcher()` now reads the current latest message timestamp for each channel (one `once('value')` call) and seeds `lastSeen` before attaching the live listener — historical messages are never counted
-- Desktop badge now shows pulsing red **NEW** pill (was a faint `•` dot)
-- Mobile dot now 11px with a pulsing red glow, anchored top-right of the emoji via `position:absolute`
-- `@keyframes badge-pulse` added — both indicators pulse to draw the eye
+- Desktop badge shows pulsing red **NEW** pill; mobile dot 11px pulsing glow
+- `@keyframes badge-pulse` added for both indicators
 
 **v4.1.1 — Mobile Chat Overlay:**
 - Full-screen chat overlay opens from the 💬 Chat button in the mobile bottom nav
