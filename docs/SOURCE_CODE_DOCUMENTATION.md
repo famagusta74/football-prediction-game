@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 4.0.3
+**Version:** 4.1.0
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~5,100
+**Total Lines of Code:** ~5,200
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,19 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 4.0.3
+**Version:** 4.1.0
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
-**Lines of Code:** ~3,280 (JavaScript), ~1,820 (CSS), ~420 (HTML)
+**Lines of Code:** ~3,380 (JavaScript), ~1,835 (CSS), ~420 (HTML)
+
+**v4.1.0 — Chat Unread Badge & User Activity Columns:**
+- Chat tab (desktop) shows a red dot badge when there are unread messages in Global or any pool chat
+- Mobile nav Chat button shows a red dot overlay when unread messages are waiting
+- Badge clears automatically when the user opens the Chat tab (or a specific channel)
+- Unread state survives page reload (stored in localStorage per channel)
+- Admin Users table gains two new columns: **Last Login** (date + time) and **Last Prediction** (date + time)
+- `lastPrediction` written to user record whenever a standard or knockout prediction is saved
+- `lastLogin` was already tracked on login — now also displayed in the table
 
 **v4.0.3 — Fix Chat: Firebase Rules + Message Rendering:**
 - Root cause: `globalChat` and `poolChat` paths were missing from Firebase Realtime Database rules — all reads and writes were silently denied

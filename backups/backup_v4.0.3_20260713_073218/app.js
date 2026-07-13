@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.1.0"; // v4.1.0: Chat unread badge; Last Login & Last Prediction columns in Users tab
+const APP_VERSION = "v4.0.3"; // v4.0.3: Fix chat — Firebase rules for globalChat/poolChat + rendering fix
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1941,8 +1941,6 @@ function showDashboard() {
     loadMatches();
     loadPools();
     showEmailVerifyNotice();
-    startChatUnreadWatcher();
-    updateChatBadge();
     
     // Set default leaderboard to first pool if user has pools, otherwise hide global option
     const userPools = pools.filter(p => p.members.includes(currentUser.id));
@@ -1989,9 +1987,6 @@ function showTab(tabName) {
         loadHistory();
     } else if (tabName === 'chat') {
         initChatTab();
-        // Clear all unread when user opens the Chat tab
-        localStorage.removeItem('chatUnreadChannels');
-        updateChatBadge();
     }
 }
 
@@ -2851,7 +2846,6 @@ function submitPrediction() {
     // Deduct coins for new bet
     currentUser.coins -= betAmount;
     currentUser.totalPredictions = (currentUser.totalPredictions || 0) + 1;
-    currentUser.lastPrediction = new Date().toISOString();
 
     addUserActivity(currentUser.id, 'prediction_bet', -betAmount, {
         reason: 'Coins deducted for new prediction',
@@ -2972,7 +2966,6 @@ async function submitKnockoutPrediction() {
 
     currentUser.coins -= betAmount;
     currentUser.totalPredictions = (currentUser.totalPredictions || 0) + 1;
-    currentUser.lastPrediction = new Date().toISOString();
     addUserActivity(currentUser.id, 'prediction_bet', -betAmount, {
         reason: 'Knockout prediction placed',
         matchId: currentMatchId,
@@ -4229,8 +4222,6 @@ async function loadUsersTab() {
                         <th>Predictions</th>
                         <th>Accuracy</th>
                         <th>Joined</th>
-                        <th>Last Login</th>
-                        <th>Last Prediction</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -4259,8 +4250,6 @@ async function loadUsersTab() {
                             <td>${user.totalPredictions || 0}</td>
                             <td>${user.totalPredictions ? Math.round((user.correctPredictions / user.totalPredictions) * 100) : 0}%</td>
                             <td>${new Date(user.createdAt).toLocaleDateString()}</td>
-                            <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleString([], {dateStyle:'short', timeStyle:'short'}) : '—'}</td>
-                            <td>${user.lastPrediction ? new Date(user.lastPrediction).toLocaleString([], {dateStyle:'short', timeStyle:'short'}) : '—'}</td>
                         </tr>
                     `).join('')}
                 </tbody>
@@ -4732,93 +4721,6 @@ let activeChatPoolId   = null;
 const renderedGlobalMsgIds = new Set();
 const renderedPoolMsgIds   = {};
 
-// ── Chat unread tracking ────────────────────────────────────
-// Stores the timestamp of the last message the user has "seen" per channel.
-// Key: 'global' or poolId (as string). Value: numeric timestamp (ms).
-// Persisted in localStorage so it survives page reloads.
-function getChatLastSeen() {
-    try { return JSON.parse(localStorage.getItem('chatLastSeen') || '{}'); }
-    catch(e) { return {}; }
-}
-function setChatLastSeen(channel, ts) {
-    const seen = getChatLastSeen();
-    seen[channel] = ts;
-    localStorage.setItem('chatLastSeen', JSON.stringify(seen));
-}
-
-// Called on login / dashboard load — subscribes background listeners that
-// watch for new messages and update the Chat tab badge without opening the tab.
-let chatUnreadListenerGlobal = null;
-let chatUnreadListenersPool  = {};
-
-function startChatUnreadWatcher() {
-    if (!useFirebase) return;
-    stopChatUnreadWatcher(); // clean up any previous listeners
-
-    // Global chat watcher
-    const gRef = database.ref('globalChat').orderByKey().limitToLast(1);
-    chatUnreadListenerGlobal = gRef;
-    gRef.on('child_added', snap => {
-        const msg = snap.val();
-        if (!msg || msg.sender === currentUser.nickname) return;
-        const seen = getChatLastSeen();
-        if ((seen['global'] || 0) < msg.timestamp) {
-            markChatUnread('global');
-        }
-    });
-
-    // Pool chat watchers — one per pool the user belongs to
-    const userPools = pools.filter(p => p.members && p.members.includes(currentUser.id));
-    userPools.forEach(pool => {
-        const pRef = database.ref('poolChat/' + pool.id).orderByKey().limitToLast(1);
-        chatUnreadListenersPool[pool.id] = pRef;
-        pRef.on('child_added', snap => {
-            const msg = snap.val();
-            if (!msg || msg.sender === currentUser.nickname) return;
-            const seen = getChatLastSeen();
-            if ((seen[String(pool.id)] || 0) < msg.timestamp) {
-                markChatUnread(String(pool.id));
-            }
-        });
-    });
-}
-
-function stopChatUnreadWatcher() {
-    if (chatUnreadListenerGlobal) { chatUnreadListenerGlobal.off(); chatUnreadListenerGlobal = null; }
-    Object.values(chatUnreadListenersPool).forEach(r => r.off());
-    chatUnreadListenersPool = {};
-}
-
-// Marks the badge visible (any unread channel is enough)
-function markChatUnread(channel) {
-    // store so we know which channel triggered it (future-proofing)
-    const unread = JSON.parse(localStorage.getItem('chatUnreadChannels') || '[]');
-    if (!unread.includes(channel)) { unread.push(channel); localStorage.setItem('chatUnreadChannels', JSON.stringify(unread)); }
-    updateChatBadge();
-}
-
-// Clears unread for a specific channel (called when user opens that chat)
-function clearChatUnread(channel) {
-    let unread = JSON.parse(localStorage.getItem('chatUnreadChannels') || '[]');
-    unread = unread.filter(c => c !== channel);
-    localStorage.setItem('chatUnreadChannels', JSON.stringify(unread));
-    updateChatBadge();
-}
-
-// Updates the visible badge/dot on both desktop tab and mobile nav button
-function updateChatBadge() {
-    const unread = JSON.parse(localStorage.getItem('chatUnreadChannels') || '[]');
-    const hasUnread = unread.length > 0;
-
-    // Desktop tab badge
-    const desktopBadge = document.getElementById('chatUnreadBadge');
-    if (desktopBadge) desktopBadge.style.display = hasUnread ? 'inline-block' : 'none';
-
-    // Mobile nav dot
-    const mobileDot = document.getElementById('chatMobileUnreadDot');
-    if (mobileDot) mobileDot.style.display = hasUnread ? 'inline-block' : 'none';
-}
-
 // ── initChatTab ────────────────────────────────────────────
 function initChatTab() {
     // Show / hide email verification notice
@@ -4874,15 +4776,11 @@ function switchChatTab(target) {
 
     if (target === 'global') {
         document.getElementById('globalChatPanel').classList.add('active');
-        clearChatUnread('global');
-        setChatLastSeen('global', Date.now());
         loadGlobalChat();
     } else {
         const panel = document.getElementById('poolChatPanel_' + target);
         if (panel) panel.classList.add('active');
         activeChatPoolId = target;
-        clearChatUnread(String(target));
-        setChatLastSeen(String(target), Date.now());
         loadPoolChat(target);
     }
 }
