@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 4.1.0
+**Version:** 4.1.1
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~5,200
+**Total Lines of Code:** ~5,400
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,19 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 4.1.0
+**Version:** 4.1.1
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
-**Lines of Code:** ~3,380 (JavaScript), ~1,835 (CSS), ~420 (HTML)
+**Lines of Code:** ~3,560 (JavaScript), ~2,000 (CSS), ~460 (HTML)
+
+**v4.1.1 — Mobile Chat Overlay:**
+- Full-screen chat overlay opens from the 💬 Chat button in the mobile bottom nav
+- No tab switch needed — overlay floats above the current screen and can be dismissed with ✕
+- Header shows current channel; horizontally scrollable sub-tabs for Global + each pool
+- Message window fills all available height; input bar is always pinned to the bottom (stays above keyboard)
+- Sending works with Enter or the round send button; Firebase real-time subscription active while overlay is open
+- Unread dot on the mobile Chat nav button still works — clears when overlay opens
+- Email verification notice shown inside overlay for unverified users
 
 **v4.1.0 — Chat Unread Badge & User Activity Columns:**
 - Chat tab (desktop) shows a red dot badge when there are unread messages in Global or any pool chat

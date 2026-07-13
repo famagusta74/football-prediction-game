@@ -21,7 +21,7 @@
             📚 Full Documentation
         </a>
         <div class="container">
-            <div class="version-header">v4.1.1 - Mobile chat overlay</div>
+            <div class="version-header">v4.1.0 - Chat unread badge & User activity columns</div>
             <div class="landing-shell">
                 <div class="hero-banner hero-banner--revamp">
                     <div class="hero-overlay"></div>
@@ -133,7 +133,7 @@
                         <button onclick="showRegister()" class="btn-secondary">Create Account</button>
                         <!-- Mobile-only footer: version + Bob credit -->
                         <div class="login-form-footer">
-                            <span class="login-form-version">v4.1.1</span>
+                            <span class="login-form-version">v4.1.0</span>
                             <a href="https://bob.ibm.com/" target="_blank" class="login-form-bob">
                                 <img src="bobimage.jpeg" alt="IBM Bob">
                                 <span>Powered by IBM Bob</span>
@@ -235,7 +235,7 @@
                             <span class="coin-icon">🪙</span>
                             <span id="userCoins">1000</span>
                         </div>
-                        <div class="version-badge">v4.1.1</div>
+                        <div class="version-badge">v4.1.0</div>
                     </div>
                     <p class="dashboard-summary">Predict scores, earn coins from correct calls, and help your pool climb the rankings.</p>
                 </div>
@@ -297,7 +297,7 @@
                 <span class="mobile-nav-icon">👥</span>
                 <span class="mobile-nav-label">Pools</span>
             </button>
-            <button class="mobile-nav-btn" id="mobileNavChatBtn" onclick="openMobileChat()" data-tab="chat">
+            <button class="mobile-nav-btn" onclick="showTab('chat')" data-tab="chat">
                 <span class="mobile-nav-icon">💬<span id="chatMobileUnreadDot" class="chat-mobile-unread-dot" style="display:none;"></span></span>
                 <span class="mobile-nav-label">Chat</span>
             </button>
@@ -306,42 +306,6 @@
                 <span class="mobile-nav-label">Coins</span>
             </button>
         </nav>
-
-        <!-- Mobile Chat Overlay (full-screen, appears above everything) -->
-        <div id="mobileChatOverlay" class="mobile-chat-overlay" style="display:none;">
-            <!-- Header bar -->
-            <div class="mobile-chat-header">
-                <div class="mobile-chat-header-left">
-                    <span class="mobile-chat-title">💬 Chat</span>
-                </div>
-                <button class="mobile-chat-close" onclick="closeMobileChat()">✕</button>
-            </div>
-
-            <!-- Sub-tabs (Global + pools) -->
-            <div class="mobile-chat-subtabs" id="mobileChatSubtabs">
-                <button class="mobile-chat-subtab active" id="mobileChatSubGlobal" onclick="switchMobileChat('global')">🌍 Global</button>
-                <!-- pool sub-tabs injected by JS -->
-            </div>
-
-            <!-- Email verify notice -->
-            <div id="mobileEmailVerifyNotice" class="email-verify-notice mobile-verify-notice" style="display:none;">
-                ⚠️ Email <strong>unverified</strong>.
-                <button onclick="sendVerificationEmail()" class="btn-link">Verify →</button>
-            </div>
-
-            <!-- Message window -->
-            <div class="mobile-chat-messages-wrap">
-                <div id="mobileChatMessages" class="mobile-chat-messages"></div>
-            </div>
-
-            <!-- Input bar (stays above keyboard) -->
-            <div class="mobile-chat-input-bar">
-                <input type="text" id="mobileChatInput" class="mobile-chat-input"
-                    placeholder="Type a message…" maxlength="300"
-                    onkeydown="if(event.key==='Enter') sendMobileChat()">
-                <button class="mobile-chat-send-btn" onclick="sendMobileChat()">➤</button>
-            </div>
-        </div>
 
         <!-- Predictions Tab -->
         <div id="predictionsTab" class="tab-content active">
