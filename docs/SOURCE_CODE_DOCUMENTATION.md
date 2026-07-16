@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 4.1.3
+**Version:** 4.1.4
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~5,420
+**Total Lines of Code:** ~5,460
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,17 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 4.1.3
+**Version:** 4.1.4
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
-**Lines of Code:** ~3,590 (JavaScript), ~2,040 (CSS), ~460 (HTML)
+**Lines of Code:** ~3,610 (JavaScript), ~2,040 (CSS), ~460 (HTML)
+
+**v4.1.4 — Bronze final & Final Matches Added:**
+- 2 final-stage fixtures added (ids 103–104), completing the FIFA World Cup 2026 schedule
+- ID 103: France vs England — Sat 18 Jul, 23:00, Miami Stadium (Bronze final / 3rd-place play-off)
+- ID 104: Spain vs Argentina — Sun 19 Jul, 21:00, New York/New Jersey Stadium (Final)
+- `isKnockout()` extended to also match `'Bronze final'` so both matches show the full 3-tab prediction form (90 min / ET / Penalties)
+- All users auto-updated via Firebase version-based merge on next page load
 
 **v4.1.3 — Chat Badge on Login (correct behaviour):**
 - Badge now appears immediately on login if messages arrived since the user's last session

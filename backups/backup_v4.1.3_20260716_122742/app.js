@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.1.4"; // v4.1.4: Bronze final & Final matches added (IDs 103-104)
+const APP_VERSION = "v4.1.3"; // v4.1.3: Chat badge shown on login if messages arrived since last session
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -1469,27 +1469,6 @@ const sampleMatches = [
         league: "FIFA World Cup 2026",
         stage: "Semi-final",
         venue: "Atlanta Stadium (Atlanta)"
-    },
-    // ── Finals ──
-    {
-        id: 103,
-        homeTeam: "France",
-        awayTeam: "England",
-        kickoff: "2026-07-18T23:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Bronze final",
-        venue: "Miami Stadium (Miami)"
-    },
-    {
-        id: 104,
-        homeTeam: "Spain",
-        awayTeam: "Argentina",
-        kickoff: "2026-07-19T21:00:00",
-        status: "upcoming",
-        league: "FIFA World Cup 2026",
-        stage: "Final",
-        venue: "New York/New Jersey Stadium (New Jersey)"
     },
 ];
 
@@ -3349,7 +3328,6 @@ function isKnockout(match) {
     return match.stage.startsWith('Round of') ||
            match.stage === 'Quarter-final' ||
            match.stage === 'Semi-final' ||
-           match.stage === 'Bronze final' ||
            match.stage === 'Final';
 }
 

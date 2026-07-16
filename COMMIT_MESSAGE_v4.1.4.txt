@@ -1,0 +1,9 @@
+v4.1.4: Add Bronze final (France vs England) & Final (Spain vs Argentina)
+
+- ID 103: France vs England, Sat 18 Jul 2026 23:00, Miami Stadium (Bronze final)
+- ID 104: Spain vs Argentina, Sun 19 Jul 2026 21:00, New York/New Jersey Stadium (Final)
+- Both matches use the full 3-tab knockout form (90 min / ET / Penalties)
+- isKnockout() extended to also cover 'Bronze final' stage
+- All users auto-updated via Firebase version-based merge on next page load
+- Backup: backups/backup_v4.1.3_20260716_122742/
+- Version bumped v4.1.3 → v4.1.4 in app.js, index.html, docs/index.html, docs/SOURCE_CODE_DOCUMENTATION.md, README.md
