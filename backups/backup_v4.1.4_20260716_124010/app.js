@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = "v4.1.5"; // v4.1.5: Fix match merge — always sync if sampleMatches has more matches than Firebase
+const APP_VERSION = "v4.1.4"; // v4.1.4: Bronze final & Final matches added (IDs 103-104)
 
 // Data Storage (Firebase + localStorage fallback)
 let currentUser = null;
@@ -37,11 +37,9 @@ async function initializeApp() {
         // Load data from Firebase
         await loadDataFromFirebase();
         
-        // Check if matches need updating (version-based update OR count mismatch)
+        // Check if matches need updating (version-based update)
         const lastMatchVersion = localStorage.getItem('lastMatchVersion');
         const needsMatchUpdate = !lastMatchVersion || lastMatchVersion !== APP_VERSION;
-        // Also merge if sampleMatches has more matches than Firebase (catches missed merges)
-        const needsCountMerge = sampleMatches.length > matches.length;
         
         // Initialize matches if empty (first time only)
         if (matches.length === 0) {
@@ -50,7 +48,7 @@ async function initializeApp() {
             await FirebaseDB.saveAllMatches(matches);
             localStorage.setItem('lastMatchVersion', APP_VERSION);
             console.log(`Matches initialized: ${matches.length} matches loaded`);
-        } else if (needsMatchUpdate || needsCountMerge) {
+        } else if (needsMatchUpdate && sampleMatches.length > matches.length) {
             // Auto-update: MERGE new matches while preserving existing data
             console.log(`🔄 Merging new matches for ${APP_VERSION}...`);
             console.log(`Current: ${matches.length} matches, New: ${sampleMatches.length} matches`);
@@ -74,7 +72,10 @@ async function initializeApp() {
             localStorage.setItem('lastMatchVersion', APP_VERSION);
             console.log(`✅ Matches merged: ${matches.length} total (preserved existing data)`);
         } else {
-            console.log(`Loaded ${matches.length} existing matches from Firebase (up to date)`);
+            console.log(`Loaded ${matches.length} existing matches from Firebase`);
+            if (!needsMatchUpdate) {
+                console.log(`Matches are up to date for ${APP_VERSION}`);
+            }
         }
     } else {
         console.log('Firebase not available, using localStorage');

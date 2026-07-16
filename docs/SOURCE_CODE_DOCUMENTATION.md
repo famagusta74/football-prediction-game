@@ -1,9 +1,9 @@
 # Football Prediction Game - Source Code Documentation
 
-**Version:** 4.1.4
+**Version:** 4.1.5
 **Last Updated:** July 2026
 **Built by:** IBM Bob AI Assistant (https://bob.ibm.com/)
-**Total Lines of Code:** ~5,460
+**Total Lines of Code:** ~5,465
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
@@ -20,10 +20,17 @@
 ## 1. Project Overview
 
 **Repository:** Football Prediction Game
-**Version:** 4.1.4
+**Version:** 4.1.5
 **Built by:** IBM Bob AI Assistant
 **Technology:** Vanilla JavaScript, HTML5, CSS3, Firebase, EmailJS
-**Lines of Code:** ~3,610 (JavaScript), ~2,040 (CSS), ~460 (HTML)
+**Lines of Code:** ~3,612 (JavaScript), ~2,040 (CSS), ~460 (HTML)
+
+**v4.1.5 — Match Merge Fix (Bronze final & Final now visible):**
+- Fixed a bug where new matches added in a previous deployment were not appearing in Predictions
+- Root cause: merge condition required `needsMatchUpdate && sampleMatches.length > matches.length` — if `lastMatchVersion` was already written as the new version, `needsMatchUpdate` was `false` and the count check never ran
+- Fix: merge now also fires on `needsCountMerge` alone — if `sampleMatches.length > matches.length` in Firebase, the merge always runs regardless of the version flag
+- On next page load every user's browser will detect 104 > existing count and push the missing matches to Firebase
+- Bronze final (France vs England, 18 Jul) and Final (Spain vs Argentina, 19 Jul) will appear in Predictions
 
 **v4.1.4 — Bronze final & Final Matches Added:**
 - 2 final-stage fixtures added (ids 103–104), completing the FIFA World Cup 2026 schedule
